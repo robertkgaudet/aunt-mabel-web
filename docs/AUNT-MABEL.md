@@ -49,6 +49,28 @@ handler on D1 — not Hono, not Supabase. It's proven and it calls real phones.
 Only realign it as a later, deliberate refactor if the split causes real
 friction — never preemptively.
 
+## Entity & naming (settled — do not re-argue)
+
+- **Legal entity: Cajun Relief Foundation** — the registered nonprofit.
+- **"Cajun Navy Ground Force"** and **"Ground Force Humanitarian Aid"** are both
+  **DBAs of Cajun Relief Foundation**. They are brand names, not separate
+  organizations.
+
+**The rule:**
+
+| Context | Use |
+|---|---|
+| Brand-facing copy — marketing pages, UI, email, the voice agent | **Cajun Navy Ground Force** |
+| Legal documents — ToS, Privacy Policy, contracting-party language | **Cajun Relief Foundation, d/b/a Cajun Navy Ground Force** |
+
+This settles the open contracting-party question: **Cajun Relief Foundation is
+the party that contracts with the customer.** The DBAs never contract in their
+own name.
+
+"Ground Force Humanitarian Aid" is a valid DBA but is **not** the brand we lead
+with — brand-facing copy was standardized away from it on 2026-08-06. Don't
+reintroduce it into user-visible text.
+
 ## Architecture principles (non-negotiable, every repo)
 
 1. Structured data through templates/config — never raw hardcoded blobs where
