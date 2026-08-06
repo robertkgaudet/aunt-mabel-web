@@ -102,6 +102,19 @@ delivered today**. SMS and call render **visibly disabled with a "coming soon"
 label** — shown so the roadmap is legible, disabled so nobody selects a channel
 that silently never fires.
 
+**Each contact needs at least one of phone or email** (settled 2026-08-06). A
+contact we cannot actually reach is not an escalation path, and `name` alone
+gives us nowhere to send the alert. Both columns stay nullable in the schema —
+the requirement is "at least one", not "both".
+
+**When `is_self` is true, nudge but don't block** (settled 2026-08-06). Someone
+enrolling themselves may list themselves as their own emergency contact, which
+defeats the point — if Mabel is worried about them, we'd be alerting the person
+we're worried about. Show helper text naming the recipient ("someone other than
+Eleanor who we can reach if we're worried"). It stays a nudge: a person with no
+one else to list must still be able to finish, and blocking them would exclude
+exactly the most isolated recipients this service exists for.
+
 ### Step 5 — Doctor (optional)
 
 Writes `doctor_name`, `doctor_phone` on `recipients`. Genuinely optional —

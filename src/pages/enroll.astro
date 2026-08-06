@@ -191,15 +191,116 @@ const TOTAL = STEPS.length;
       </form>
     </section>
 
-    {/* ── Step 4 — placeholder. Real content is the next chunk. ─────── */}
+    {/* ── Step 4 — Emergency contacts ────────────────────────────────── */}
     <section class="step" data-step="3" id="step-contacts" hidden>
-      <h1>Step 4 coming next</h1>
+      <h1>If Mabel is ever worried, who should we tell?</h1>
+      <p class="step-lede" id="c-lede">
+        Someone who can check in person, or make a call. We'll only reach out if
+        something sounds off.
+      </p>
+
+      <form id="contacts-form" novalidate>
+        {/* ── contact 1 (required) ── */}
+        <fieldset class="contact-card" id="contact-1">
+          <legend>First contact</legend>
+
+          <div class="field">
+            <label for="c1-name">Their name</label>
+            <input id="c1-name" type="text" autocomplete="name" placeholder="Marie Thibodeaux" />
+            <p class="field-hint" id="c1-self-hint" hidden></p>
+            <p class="field-error" id="c1-name-error" hidden></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="c1-phone">Phone</label>
+              <input id="c1-phone" type="tel" inputmode="tel" placeholder="(337) 555-0142" />
+            </div>
+            <div class="field">
+              <label for="c1-email">Email</label>
+              <input id="c1-email" type="email" inputmode="email" placeholder="marie@example.com" />
+            </div>
+          </div>
+          <p class="field-hint">We need at least one of these so we can actually reach them.</p>
+          <p class="field-error" id="c1-reach-error" hidden></p>
+
+          <div class="field">
+            <label for="c1-rel">How do they know them?</label>
+            <input id="c1-rel" type="text" placeholder="Daughter" />
+          </div>
+
+          <div class="field">
+            <span class="pseudo-label">How should we reach them?</span>
+            <div class="notify-options" role="group" aria-label="How should we reach them?">
+              <label class="notify"><input type="radio" name="c1-notify" value="email" checked /> <span>Email</span></label>
+              <label class="notify is-disabled"><input type="radio" name="c1-notify" value="sms" disabled /> <span>Text message</span> <em>coming soon</em></label>
+              <label class="notify is-disabled"><input type="radio" name="c1-notify" value="call" disabled /> <span>Phone call</span> <em>coming soon</em></label>
+            </div>
+          </div>
+        </fieldset>
+
+        {/* ── contact 2 (optional, revealed) ── */}
+        <button type="button" class="btn btn-secondary add-contact" id="add-contact">
+          + Add a second contact
+        </button>
+
+        <fieldset class="contact-card" id="contact-2" hidden>
+          <legend>Second contact</legend>
+
+          <div class="field">
+            <label for="c2-name">Their name</label>
+            <input id="c2-name" type="text" autocomplete="name" />
+            <p class="field-error" id="c2-name-error" hidden></p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="c2-phone">Phone</label>
+              <input id="c2-phone" type="tel" inputmode="tel" />
+            </div>
+            <div class="field">
+              <label for="c2-email">Email</label>
+              <input id="c2-email" type="email" inputmode="email" />
+            </div>
+          </div>
+          <p class="field-hint">At least one, same as above.</p>
+          <p class="field-error" id="c2-reach-error" hidden></p>
+
+          <div class="field">
+            <label for="c2-rel">How do they know them?</label>
+            <input id="c2-rel" type="text" />
+          </div>
+
+          <div class="field">
+            <span class="pseudo-label">How should we reach them?</span>
+            <div class="notify-options" role="group" aria-label="How should we reach them?">
+              <label class="notify"><input type="radio" name="c2-notify" value="email" checked /> <span>Email</span></label>
+              <label class="notify is-disabled"><input type="radio" name="c2-notify" value="sms" disabled /> <span>Text message</span> <em>coming soon</em></label>
+              <label class="notify is-disabled"><input type="radio" name="c2-notify" value="call" disabled /> <span>Phone call</span> <em>coming soon</em></label>
+            </div>
+          </div>
+
+          <button type="button" class="btn-quiet remove-contact" id="remove-contact">Remove this contact</button>
+        </fieldset>
+
+        <p id="contacts-status" class="status" aria-live="polite"></p>
+
+        <div class="step-actions">
+          <button type="submit" class="btn btn-primary" id="continue-4">Continue</button>
+          <button type="button" class="btn-quiet" id="back-4">Back</button>
+        </div>
+      </form>
+    </section>
+
+    {/* ── Step 5 — placeholder. Real content is the next chunk. ─────── */}
+    <section class="step" data-step="4" id="step-doctor" hidden>
+      <h1>Step 5 coming next</h1>
       <p class="step-lede">
-        Placeholder. The recipient row has been saved — its id is in the debug
+        Placeholder. The contact rows have been saved — the count is in the debug
         strip below.
       </p>
       <div class="step-actions">
-        <button type="button" class="btn btn-secondary" id="back-4">Back</button>
+        <button type="button" class="btn btn-secondary" id="back-5">Back</button>
       </div>
     </section>
 
@@ -223,12 +324,18 @@ const TOTAL = STEPS.length;
   // The ONE exception is is_self, which is carried through the auth redirect
   // in the return URL. It is the user's own answer about themselves, contains
   // no third-party data, and without it the post-auth return can't resume.
-  /** @type {{ is_self: boolean | null, account_id: string | null, recipient_id: string | null, display_name: string | null, step: number }} */
+  // Current-tier limit, not a permanent one — paid tiers raise it later, so it
+  // lives here rather than being scattered through the markup and validation.
+  const MAX_CONTACTS = 2;
+
+  /** @type {{ is_self: boolean | null, account_id: string | null, recipient_id: string | null, recipient_name: string | null, display_name: string | null, contact_ids: string[], step: number }} */
   const state = {
     is_self: null,
     account_id: null,
     recipient_id: null,
+    recipient_name: null,
     display_name: null,
+    contact_ids: [],
     step: 1,
   };
 
@@ -450,6 +557,167 @@ const TOTAL = STEPS.length;
   btn('back-2').addEventListener('click', () => show(0));
   btn('back-3').addEventListener('click', () => show(1));
   btn('back-4').addEventListener('click', () => show(2));
+  btn('back-5').addEventListener('click', () => show(3));
+
+  // ── step 4 — emergency contacts ───────────────────────────────────────
+  const cForm = /** @type {HTMLFormElement} */ (document.getElementById('contacts-form'));
+  const cStatus = el('contacts-status');
+  const contact2 = el('contact-2');
+  const addContactBtn = btn('add-contact');
+
+  /** @type {(n: number) => { name: HTMLInputElement, phone: HTMLInputElement, email: HTMLInputElement, rel: HTMLInputElement }} */
+  const contactFields = (n) => ({
+    name: /** @type {HTMLInputElement} */ (document.getElementById(`c${n}-name`)),
+    phone: /** @type {HTMLInputElement} */ (document.getElementById(`c${n}-phone`)),
+    email: /** @type {HTMLInputElement} */ (document.getElementById(`c${n}-email`)),
+    rel: /** @type {HTMLInputElement} */ (document.getElementById(`c${n}-rel`)),
+  });
+
+  /** @type {(n: number) => string} */
+  function notifyMethod(n) {
+    const checked = /** @type {HTMLInputElement | null} */ (
+      document.querySelector(`input[name="c${n}-notify"]:checked`)
+    );
+    return checked ? checked.value : 'email';
+  }
+
+  addContactBtn.addEventListener('click', () => {
+    contact2.hidden = false;
+    addContactBtn.hidden = true;          // enforces the MAX_CONTACTS cap in the UI
+    contactFields(2).name.focus();
+  });
+
+  btn('remove-contact').addEventListener('click', () => {
+    const f = contactFields(2);
+    [f.name, f.phone, f.email, f.rel].forEach((i) => { i.value = ''; });
+    contact2.hidden = true;
+    addContactBtn.hidden = false;
+    fieldError('c2-name-error');
+    fieldError('c2-reach-error');
+  });
+
+  // The nudge for self-signups. Deliberately advisory: someone with nobody else
+  // to list must still be able to finish — blocking them would shut out exactly
+  // the most isolated people this service exists for.
+  function prepareContactsStep() {
+    const hint = el('c1-self-hint');
+    if (state.is_self && state.recipient_name) {
+      hint.textContent = `This should be someone other than ${state.recipient_name} — if Mabel is worried about them, we need to reach somebody else.`;
+      hint.hidden = false;
+      el('c-lede').textContent =
+        "Someone who can look in on you, or give you a call. We'll only reach out if something sounds off.";
+    } else {
+      hint.hidden = true;
+    }
+  }
+
+  /** @type {(v: string) => boolean} */
+  const looksLikeEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+  /**
+   * Validate one contact block.
+   * @type {(n: number, required: boolean) => { ok: boolean, empty: boolean, row: any | null }}
+   */
+  function readContact(n, required) {
+    const f = contactFields(n);
+    const name = f.name.value.trim();
+    const phoneRaw = f.phone.value.trim();
+    const emailRaw = f.email.value.trim();
+    const rel = f.rel.value.trim();
+
+    const empty = !name && !phoneRaw && !emailRaw && !rel;
+    if (empty && !required) return { ok: true, empty: true, row: null };
+
+    let ok = true;
+    if (!name) { fieldError(`c${n}-name-error`, 'Please give us their name.'); ok = false; }
+
+    const phone = phoneRaw ? normalizePhone(phoneRaw) : '';
+    if (phoneRaw && !phone) {
+      fieldError(`c${n}-reach-error`, "That phone number doesn't look right. Ten digits, like (337) 555-0142.");
+      ok = false;
+    } else if (emailRaw && !looksLikeEmail(emailRaw)) {
+      fieldError(`c${n}-reach-error`, "That email address doesn't look right.");
+      ok = false;
+    } else if (!phone && !emailRaw) {
+      fieldError(`c${n}-reach-error`, 'Please add a phone number or an email so we can reach them.');
+      ok = false;
+    }
+
+    if (!ok) return { ok: false, empty: false, row: null };
+
+    return {
+      ok: true,
+      empty: false,
+      row: {
+        recipient_id: state.recipient_id,
+        name,
+        phone: phone || null,
+        email: emailRaw || null,
+        relationship: rel || null,
+        notify_method: notifyMethod(n),
+      },
+    };
+  }
+
+  cForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    ['c1-name-error', 'c1-reach-error', 'c2-name-error', 'c2-reach-error'].forEach((id) => fieldError(id));
+    cStatus.textContent = '';
+    cStatus.removeAttribute('data-tone');
+
+    const first = readContact(1, true);
+    const second = contact2.hidden ? { ok: true, empty: true, row: null } : readContact(2, false);
+    if (!first.ok || !second.ok) return;
+
+    /** @type {any[]} */
+    const rows = [first.row, second.row].filter(Boolean);
+    if (rows.length === 0) {
+      fieldError('c1-name-error', 'Please add at least one person we can tell.');
+      return;
+    }
+    if (rows.length > MAX_CONTACTS) {
+      cStatus.textContent = `You can add up to ${MAX_CONTACTS} contacts for now.`;
+      cStatus.setAttribute('data-tone', 'error');
+      return;
+    }
+
+    const sb = requireSupabaseFor(cStatus);
+    if (!sb) return;
+    if (!state.recipient_id) {
+      cStatus.textContent = "We lost track of who we're calling — please go back a step.";
+      cStatus.setAttribute('data-tone', 'error');
+      return;
+    }
+
+    const submitBtn = btn('continue-4');
+    submitBtn.disabled = true;
+    cStatus.textContent = 'Saving…';
+
+    try {
+      // Re-submitting after a Back must replace, not duplicate. With at most two
+      // rows, delete-then-insert is simpler and less error-prone than diffing.
+      if (state.contact_ids.length) {
+        const { error: delErr } = await sb.from('contacts').delete().in('id', state.contact_ids);
+        if (delErr) throw delErr;
+        state.contact_ids = [];
+      }
+
+      const { data, error } = await sb.from('contacts').insert(rows).select('id');
+      if (error) throw error;
+
+      state.contact_ids = (data || []).map((r) => r.id);
+      renderDebug();
+      cStatus.textContent = '';
+      submitBtn.disabled = false;
+      show(4);
+    } catch (err) {
+      console.error('[enroll] contacts insert failed', err);
+      const detail = err instanceof Error ? err.message : String(err);
+      cStatus.textContent = `We couldn't save those contacts: ${detail}`;
+      cStatus.setAttribute('data-tone', 'error');
+      submitBtn.disabled = false;
+    }
+  });
 
   // ── step 3 — who we're calling ────────────────────────────────────────
   const rForm = /** @type {HTMLFormElement} */ (document.getElementById('recipient-form'));
@@ -635,29 +903,36 @@ const TOTAL = STEPS.length;
     submitBtn.disabled = true;
     rStatus.textContent = 'Saving…';
 
-    try {
-      const { data, error } = await sb
-        .from('recipients')
-        .insert({
-          account_id: state.account_id,
-          name,
-          phone,
-          call_time: rTime.value,
-          zip,
-          timezone: tz,
-          is_self: Boolean(state.is_self),
-          consent: false,
-          verbal_consent: false,
-          status: 'pending_payment',
-        })
-        .select('id')
-        .single();
-      if (error) throw error;
+    const row = {
+      account_id: state.account_id,
+      name,
+      phone,
+      call_time: rTime.value,
+      zip,
+      timezone: tz,
+      is_self: Boolean(state.is_self),
+      consent: false,
+      verbal_consent: false,
+      status: 'pending_payment',
+    };
 
-      state.recipient_id = data.id;
+    try {
+      // Going Back and pressing Continue again must NOT create a second
+      // recipient. Update the row we already made instead of inserting.
+      if (state.recipient_id) {
+        const { error } = await sb.from('recipients').update(row).eq('id', state.recipient_id);
+        if (error) throw error;
+      } else {
+        const { data, error } = await sb.from('recipients').insert(row).select('id').single();
+        if (error) throw error;
+        state.recipient_id = data.id;
+      }
+
+      state.recipient_name = name;
       renderDebug();
       rStatus.textContent = '';
       submitBtn.disabled = false;
+      prepareContactsStep();
       show(3);
     } catch (err) {
       console.error('[enroll] recipient insert failed', err);
@@ -675,6 +950,7 @@ const TOTAL = STEPS.length;
     // Never land past a step whose prerequisite row doesn't exist yet.
     if (target >= 2 && !state.account_id) { show(1, { push: false }); return; }
     if (target >= 3 && !state.recipient_id) { show(2, { push: false }); return; }
+    if (target >= 4 && !state.contact_ids.length) { show(3, { push: false }); return; }
     show(target, { push: false });
   });
 
@@ -844,6 +1120,81 @@ const TOTAL = STEPS.length;
     color: var(--ink);
   }
   .tz-picker { margin-top: -0.5rem; }
+
+  /* ── step 4 contacts ──────────────────────────────────────────────── */
+  .contact-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px 26px 8px;
+    margin: 0 0 1.25rem;
+  }
+  .contact-card legend {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--rose-deep);
+    padding: 0 8px;
+  }
+  #contacts-form .field { margin-bottom: 1.25rem; }
+  #contacts-form input[type='text'],
+  #contacts-form input[type='tel'],
+  #contacts-form input[type='email'] {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 1.02rem;
+    font-weight: 400;
+    padding: 14px 16px;
+    background: var(--cream);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  #contacts-form input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.4);
+  }
+  #contacts-form label,
+  .pseudo-label {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 1.02rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-row .field { margin-bottom: 0.35rem; }
+
+  .add-contact { margin: 0 0 1.5rem; }
+  .remove-contact { margin: 0 0 1.25rem; }
+
+  /* Notify options: SMS and Call are visible so the roadmap is legible, but
+     plainly disabled so nobody picks a channel that never fires. */
+  .notify-options { display: grid; gap: 8px; }
+  .notify {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body) !important;
+    font-size: 0.98rem !important;
+    font-weight: 400 !important;
+    margin-bottom: 0 !important;
+    cursor: pointer;
+  }
+  .notify.is-disabled { color: var(--soft-ink); cursor: not-allowed; opacity: 0.72; }
+  .notify.is-disabled input { cursor: not-allowed; }
+  .notify em {
+    font-style: normal;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sage);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 2px 8px;
+  }
 
   /* ── actions ──────────────────────────────────────────────────────── */
   .step-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
