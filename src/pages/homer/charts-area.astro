@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/charts-area.html?raw";
+---
+<AdminLayout title="Area Charts" pageTitle="Area Charts" pageSubtitle="Charts">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/chart-area.js"></script>
+  </Fragment>
+</AdminLayout>

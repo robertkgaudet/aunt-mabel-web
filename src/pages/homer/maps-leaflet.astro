@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/maps-leaflet.html?raw";
+---
+<AdminLayout title="Leaflet" pageTitle="Leaflet" pageSubtitle="Maps">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/maps-leaflet.js"></script>
+  </Fragment>
+</AdminLayout>

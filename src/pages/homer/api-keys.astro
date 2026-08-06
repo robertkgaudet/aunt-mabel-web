@@ -1,0 +1,12 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/api-keys.html?raw";
+---
+<AdminLayout title="API Keys" pageTitle="API Keys" pageSubtitle="Apps">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/custom-table.js"></script>
+  <script is:inline src="/assets/js/pages/api-keys.js"></script>
+  </Fragment>
+</AdminLayout>

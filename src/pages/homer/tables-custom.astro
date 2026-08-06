@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-custom.html?raw";
+---
+<AdminLayout title="Custom Tables" pageTitle="Custom Tables" pageSubtitle="Pages">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/custom-table.js"></script>
+  </Fragment>
+</AdminLayout>

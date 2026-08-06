@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/misc-sweet-alerts.html?raw";
+---
+<AdminLayout title="SweetAlert2" pageTitle="SweetAlert2" pageSubtitle="Miscellaneous">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/misc-sweetalerts.js"></script>
+  </Fragment>
+</AdminLayout>

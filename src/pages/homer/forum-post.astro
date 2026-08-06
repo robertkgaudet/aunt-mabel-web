@@ -1,0 +1,7 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/forum-post.html?raw";
+---
+<AdminLayout title="Forum Post" pageTitle="Forum Post" pageSubtitle="Apps">
+  <Fragment set:html={content} />
+</AdminLayout>

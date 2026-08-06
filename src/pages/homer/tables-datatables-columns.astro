@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-columns.html?raw";
+---
+<AdminLayout title="Show & Hide Columns" pageTitle="Show & Hide Columns" pageSubtitle="Datatables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-show-hide-columns.js"></script>
+  </Fragment>
+</AdminLayout>

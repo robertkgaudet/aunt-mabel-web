@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Sign in · Aunt Mabel"
+  description="Sign in with Google or a link sent to your email. No password."
+  noindex={true}
+>
+  <div class="auth-page">
+    <!-- Hidden until the session check confirms nobody is already signed in,
+         so an already-authenticated visitor never sees a flash of the form. -->
+    <div class="auth-card" id="login-card" hidden>
+      <h1>Sign in</h1>
+      <p class="subhead">No password. Use Google, or we'll email you a link.</p>
+
+      <button id="google-btn" class="btn btn-secondary btn-block" type="button">
+        Sign in with Google
+      </button>
+
+      <div class="divider"><span>or</span></div>
+
+      <form id="magic-form" novalidate>
+        <div class="field">
+          <label for="email">Your email address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            placeholder="you@example.com"
+            autocomplete="email"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">
+          Email me a sign-in link
+        </button>
+      </form>
+
+      <p id="status" class="status" aria-live="polite"></p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { getSupabase } from '../scripts/supabase.js';
+  import { resolveAuthDestination } from '../scripts/auth.js';
+
+  const supabase = getSupabase();
+  const statusEl = document.getElementById('status');
+  const googleBtn = document.getElementById('google-btn');
+  const form = document.getElementById('magic-form');
+  const emailInput = document.getElementById('email');
+  const loginCard = document.getElementById('login-card');
+
+  const params = new URLSearchParams(window.location.search);
+  const redirectParam = params.get('redirect') || '';
+
+  function setStatus(msg, tone) {
+    statusEl.textContent = msg;
+    if (tone) statusEl.setAttribute('data-tone', tone);
+    else statusEl.removeAttribute('data-tone');
+  }
+
+  // Already signed in? Go straight through. Otherwise reveal the form.
+  (async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      window.location.replace(resolveAuthDestination({ redirect: redirectParam }));
+      return;
+    }
+    loginCard.hidden = false;
+  })();
+
+  // Carry ?redirect= through the round-trip so the callback can honour it.
+  const callbackQs = new URLSearchParams();
+  if (redirectParam) callbackQs.set('redirect', redirectParam);
+  const callbackUrl =
+    window.location.origin + '/auth/callback' +
+    (callbackQs.toString() ? '?' + callbackQs.toString() : '');
+
+  // Surface why they landed here, if we were told.
+  if (params.get('reason') === 'session_expired') {
+    setStatus('Your session expired. Please sign in again.');
+  } else if (params.get('error')) {
+    setStatus(params.get('error'), 'error');
+  }
+  if (params.get('email')) emailInput.value = params.get('email');
+
+  googleBtn.addEventListener('click', async () => {
+    setStatus('Taking you to Google…');
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: callbackUrl },
+    });
+    if (error) setStatus(error.message, 'error');
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    if (!email) {
+      setStatus('Please enter your email address.', 'error');
+      return;
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    setStatus('Sending your link…');
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: callbackUrl },
+    });
+
+    if (error) {
+      setStatus(error.message, 'error');
+      submitBtn.disabled = false;
+      return;
+    }
+
+    window.location.href = '/auth/check-email?email=' + encodeURIComponent(email);
+  });
+</script>

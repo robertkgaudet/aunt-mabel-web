@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/invoices.html?raw";
+---
+<AdminLayout title="Invoice List" pageTitle="Invoice List" pageSubtitle="Invoices">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/custom-table.js"></script>
+  </Fragment>
+</AdminLayout>

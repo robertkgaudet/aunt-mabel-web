@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/misc-nestable.html?raw";
+---
+<AdminLayout title="Nestable List" pageTitle="Nestable List" pageSubtitle="Miscellaneous">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/misc-nestable.js"></script>
+  </Fragment>
+</AdminLayout>

@@ -1,0 +1,11 @@
+# PROD Cloudflare Pages project for aunt-mabel-web.
+# Used by: npm run deploy:prod (via scripts/deploy-prod.mjs — guarded).
+#
+# Do NOT run `wrangler pages deploy` against this project directly. The guard
+# script is the only sanctioned path to prod; it refuses a dirty tree,
+# unpushed commits, or missing auth.
+
+name = "aunt-mabel-web"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]

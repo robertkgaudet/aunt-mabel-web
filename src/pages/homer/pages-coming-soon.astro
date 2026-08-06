@@ -1,0 +1,9 @@
+---
+import BlankLayout from "../../layouts/homer/BlankLayout.astro";
+import content from "../../content-fragments/pages-coming-soon.html?raw";
+---
+<BlankLayout title="Pages Coming Soon">
+  <Fragment set:html={content} />
+
+  <script is:inline src="/assets/js/pages/coming-soon.js"></script>
+</BlankLayout>

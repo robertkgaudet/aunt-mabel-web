@@ -1,0 +1,511 @@
+<div class="row mb-3">
+                    <div class="col-lg-12">
+                        <form class="bg-light-subtle rounded border p-3">
+                            <div class="row gap-3">
+                                <div class="col">
+                                    <div class="row gap-3">
+                                        <div class="col-lg-4">
+                                            <div class="app-search">
+                                                <input type="text" class="form-control" placeholder="Search project name...">
+                                                <i data-lucide="search" class="app-search-icon text-muted"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                                <span class="me-2 fw-semibold">Filter By:</span>
+
+                                                <!-- Status Filter -->
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0">
+                                                        <option selected>Status</option>
+                                                        <option value="On Track">On Track</option>
+                                                        <option value="Delayed">Delayed</option>
+                                                        <option value="At Risk">At Risk</option>
+                                                        <option value="Completed">Completed</option>
+                                                    </select>
+                                                    <i data-lucide="activity" class="app-search-icon text-muted"></i>
+                                                </div>
+
+                                                <!-- Team Filter -->
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0">
+                                                        <option selected>Team</option>
+                                                        <option value="Design">Design</option>
+                                                        <option value="Development">Development</option>
+                                                        <option value="Marketing">Marketing</option>
+                                                        <option value="QA">QA</option>
+                                                    </select>
+                                                    <i data-lucide="users" class="app-search-icon text-muted"></i>
+                                                </div>
+
+                                                <!-- Deadline Filter -->
+                                                <div class="app-search">
+                                                    <select class="form-select form-control my-1 my-md-0">
+                                                        <option selected>Deadline</option>
+                                                        <option value="This Week">This Week</option>
+                                                        <option value="This Month">This Month</option>
+                                                        <option value="Next Month">Next Month</option>
+                                                        <option value="No Deadline">No Deadline</option>
+                                                    </select>
+                                                    <i data-lucide="calendar-clock" class="app-search-icon text-muted"></i>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Layout toggle (grid/list) -->
+                                <div class="col-auto">
+                                    <div class="d-flex gap-1">
+                                        <a href="/projects" class="btn btn-primary btn-icon">
+                                            <i data-lucide="layout-grid" class="fs-lg"></i>
+                                        </a>
+                                        <a href="/projects-list" class="btn btn-soft-primary btn-icon">
+                                            <i data-lucide="list" class="fs-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-hovered">
+                            <div class="card-body">
+                                <div class="d-flex mb-4 justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="avatar-xl me-3">
+                                            <span class="avatar-title text-bg-light rounded">
+                                                <i class="ti ti-atom fs-32"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fs-md d-flex align-items-center">
+                                                <a href="#!" class="link-reset">AI Analytics Dashboard</a>
+                                            </h5>
+                                            <p class="text-muted mb-2 fs-xxs">Updated 5 minutes ago</p>
+                                            <span class="badge bg-primary-subtle text-primary fw-medium fs-xxs badge-label">IN PROGRESS</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center justify-content-end gap-1 mb-2">
+                                            <a href="#" class="btn btn-soft-primary btn-sm">View</a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="settings" class="fs-16"></i></a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="trash-2" class="fs-16"></i></a>
+                                        </div>
+                                        <h3 class="fw-bold mb-0 mt-2">$<span data-target="1,206.40">1,206.40</span></h3>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted">This project aims to deliver a high-performance solution with a user-friendly interface, optimized for scalability and real-time analytics.</p>
+
+                                <div class="row mb-3">
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Client</div>
+                                        <div>Hendrix Corp</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Version</div>
+                                        <div>1.5.2</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Deadline</div>
+                                        <div>12.06.2025</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted mb-2">Progress</div>
+                                        <div class="progress" style="height: 7px;">
+                                            <div class="progress-bar" style="width: 65%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="mb-1 text-muted fw-semibold text-uppercase fs-xxs">Team Members:</p>
+                                <div class="avatar-group avatar-group-xs">
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-2.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-3.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-5.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-1.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-4.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Additional information about project in footer
+                            </div>
+                        </div>
+
+                    </div> <!-- end col -->
+
+                    <div class="col-md-6">
+                        <div class="card card-hovered">
+                            <div class="card-body">
+                                <div class="d-flex mb-4 justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="avatar-xl me-3">
+                                            <span class="avatar-title text-bg-light rounded">
+                                                <i class="ti ti-device-desktop-analytics fs-32"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fs-md d-flex align-items-center">
+                                                <a href="#!" class="link-reset">Real Estate CRM</a>
+                                            </h5>
+                                            <p class="text-muted mb-2 fs-xxs">Updated 2 hours ago</p>
+                                            <span class="badge bg-info-subtle text-info fw-medium fs-xxs badge-label">ON HOLD</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center justify-content-end gap-1 mb-2">
+                                            <a href="#" class="btn btn-soft-primary btn-sm">View</a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="settings" class="fs-16"></i></a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="trash-2" class="fs-16"></i></a>
+                                        </div>
+                                        <h3 class="fw-bold mb-0 mt-2">$<span data-target="950.30">950.30</span></h3>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted">Empowers real estate professionals to streamline lead tracking, manage listings, and automate client follow-ups seamlessly.</p>
+
+                                <div class="row mb-3">
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Client</div>
+                                        <div>Brightstone Ltd</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Version</div>
+                                        <div>2.1.0</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Deadline</div>
+                                        <div>30.07.2025</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted mb-2">Progress</div>
+                                        <div class="progress" style="height: 7px;">
+                                            <div class="progress-bar" style="width: 45%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="mb-1 text-muted fw-semibold text-uppercase fs-xxs">Team Members:</p>
+                                <div class="avatar-group avatar-group-xs">
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-6.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-7.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-8.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Property insights and lead tracking integrated in dashboard
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card card-hovered">
+                            <div class="card-body">
+                                <div class="d-flex mb-4 justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="avatar-xl me-3">
+                                            <span class="avatar-title text-bg-light rounded">
+                                                <i class="ti ti-cloud-upload fs-32"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fs-md d-flex align-items-center">
+                                                <a href="#!" class="link-reset">SaaS Billing Engine</a>
+                                            </h5>
+                                            <p class="text-muted mb-2 fs-xxs">Updated yesterday</p>
+                                            <span class="badge bg-warning-subtle text-warning fw-medium fs-xxs badge-label">REVIEW</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center justify-content-end gap-1 mb-2">
+                                            <a href="#" class="btn btn-soft-primary btn-sm">View</a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="settings" class="fs-16"></i></a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="trash-2" class="fs-16"></i></a>
+                                        </div>
+                                        <h3 class="fw-bold mb-0 mt-2">$<span data-target="2,403.55">2,403.55</span></h3>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted">A powerful solution built to enhance collaboration, optimize sales pipelines, and centralize communications for brokerages. You can manage with homer.</p>
+
+                                <div class="row mb-3">
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Client</div>
+                                        <div>Skyloop Inc</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Version</div>
+                                        <div>3.0.5</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Deadline</div>
+                                        <div>15.09.2025</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted mb-2">Progress</div>
+                                        <div class="progress" style="height: 7px;">
+                                            <div class="progress-bar" style="width: 78%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="mb-1 text-muted fw-semibold fs-xxs text-uppercase">Team Members:</p>
+                                <div class="avatar-group avatar-group-xs">
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-9.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-10.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                    <div class="avatar">
+                                        <img src="/assets/images/users/user-1.jpg" alt="" class="rounded-circle avatar-xs">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Billing module under testing for scalability
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Card 2 -->
+                    <div class="col-md-6">
+                        <div class="card card-hovered">
+                            <div class="card-body">
+                                <div class="d-flex mb-4 justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="avatar-xl me-3">
+                                            <span class="avatar-title text-bg-light rounded">
+                                                <i class="ti ti-chart-pie-2 fs-32"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fs-md d-flex align-items-center">
+                                                <a href="#!" class="link-reset">Marketing Dashboard</a>
+                                            </h5>
+                                            <p class="text-muted mb-2 fs-xxs">Updated 1 hour ago</p>
+                                            <span class="badge bg-warning-subtle text-warning fw-medium fs-xxs badge-label">IN REVIEW</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center justify-content-end gap-1 mb-2">
+                                            <a href="#" class="btn btn-soft-primary btn-sm">View</a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="settings" class="fs-16"></i></a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="trash-2" class="fs-16"></i></a>
+                                        </div>
+                                        <h3 class="fw-bold mb-0 mt-2">$<span data-target="984.50">984.50</span></h3>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted">Simplifies daily operations for agents and brokers by offering scheduling tools, document management, and automated reminders.</p>
+
+                                <div class="row mb-3">
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Client</div>
+                                        <div>Vision Media</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Version</div>
+                                        <div>2.0</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Deadline</div>
+                                        <div>22.07.2025</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted mb-2">Progress</div>
+                                        <div class="progress" style="height: 7px;">
+                                            <div class="progress-bar" style="width: 45%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="mb-1 text-muted fw-semibold fs-xxs text-uppercase">Team Members:</p>
+                                <div class="avatar-group avatar-group-xs">
+                                    <div class="avatar"><img src="/assets/images/users/user-6.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                    <div class="avatar"><img src="/assets/images/users/user-7.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                    <div class="avatar"><img src="/assets/images/users/user-8.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Next client review scheduled for July 24
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="col-md-6">
+                        <div class="card card-hovered">
+                            <div class="card-body">
+                                <div class="d-flex mb-4 justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="avatar-xl me-3">
+                                            <span class="avatar-title text-bg-light rounded">
+                                                <i class="ti ti-device-desktop-analytics fs-32"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fs-md d-flex align-items-center">
+                                                <a href="#!" class="link-reset">HR Insights Platform</a>
+                                            </h5>
+                                            <p class="text-muted mb-2 fs-xxs">Updated yesterday</p>
+                                            <span class="badge bg-danger-subtle text-danger fw-medium fs-xxs badge-label">DELAYED</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center justify-content-end gap-1 mb-2">
+                                            <a href="#" class="btn btn-soft-primary btn-sm">View</a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="settings" class="fs-16"></i></a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="trash-2" class="fs-16"></i></a>
+                                        </div>
+                                        <h3 class="fw-bold mb-0 mt-2">$<span data-target="1,051.37">1,051.37</span></h3>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted">Platform enabling HR teams to visualize employee metrics, track KPIs, and manage internal reports with ease.</p>
+
+                                <div class="row mb-3">
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Client</div>
+                                        <div>Orbit HR</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Version</div>
+                                        <div>0.9.1</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Deadline</div>
+                                        <div>01.08.2025</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted mb-2">Progress</div>
+                                        <div class="progress" style="height: 7px;">
+                                            <div class="progress-bar" style="width: 30%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="mb-1 text-muted fw-semibold fs-xxs text-uppercase">Team Members:</p>
+                                <div class="avatar-group avatar-group-xs">
+                                    <div class="avatar"><img src="/assets/images/users/user-2.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                    <div class="avatar"><img src="/assets/images/users/user-8.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                    <div class="avatar"><img src="/assets/images/users/user-4.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Project delayed due to integration issues
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Card 4 -->
+                    <div class="col-md-6">
+                        <div class="card card-hovered">
+                            <div class="card-body">
+                                <div class="d-flex mb-4 justify-content-between align-items-start">
+                                    <div class="d-flex">
+                                        <div class="avatar-xl me-3">
+                                            <span class="avatar-title text-bg-light rounded">
+                                                <i class="ti ti-cloud-data-connection fs-32"></i>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fs-md d-flex align-items-center">
+                                                <a href="#!" class="link-reset">Cloud Storage Platform</a>
+                                            </h5>
+                                            <p class="text-muted mb-2 fs-xxs">Updated 3 days ago</p>
+                                            <span class="badge bg-info-subtle text-info fw-medium fs-xxs badge-label">MAINTENANCE</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center justify-content-end gap-1 mb-2">
+                                            <a href="#" class="btn btn-soft-primary btn-sm">View</a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="settings" class="fs-16"></i></a>
+                                            <a href="#" class="btn btn-soft-primary btn-sm btn-icon"><i data-lucide="trash-2" class="fs-16"></i></a>
+                                        </div>
+                                        <h3 class="fw-bold mb-0 mt-2">$<span data-target="3,125.00">3,125.00</span></h3>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted">A secure and scalable cloud-based platform built for storing, syncing, and sharing large datasets across enterprise users.</p>
+
+                                <div class="row mb-3">
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Client</div>
+                                        <div>SkyBox Ltd</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Version</div>
+                                        <div>3.2.4</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted">Deadline</div>
+                                        <div>30.07.2025</div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="fw-semibold fs-xxs text-uppercase text-muted mb-2">Progress</div>
+                                        <div class="progress" style="height: 7px;">
+                                            <div class="progress-bar" style="width: 78%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="mb-1 text-muted fw-semibold fs-xxs text-uppercase">Team Members:</p>
+                                <div class="avatar-group avatar-group-xs">
+                                    <div class="avatar"><img src="/assets/images/users/user-3.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                    <div class="avatar"><img src="/assets/images/users/user-4.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                    <div class="avatar"><img src="/assets/images/users/user-7.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                    <div class="avatar"><img src="/assets/images/users/user-10.jpg" alt="" class="rounded-circle avatar-xs"></div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Currently undergoing security updates and patching
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div> <!-- end row-->
+
+                <ul class="pagination pagination-rounded pagination-boxed justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="javascript: void(0);" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="javascript: void(0);">1</a></li>
+                    <li class="page-item"><a class="page-link" href="javascript: void(0);">2</a></li>
+                    <li class="page-item"><a class="page-link" href="javascript: void(0);">3</a></li>
+                    <li class="page-item"><a class="page-link" href="javascript: void(0);">4</a></li>
+                    <li class="page-item"><a class="page-link" href="javascript: void(0);">5</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="javascript: void(0);" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                </ul>

@@ -1,0 +1,64 @@
+---
+// Public shell for aunt-mabel-web — plain CSS, no Bootstrap, no jQuery.
+// The Homer admin area under /homer/ uses src/layouts/homer/* instead; the
+// two shells never appear on the same page.
+import '../styles/site.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Set true for auth pages and anything that should stay out of search. */
+  noindex?: boolean;
+  /** Hide the header nav on focused pages (login, callback). */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description = 'A friendly call every day — and a knock on the door when disaster strikes.',
+  noindex = false,
+  bare = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="/">Aunt <span>Mabel</span></a>
+        {!bare && (
+          <nav class="site-nav">
+            <a href="/">Home</a>
+            <a href="/login">Sign in</a>
+          </nav>
+        )}
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="inner">
+        <p>
+          Aunt Mabel is a service of Cajun Navy Ground Force / Ground Force
+          Humanitarian Aid.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/calendar.html?raw";
+---
+<AdminLayout title="Calendar" pageTitle="Calendar" pageSubtitle="Apps">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/calendar.js"></script>
+  </Fragment>
+</AdminLayout>

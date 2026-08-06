@@ -1,0 +1,12 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/form-plugins.html?raw";
+---
+<AdminLayout title="Plugins" pageTitle="Plugins" pageSubtitle="Forms">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/form-choice.js"></script>
+  <script is:inline src="/assets/js/pages/form-typehead.js"></script>
+  </Fragment>
+</AdminLayout>

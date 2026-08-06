@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/maps-vector.html?raw";
+---
+<AdminLayout title="Vector Maps" pageTitle="Vector Maps" pageSubtitle="Maps">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/maps-vector.js"></script>
+  </Fragment>
+</AdminLayout>

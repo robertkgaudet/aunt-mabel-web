@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Signing you in… · Aunt Mabel" noindex={true} bare={true}>
+  <div class="auth-page">
+    <div class="auth-card centered">
+      <div class="icon-mark">☎</div>
+      <h1>Signing you in</h1>
+      <p class="subhead" id="progress">One moment…</p>
+      <p id="status" class="status" aria-live="polite"></p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { getSupabase } from '../../scripts/supabase.js';
+  import { resolveAuthDestination } from '../../scripts/auth.js';
+
+  const supabase = getSupabase();
+  const statusEl = document.getElementById('status');
+  const progressEl = document.getElementById('progress');
+
+  function fail(msg) {
+    progressEl.textContent = 'That didn’t work.';
+    statusEl.textContent = msg;
+    statusEl.setAttribute('data-tone', 'error');
+  }
+
+  async function finish() {
+    // The Supabase SDK parses the token out of the URL asynchronously, so
+    // getSession() is not reliably populated on the first tick after the
+    // redirect lands. Poll briefly rather than assuming.
+    let session = null;
+    for (let attempt = 0; attempt < 8 && !session; attempt++) {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        window.location.href = '/login?error=' + encodeURIComponent(error.message);
+        return;
+      }
+      session = data.session;
+      if (!session) await new Promise((r) => setTimeout(r, 250));
+    }
+
+    if (!session) {
+      fail('Sign-in didn’t complete. Sending you back to the sign-in page…');
+      setTimeout(() => { window.location.href = '/login'; }, 2500);
+      return;
+    }
+
+    const redirect = new URLSearchParams(window.location.search).get('redirect');
+    window.location.replace(resolveAuthDestination({ redirect }));
+  }
+
+  finish();
+</script>

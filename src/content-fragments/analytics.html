@@ -1,0 +1,403 @@
+<div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1">
+                    <!-- All Income Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body text-center">
+                                <!-- Icon -->
+                                <h1>
+                                    <i data-lucide="wallet" class="fs-60 text-muted svg-sw-5 svg-dashed"></i>
+                                </h1>
+
+                                <!-- Income Value with animation placeholder -->
+                                <h1 class="fw-light">
+                                    $<span data-target="1206.90" class="counter-value">0</span>
+                                </h1>
+
+                                <!-- Title -->
+                                <h5 class="text-primary fw-bold">All Income</h5>
+
+                                <!-- Timestamp -->
+                                <p class="text-muted mb-0 mt-3">
+                                    <i data-lucide="clock" class="me-1"></i> Last active on 12.05.2025
+                                </p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="card-footer text-muted text-center">
+                                Total income increased by <strong>12%</strong> compared to last month.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Total Orders Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase mb-3">Total Orders</h5>
+                                        <h3 class="mb-0 fw-normal"><span data-target="210">0</span></h3>
+                                        <p class="text-muted mb-2">Processed this week</p>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="shopping-cart" class="text-muted fs-42 svg-sw-10"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Progress bar -->
+                                <div class="progress progress-lg mb-3">
+                                    <div class="progress-bar" style="width: 60%;" role="progressbar"></div>
+                                </div>
+
+                                <!-- Footer metrics -->
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="text-muted">Avg. Items / Order</span>
+                                        <h5 class="mb-0">7.80</h5>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="text-muted">Repeat Customers</span>
+                                        <h5 class="mb-0">76.43%</h5>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Updated footer -->
+                            <div class="card-footer text-muted text-center">
+                                12 new orders pending confirmation
+                            </div>
+                        </div>
+                    </div><!-- end col -->
+
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase mb-3">Page Views</h5>
+                                        <h2 class="fw-light mb-1"><span data-target="982">0</span>k</h2>
+                                        <p class="mb-3">Across all platforms</p>
+                                        <p class="text-muted mb-0">
+                                            Traffic increased by <strong>12%</strong> compared to last week. Majority of views came from <strong>mobile devices</strong>.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="monitor" class="text-muted fs-42 svg-sw-10"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted text-center">
+                                8,400 unique visitors today
+                            </div>
+                        </div>
+                    </div><!-- end col -->
+
+                    <!-- Today Income Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase">Today Income</h5>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="banknote" class="text-muted fs-42 svg-sw-10"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Chart canvas -->
+                                <div class="mb-3">
+                                    <canvas id="incomeChart" height="60"></canvas>
+                                </div>
+
+                                <!-- Metrics -->
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <small class="text-muted">Today</small>
+                                        <div class="fw-semibold">$<span data-target="1,340.75">1,340.75</span></div>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted">Last Week</small>
+                                        <div class="fw-semibold">$<span data-target="9,210.60">9,210.60</span> <i class="ti ti-arrow-up"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer text-muted text-center">
+                                Revenue increased by 18% compared to yesterday
+                            </div>
+                        </div>
+                    </div><!-- end col -->
+
+                </div><!-- end row -->
+
+                <div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1">
+                    <!-- All Income Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase">Today Income</h5>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="banknote" class="text-muted fs-42 svg-sw-10"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Chart canvas -->
+                                <div class="mb-3">
+                                    <canvas id="pageViewsChart" height="60"></canvas>
+                                </div>
+
+                                <!-- Metrics -->
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <small class="text-muted">Today</small>
+                                        <div class="fw-semibold">$<span data-target="2,475.00">2,475.00</span></div>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted">Last Week</small>
+                                        <div class="fw-semibold">$<span data-target="8,960.20">8,960.20</span> <i class="ti ti-arrow-up"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer text-muted text-center">
+                                Revenue increased by <strong>22%</strong> compared to yesterday
+                            </div>
+                        </div>
+
+                    </div> <!-- end col-->
+
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase mb-3">Real Estate Overview</h5>
+                                        <p class="text-muted mb-2">
+                                            Total number of active residential and commercial property listings currently available.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="home" class="text-muted fs-32"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Stats row -->
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="fs-4 fw-bold"><span data-target="1,240">1,240</span></div>
+                                        <div class="text-muted">+6% <i class="ti ti-arrow-up"></i></div>
+                                        <span class="text-muted d-block">Residential</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="fs-4 fw-bold"><span data-target="860">860</span></div>
+                                        <div class="text-muted">+4% <i class="ti ti-arrow-up"></i></div>
+                                        <span class="text-muted d-block">Commercial</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer text-muted text-center">
+                                Listings grew by <strong>5.1%</strong> compared to last month.
+                            </div>
+                        </div>
+
+                    </div> <!-- end col-->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body text-center">
+                                <!-- Icon -->
+                                <div class="mb-3">
+                                    <i data-lucide="chart-scatter" class="text-muted fs-36"></i>
+                                </div>
+
+                                <!-- Finance Value -->
+                                <h2 class="fw-light mb-3">$<span data-target="702.40">702.40</span></h2>
+
+                                <!-- Description -->
+                                <p class="text-muted mb-0">
+                                    Total net income for Q2 2025 including operational revenue and investment returns across all business units.
+                                </p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="card-footer text-muted text-center">
+                                Financials audited and updated on May 18, 2025.
+                            </div>
+                        </div>
+
+                    </div> <!-- end col-->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase">Today Income</h5>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="shuffle" class="text-muted fs-32 svg-sw-10"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Pie Chart -->
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div>
+                                        <canvas id="todayIncomePieChart" height="100" width="100"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer text-muted text-center">
+                                Total income today: <strong>$<span data-target="8,700">8,700</span></strong>
+                            </div>
+                        </div>
+                    </div> <!-- end col-->
+                </div>
+                <!-- END ROW-->
+
+                <div class="row row-cols-xxl-4 row-cols-md-2 row-cols-1">
+                    <!-- Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <!-- Header -->
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase">SaaS Analytics</h5>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="chart-pie" class="text-muted fs-32 svg-sw-10"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Data Grid -->
+                                <div class="row text-center">
+                                    <div class="col-6 mb-3">
+                                        <div class="text-muted mb-1">New Signups</div>
+                                        <div class="fs-5 fw-semibold"><span data-target="1,320">1,320</span> <i class="ti ti-arrow-up"></i></div>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <div class="text-muted mb-1">Churn Rate</div>
+                                        <div class="fs-5 fw-semibold">4.6% <i class="ti ti-arrow-down"></i></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-muted mb-1">Active Users</div>
+                                        <div class="fs-5 fw-semibold"><span data-target="12,480">12,480</span> <i class="ti ti-arrow-up"></i></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-muted mb-1">Support Tickets</div>
+                                        <div class="fs-5 fw-semibold"><span data-target="289">289</span> <i class="ti ti-alert-triangle text-warning"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="card-footer text-muted text-center">
+                                Insights updated 5 mins ago · Based on real-time metrics.
+                            </div>
+                        </div>
+
+                    </div> <!-- end col-->
+                    <!-- Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <!-- Header -->
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase">Today Income</h5>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="zap" class="text-muted fs-24"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Chart -->
+                                <div class="mt-3">
+                                    <canvas id="todayIncomeChart" height="140"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card-footer text-muted text-center">
+                                This is standard panel footer
+                            </div>
+                        </div>
+
+                    </div> <!-- end col-->
+                    <!-- Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body">
+                                <!-- Header -->
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <h5 class="fw-normal text-uppercase mb-1">Real Estate Activity</h5>
+                                        <p class="text-muted mb-0">Current metrics across key property segments this week.</p>
+                                    </div>
+                                    <div>
+                                        <i data-lucide="presentation" class="text-muted fs-36"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Progress Bars -->
+                                <div class="mb-2">
+                                    <small class="text-muted d-block mb-1">New Listings</small>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" style="width: 25%;" role="progressbar" aria-valuenow="25"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <small class="text-muted d-block mb-1">Property Views</small>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" style="width: 40%;" role="progressbar" aria-valuenow="40"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <small class="text-muted d-block mb-1">Deals Closed</small>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" style="width: 85%;" role="progressbar" aria-valuenow="85"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer text-muted text-center">
+                                Updated just now · Weekly activity insights
+                            </div>
+                        </div>
+
+                    </div> <!-- end col-->
+                    <!-- Widget -->
+                    <div class="col">
+                        <div class="card card-h-100">
+                            <div class="card-body text-center">
+                                <div class="alert p-1 alert-warning">
+                                    Dr. Smith has 3 upcoming appointments today.
+                                </div>
+
+                                <!-- Icon -->
+                                <div class="mb-1">
+                                    <i data-lucide="globe" class="text-primary fs-36"></i>
+                                </div>
+
+                                <!-- Stat Value -->
+                                <h2 class="fw-light mb-2">$<span data-target="1,208.20">1,208.20</span></h2>
+
+                                <!-- Description -->
+                                <p class="text-muted mb-0">
+                                    Total consultation fees collected this week from general and specialist appointments.
+                                </p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="card-footer text-muted text-center">
+                                Updated just now · Weekly medical revenue summary
+                            </div>
+                        </div>
+
+                    </div> <!-- end col-->
+                </div>
+                <!-- END ROW-->

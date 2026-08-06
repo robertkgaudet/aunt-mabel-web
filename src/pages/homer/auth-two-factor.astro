@@ -1,0 +1,9 @@
+---
+import BlankLayout from "../../layouts/homer/BlankLayout.astro";
+import content from "../../content-fragments/auth-two-factor.html?raw";
+---
+<BlankLayout title="Auth Two Factor">
+  <Fragment set:html={content} />
+
+  <script is:inline src="/assets/js/pages/auth-two-factor.js"></script>
+</BlankLayout>

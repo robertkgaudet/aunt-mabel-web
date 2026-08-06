@@ -1,0 +1,7 @@
+---
+import BlankLayout from "../../layouts/homer/BlankLayout.astro";
+import content from "../../content-fragments/error-401.html?raw";
+---
+<BlankLayout title="Error 401">
+  <Fragment set:html={content} />
+</BlankLayout>

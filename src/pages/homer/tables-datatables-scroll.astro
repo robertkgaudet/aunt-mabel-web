@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-scroll.html?raw";
+---
+<AdminLayout title="Scroll" pageTitle="Scroll" pageSubtitle="Datatables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-scroll.js"></script>
+  </Fragment>
+</AdminLayout>

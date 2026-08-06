@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/misc-tour.html?raw";
+---
+<AdminLayout title="Tour" pageTitle="Tour" pageSubtitle="Miscellaneous">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/misc-tour.js"></script>
+  </Fragment>
+</AdminLayout>

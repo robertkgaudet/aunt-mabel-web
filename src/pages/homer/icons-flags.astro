@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/icons-flags.html?raw";
+---
+<AdminLayout title="Flags" pageTitle="Flags" pageSubtitle="Icons">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/flags-listing.js"></script>
+  </Fragment>
+</AdminLayout>

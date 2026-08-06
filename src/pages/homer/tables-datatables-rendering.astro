@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-rendering.html?raw";
+---
+<AdminLayout title="Data Rendering" pageTitle="Data Rendering" pageSubtitle="Datatables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-rendering.js"></script>
+  </Fragment>
+</AdminLayout>

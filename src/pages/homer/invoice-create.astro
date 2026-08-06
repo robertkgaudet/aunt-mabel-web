@@ -1,0 +1,7 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/invoice-create.html?raw";
+---
+<AdminLayout title="Create Invoice" pageTitle="Create Invoice" pageSubtitle="Invoices">
+  <Fragment set:html={content} />
+</AdminLayout>

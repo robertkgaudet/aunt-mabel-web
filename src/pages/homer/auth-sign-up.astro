@@ -1,0 +1,9 @@
+---
+import BlankLayout from "../../layouts/homer/BlankLayout.astro";
+import content from "../../content-fragments/auth-sign-up.html?raw";
+---
+<BlankLayout title="Auth Sign Up">
+  <Fragment set:html={content} />
+
+  <script is:inline src="/assets/js/pages/auth-password.js"></script>
+</BlankLayout>

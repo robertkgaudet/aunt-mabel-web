@@ -1,0 +1,7 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/pages-profile.html?raw";
+---
+<AdminLayout title="My Profile" pageTitle="My Profile" pageSubtitle="Pages">
+  <Fragment set:html={content} />
+</AdminLayout>

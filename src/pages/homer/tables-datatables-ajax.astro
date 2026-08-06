@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-ajax.html?raw";
+---
+<AdminLayout title="Ajax" pageTitle="Ajax" pageSubtitle="DataTables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-ajax.js"></script>
+  </Fragment>
+</AdminLayout>

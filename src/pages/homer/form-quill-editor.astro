@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/form-quill-editor.html?raw";
+---
+<AdminLayout title="Quilljs Editor" pageTitle="Quilljs Editor" pageSubtitle="Forms">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/form-quilljs.js"></script>
+  </Fragment>
+</AdminLayout>

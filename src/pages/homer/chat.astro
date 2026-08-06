@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/chat.html?raw";
+---
+<AdminLayout title="Chat" pageTitle="Chat" pageSubtitle="Apps">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/chat.js"></script>
+  </Fragment>
+</AdminLayout>

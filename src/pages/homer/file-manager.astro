@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/file-manager.html?raw";
+---
+<AdminLayout title="File Manager" pageTitle="File Manager" pageSubtitle="Apps">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/custom-table.js"></script>
+  </Fragment>
+</AdminLayout>

@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-checkbox-select.html?raw";
+---
+<AdminLayout title="Checkbox Select" pageTitle="Checkbox Select" pageSubtitle="DataTables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-checkbox-select.js"></script>
+  </Fragment>
+</AdminLayout>

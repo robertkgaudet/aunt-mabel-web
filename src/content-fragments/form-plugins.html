@@ -1,0 +1,767 @@
+<div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Flatpickr</h5>
+                            </div>
+
+                            <div class="card-body rounded-bottom-0">
+                                <p class="text-muted mb-2">
+                                    Lightweight, powerful javascript datetimepicker with no dependencies
+                                </p>
+
+                                <a class="btn btn-link p-0 fw-medium" href="https://flatpickr.js.org/" target="_blank">
+                                    View Official Website
+                                    <i class="ti ti-chevron-right ms-1"></i>
+                                </a>
+                            </div>
+
+                            <div class="card-body border-top-0 rounded-0">
+                                <h4 class="card-title fs-sm fw-bold mb-4"> Datepicker</h4>
+                                <!-- Basic -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Basic</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-date-format="d M, Y"</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- DateTime -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>DateTime</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-date-format="d.m.y" data-enable-time</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d.m.y" data-enable-time>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Human-Friendly Dates -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Human-Friendly Dates</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-altFormat="F j, Y"</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control flatpickr-input" data-provider="flatpickr" data-altFormat="F j, Y">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- MinDate and MaxDate -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>MinDate and MaxDate</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-date-format="d M, Y" data-minDate="..." data-maxDate="..."</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-minDate="25 12, 2021" data-maxDate="29 12,2021" placeholder="Select Date">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Default Date -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Default Date</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-date-format="d M, Y" data-default-date="..."</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-default-date="25 12,2021">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Disabling Dates -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Disabling Dates</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-disable-date="..."</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-disable-date="15 12,2021">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Selecting Multiple Dates -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Selecting Multiple Dates</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-multiple-date="true"</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-multiple-date="true">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Range -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Range</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-range-date="true"</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-range-date="true">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Week Numbers -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Week Numbers</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-week-number</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-week-number>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Inline -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Inline</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="flatpickr" data-inline-date="true"</code>.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y" data-default-date="25 01,2021" data-inline-date="true">
+                                    </div>
+                                </div>
+
+                            </div><!-- end card-body -->
+
+                            <div class="card-body rounded-top-0 border-top-0">
+                                <h4 class="card-title fs-sm fw-bold mb-4">Timepicker</h4>
+
+                                <!-- Timepicker -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Timepicker</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="timepickr" data-time-basic="true"</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="timepickr" data-time-basic="true" id="timepicker-example" placeholder="Select Time">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- 24-hour Time Picker -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>24-hour Time Picker</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="timepickr" data-time-hrs="true"</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="timepickr" data-time-hrs="true" id="timepicker-24hrs" placeholder="Select Time">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Time Picker w/ Limits -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Time Picker w/ Limits</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="timepickr" data-min-time="Min.Time" data-max-time="Max.Time"</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="timepickr" data-min-time="13:00" data-max-time="16:00" placeholder="Select Time">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Preloading Time -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Preloading Time</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="timepickr" data-default-time="Your Default Time"</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="timepickr" data-default-time="16:45">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Inline -->
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Inline</h5>
+                                        <p class="text-muted mb-0">Set <code>data-provider="timepickr" data-time-inline="Your Default Time"</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" data-provider="timepickr" data-time-inline="11:42">
+                                    </div>
+                                </div>
+
+                            </div><!-- end card-body -->
+                        </div><!-- end card -->
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Choices.Js</h5>
+                            </div>
+
+                            <div class="card-body rounded-bottom-0">
+                                <p class="text-muted mb-2">
+                                    Choices.js is a lightweight, configurable select box/text input plugin. Similar to Select2 and Selectize but without the jQuery dependency.
+                                </p>
+
+                                <a class="btn btn-link p-0 fw-medium" href="https://choices-js.github.io/Choices/" target="_blank">
+                                    View Official Website
+                                    <i class="ti ti-chevron-right ms-1"></i>
+                                </a>
+                            </div>
+
+                            <div class="card-body border-top-0 rounded-top-0">
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Single Select Input: Default</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices</code> attribute to set a default single select.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" data-choices name="choices-single-default" id="choices-single-default">
+                                            <option value="">This is a placeholder</option>
+                                            <option value="Choice 1">Choice 1</option>
+                                            <option value="Choice 2">Choice 2</option>
+                                            <option value="Choice 3">Choice 3</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Single Select Input: Option Groups</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-groups</code> attribute to set option group</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" id="choices-single-groups" data-choices data-choices-groups data-placeholder="Select City" name="choices-single-groups">
+                                            <option value="">Choose a city</option>
+                                            <optgroup label="UK">
+                                                <option value="London">London</option>
+                                                <option value="Manchester">Manchester</option>
+                                                <option value="Liverpool">Liverpool</option>
+                                            </optgroup>
+                                            <optgroup label="FR">
+                                                <option value="Paris">Paris</option>
+                                                <option value="Lyon">Lyon</option>
+                                                <option value="Marseille">Marseille</option>
+                                            </optgroup>
+                                            <optgroup label="DE" disabled>
+                                                <option value="Hamburg">Hamburg</option>
+                                                <option value="Munich">Munich</option>
+                                                <option value="Berlin">Berlin</option>
+                                            </optgroup>
+                                            <optgroup label="US">
+                                                <option value="New York">New York</option>
+                                                <option value="Washington" disabled>Washington</option>
+                                                <option value="Michigan">Michigan</option>
+                                            </optgroup>
+                                            <optgroup label="SP">
+                                                <option value="Madrid">Madrid</option>
+                                                <option value="Barcelona">Barcelona</option>
+                                                <option value="Malaga">Malaga</option>
+                                            </optgroup>
+                                            <optgroup label="CA">
+                                                <option value="Montreal">Montreal</option>
+                                                <option value="Toronto">Toronto</option>
+                                                <option value="Vancouver">Vancouver</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Single Select Input: No Search</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-search-false data-choices-removeItem</code></p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" id="choices-single-no-search" name="choices-single-no-search" data-choices data-choices-search-false data-choices-removeItem>
+                                            <option value="Zero">Zero</option>
+                                            <option value="One">One</option>
+                                            <option value="Two">Two</option>
+                                            <option value="Three">Three</option>
+                                            <option value="Four">Four</option>
+                                            <option value="Five">Five</option>
+                                            <option value="Six">Six</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Single Select Input: No Sorting</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-sorting-false</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" id="choices-single-no-sorting" name="choices-single-no-sorting" data-choices data-choices-sorting-false>
+                                            <option value="Madrid">Madrid</option>
+                                            <option value="Toronto">Toronto</option>
+                                            <option value="Vancouver">Vancouver</option>
+                                            <option value="London">London</option>
+                                            <option value="Manchester">Manchester</option>
+                                            <option value="Liverpool">Liverpool</option>
+                                            <option value="Paris">Paris</option>
+                                            <option value="Malaga">Malaga</option>
+                                            <option value="Washington" disabled>Washington</option>
+                                            <option value="Lyon">Lyon</option>
+                                            <option value="Marseille">Marseille</option>
+                                            <option value="Hamburg">Hamburg</option>
+                                            <option value="Munich">Munich</option>
+                                            <option value="Barcelona">Barcelona</option>
+                                            <option value="Berlin">Berlin</option>
+                                            <option value="Montreal">Montreal</option>
+                                            <option value="New York">New York</option>
+                                            <option value="Michigan">Michigan</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Multiple Select Input: Default</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices multiple</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" id="choices-multiple-default" data-choices name="choices-multiple-default" multiple>
+                                            <option value="Choice 1" selected>Choice 1</option>
+                                            <option value="Choice 2">Choice 2</option>
+                                            <option value="Choice 3">Choice 3</option>
+                                            <option value="Choice 4" disabled>Choice 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Multiple Select Input: With Remove Button</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-removeItem multiple</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" id="choices-multiple-remove-button" data-choices data-choices-removeItem name="choices-multiple-remove-button" multiple>
+                                            <option value="Choice 1" selected>Choice 1</option>
+                                            <option value="Choice 2">Choice 2</option>
+                                            <option value="Choice 3">Choice 3</option>
+                                            <option value="Choice 4">Choice 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Multiple Select Input: Option Groups</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-multiple-groups="true" multiple</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" id="choices-multiple-groups" name="choices-multiple-groups" data-choices data-choices-multiple-groups="true" multiple>
+                                            <option value="">Choose a city</option>
+                                            <optgroup label="UK">
+                                                <option value="London">London</option>
+                                                <option value="Manchester">Manchester</option>
+                                                <option value="Liverpool">Liverpool</option>
+                                            </optgroup>
+                                            <optgroup label="FR">
+                                                <option value="Paris">Paris</option>
+                                                <option value="Lyon">Lyon</option>
+                                                <option value="Marseille">Marseille</option>
+                                            </optgroup>
+                                            <optgroup label="DE" disabled>
+                                                <option value="Hamburg">Hamburg</option>
+                                                <option value="Munich">Munich</option>
+                                                <option value="Berlin">Berlin</option>
+                                            </optgroup>
+                                            <optgroup label="US">
+                                                <option value="New York">New York</option>
+                                                <option value="Washington" disabled>Washington</option>
+                                                <option value="Michigan">Michigan</option>
+                                            </optgroup>
+                                            <optgroup label="SP">
+                                                <option value="Madrid">Madrid</option>
+                                                <option value="Barcelona">Barcelona</option>
+                                                <option value="Malaga">Malaga</option>
+                                            </optgroup>
+                                            <optgroup label="CA">
+                                                <option value="Montreal">Montreal</option>
+                                                <option value="Toronto">Toronto</option>
+                                                <option value="Vancouver">Vancouver</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Text Input: Limit Values with Remove Button</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-limit="3" data-choices-removeItem</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control" id="choices-text-remove-button" data-choices data-choices-limit="3" data-choices-removeItem type="text" value="Task-1">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Text Input: Unique Values Only</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-text-unique-true</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control" id="choices-text-unique-values" data-choices data-choices-text-unique-true type="text" value="Project-A, Project-B">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-4">
+                                    <div class="col-lg-6">
+                                        <h5>Text Input: Disabled</h5>
+                                        <p class="text-muted mb-0">Set <code>data-choices data-choices-text-disabled-true</code> attribute.</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control" id="choices-text-disabled" data-choices data-choices-text-disabled-true type="text" value="josh@joshuajohnson.co.uk, joe@bloggs.co.uk">
+                                    </div>
+                                </div>
+
+                            </div> <!-- end card-body-->
+                        </div> <!-- end card-->
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Typeahead</h5>
+                            </div>
+
+                            <div class="card-body rounded-bottom-0">
+                                <p class="text-muted mb-2">
+                                    a flexible JavaScript library that provides a strong foundation for building robust typeaheads
+                                </p>
+
+                                <a class="btn btn-link p-0 fw-semibold" href="https://twitter.github.io/typeahead.js/" target="_blank">
+                                    View Official Website
+                                    <i class="ti ti-chevron-right ms-1"></i>
+                                </a>
+                            </div>
+
+                            <div class="card-body rounded-top-0 border-top-0">
+                                <!-- Basic -->
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Basic</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control typeahead" type="text" autocomplete="off" placeholder="Enter states from USA">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Bloodhound -->
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">BloodHound (Suggestion Engine)</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control bloodhound-typeahead" type="text" autocomplete="off" placeholder="Enter states from USA">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Prefetch -->
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Prefetch</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control prefetch-typeahead" type="text" autocomplete="off" placeholder="Enter states from USA">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Default Suggestions -->
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Default Suggestions</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control default-suggestions-typeahead" type="text" autocomplete="off" placeholder="Default Suggestions">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Custom Template -->
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Custom Template</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control custom-template-typeahead" type="text" autocomplete="off" placeholder="Search For Oscar Winner">
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <!-- Multiple Datasets -->
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Multiple Datasets</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input class="form-control multi-datasets-typeahead" type="text" autocomplete="off" placeholder="NBA and NHL Teams">
+                                    </div>
+                                </div>
+                            </div> <!-- end card-body -->
+                        </div> <!-- end card-->
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title">Input Touchspin</h5>
+                                </div>
+                                <span class="badge badge-soft-success badge-label py-1 fs-xxs">Exclusive</span>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Default Touchspin</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group" data-touchspin>
+                                            <button type="button" class="btn btn-light floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="1" max="800000">
+                                            <button type="button" class="btn btn-light floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Sizes</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group input-group-sm" data-touchspin>
+                                            <button type="button" class="btn btn-light floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control border-0" value="0" max="800000">
+                                            <button type="button" class="btn btn-light floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group input-group-lg mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-light floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control border-0" value="0" max="800000">
+                                            <button type="button" class="btn btn-light floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Colors</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group" data-touchspin>
+                                            <button type="button" class="btn btn-primary floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-primary floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-secondary floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-secondary floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-info floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-info floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-success floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-success floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-warning floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-warning floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-danger floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-danger floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-dark floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-dark floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-primary floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-primary floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-soft-primary floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-soft-primary floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Readonly</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group" data-touchspin>
+                                            <button type="button" class="btn btn-light floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="1" max="800000" readonly>
+                                            <button type="button" class="btn btn-light floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Disabled</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group" data-touchspin>
+                                            <button type="button" class="btn btn-light floating" data-minus disabled><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="1" max="800000" disabled>
+                                            <button type="button" class="btn btn-light floating" data-plus disabled><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Style</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group" data-touchspin>
+                                            <button type="button" class="btn btn-primary rounded-circle floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-primary rounded-circle floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group rounded-pill mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-primary rounded-circle floating" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control form-control-sm border-0" value="100" max="800000">
+                                            <button type="button" class="btn btn-primary rounded-circle floating" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group border-0 mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-outline-secondary" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control border-secondary" value="2" min="0" max="100">
+                                            <button type="button" class="btn btn-outline-secondary" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+
+                                        <div class="input-group border-0 mt-2" data-touchspin>
+                                            <button type="button" class="btn btn-soft-success" data-minus><i class="ti ti-minus"></i></button>
+                                            <input type="number" class="form-control border-success-subtle" value="2" min="0" max="100">
+                                            <button type="button" class="btn btn-soft-success" data-plus><i class="ti ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="my-4 border-top border-dashed"></div>
+
+                                <div class="row g-3">
+                                    <div class="col-lg-6">
+                                        <h5 class="mb-1">Vertical Style</h5>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group input-group-sm" data-touchspin>
+                                            <div class="btn-group-vertical">
+                                                <button type="button" class="btn btn-soft-success" data-plus><i class="ti ti-plus"></i></button>
+                                                <button type="button" class="btn btn-soft-danger" data-minus><i class="ti ti-minus"></i></button>
+                                            </div>
+                                            <input type="number" class="form-control border-0" value="1" min="0" max="10">
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <div class="btn-group-vertical">
+                                                <button type="button" class="btn btn-success" data-plus><i class="ti ti-plus"></i></button>
+                                                <button type="button" class="btn btn-danger" data-minus><i class="ti ti-minus"></i></button>
+                                            </div>
+                                            <input type="number" class="form-control border-0" value="1" min="0" max="10">
+                                        </div>
+
+                                        <div class="input-group input-group-lg mt-2" data-touchspin>
+                                            <div class="btn-group-vertical">
+                                                <button type="button" class="btn btn-dark" data-plus><i class="ti ti-plus"></i></button>
+                                                <button type="button" class="btn btn-dark" data-minus><i class="ti ti-minus"></i></button>
+                                            </div>
+                                            <input type="number" class="form-control border-0" value="1" min="0" max="10">
+                                        </div>
+
+                                        <div class="input-group mt-2" data-touchspin>
+                                            <input type="number" class="form-control border-0" value="1" min="0" max="10">
+                                            <div class="btn-group-vertical">
+                                                <button type="button" class="btn btn-dark" data-plus><i class="ti ti-plus"></i></button>
+                                                <button type="button" class="btn btn-dark" data-minus><i class="ti ti-minus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div> <!-- end card-body -->
+                        </div> <!-- end card-->
+                    </div> <!-- end col -->
+                </div> <!-- end row -->

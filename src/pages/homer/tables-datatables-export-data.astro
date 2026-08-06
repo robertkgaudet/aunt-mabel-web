@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-export-data.html?raw";
+---
+<AdminLayout title="Export Data" pageTitle="Export Data" pageSubtitle="Datatables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-export-data.js"></script>
+  </Fragment>
+</AdminLayout>

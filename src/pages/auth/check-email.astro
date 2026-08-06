@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Check your email · Aunt Mabel" noindex={true} bare={true}>
+  <div class="auth-page">
+    <div class="auth-card centered">
+      <div class="icon-mark">✉</div>
+      <h1>Check your email</h1>
+      <p id="email-line" class="subhead"></p>
+      <p>
+        We sent you a sign-in link. Click it and you're in — there's no password
+        to remember.
+      </p>
+      <p class="hint">
+        The link works for one hour. If you don't see it, have a look in your
+        spam or junk folder.
+      </p>
+      <p style="margin-top:1.5rem"><a href="/login" class="back-link">← Back to sign in</a></p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const emailLine = document.getElementById('email-line');
+  const email = new URLSearchParams(window.location.search).get('email');
+  if (email && emailLine) emailLine.textContent = 'Sent to ' + email;
+</script>

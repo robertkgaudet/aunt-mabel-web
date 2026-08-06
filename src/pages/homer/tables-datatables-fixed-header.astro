@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-fixed-header.html?raw";
+---
+<AdminLayout title="Fixed Header" pageTitle="Fixed Header" pageSubtitle="DataTables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-fixed-header.js"></script>
+  </Fragment>
+</AdminLayout>

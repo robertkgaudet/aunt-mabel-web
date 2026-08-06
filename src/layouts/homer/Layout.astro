@@ -1,0 +1,43 @@
+---
+// Base layout for the Homer Astro template.
+// Combines Homer's html.html + title-meta.html + head-css.html + footer-scripts.html
+// and applies theme data-* attributes from src/config/theme.ts.
+import { htmlThemeAttrs } from '../../config/homer-theme';
+
+interface Props {
+  /** Page title — fills <title>{title} | HOMER ...</title> */
+  title?: string;
+  /** Optional extra classes on <body> */
+  bodyClass?: string;
+}
+
+const { title = 'Dashboard', bodyClass = '' } = Astro.props;
+const themeAttrs = htmlThemeAttrs();
+---
+<!DOCTYPE html>
+<html lang="en" {...themeAttrs}>
+  <head>
+    <meta charset="utf-8" />
+    <title>{title} | HOMER - Responsive Bootstrap 5 Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="admin dashboard template. Perfect for building CRM, CMS, project management tools, and custom web apps with clean UI, responsive design, and powerful features." />
+    <meta name="author" content="WebAppLayers" />
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+
+    <!-- Theme Config Js (sets data-* attributes before paint) -->
+    <script is:inline src="/assets/js/config.js"></script>
+    <!-- Vendor css -->
+    <link href="/assets/css/vendors.min.css" rel="stylesheet" type="text/css" />
+    <!-- App css -->
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body class={bodyClass}>
+    <slot />
+
+    <!-- Vendor js -->
+    <script is:inline src="/assets/js/vendors.min.js"></script>
+    <!-- App js -->
+    <script is:inline src="/assets/js/app.js"></script>
+  </body>
+</html>

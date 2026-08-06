@@ -1,0 +1,14 @@
+---
+// Minimal full-page layout (no admin shell) for Homer's auth, error,
+// landing, maintenance and coming-soon pages.
+import Layout from './Layout.astro';
+
+interface Props {
+  title?: string;
+  bodyClass?: string;
+}
+const { title = 'Homer', bodyClass = '' } = Astro.props;
+---
+<Layout title={title} bodyClass={bodyClass}>
+  <slot />
+</Layout>

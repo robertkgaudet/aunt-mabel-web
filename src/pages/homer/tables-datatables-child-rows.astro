@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-child-rows.html?raw";
+---
+<AdminLayout title="Child Row" pageTitle="Child Row" pageSubtitle="DataTables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-child-rows.js"></script>
+  </Fragment>
+</AdminLayout>

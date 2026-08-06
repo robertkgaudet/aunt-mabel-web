@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/misc-gallery.html?raw";
+---
+<AdminLayout title="Gallery" pageTitle="Gallery" pageSubtitle="Miscellaneous">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/misc-gallery.js"></script>
+  </Fragment>
+</AdminLayout>

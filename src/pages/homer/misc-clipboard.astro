@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/misc-clipboard.html?raw";
+---
+<AdminLayout title="Clipboard" pageTitle="Clipboard" pageSubtitle="Miscellaneous">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/misc-clipboard.js"></script>
+  </Fragment>
+</AdminLayout>

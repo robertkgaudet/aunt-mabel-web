@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/misc-pass-meter.html?raw";
+---
+<AdminLayout title="Password Meter" pageTitle="Password Meter" pageSubtitle="Miscellaneous">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/misc-pass-meter.js"></script>
+  </Fragment>
+</AdminLayout>

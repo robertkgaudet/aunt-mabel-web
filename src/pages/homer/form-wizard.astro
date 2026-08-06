@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/form-wizard.html?raw";
+---
+<AdminLayout title="Wizard" pageTitle="Wizard" pageSubtitle="Forms">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/form-wizard.js"></script>
+  </Fragment>
+</AdminLayout>

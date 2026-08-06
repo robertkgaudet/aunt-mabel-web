@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/index.html?raw";
+---
+<AdminLayout title="Index">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/dashboard.js"></script>
+  </Fragment>
+</AdminLayout>

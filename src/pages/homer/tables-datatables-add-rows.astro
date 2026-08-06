@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-add-rows.html?raw";
+---
+<AdminLayout title="Add Rows" pageTitle="Add Rows" pageSubtitle="DataTables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-add-rows.js"></script>
+  </Fragment>
+</AdminLayout>

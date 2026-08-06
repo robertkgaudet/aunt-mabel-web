@@ -1,0 +1,42 @@
+---
+// Full admin shell for the Homer Astro template.
+// Reproduces Homer's: wrapper > [menu] > content-page > container-fluid > {content} + footer, then customizer.
+// Each page supplies only its unique inner content via the default slot.
+import Layout from './Layout.astro';
+import Menu from '../../components/homer/Menu.astro';
+import Footer from '../../components/homer/Footer.astro';
+import Customizer from '../../components/homer/Customizer.astro';
+import PageTitle from '../../components/homer/PageTitle.astro';
+
+interface Props {
+  title?: string;
+  /** Optional breadcrumb/page-title heading. If omitted, no page-title bar renders. */
+  pageTitle?: string;
+  pageSubtitle?: string;
+}
+
+const { title = 'Dashboard', pageTitle, pageSubtitle } = Astro.props;
+---
+<Layout title={title}>
+  <!-- Begin page -->
+  <div class="wrapper">
+    <Menu />
+
+    <!-- Start Main Content -->
+    <div class="content-page">
+      <div class="container-fluid">
+        {pageTitle && <PageTitle title={pageTitle} subtitle={pageSubtitle} />}
+        <slot />
+      </div>
+      <!-- container -->
+      <Footer />
+    </div>
+    <!-- End of Main Content -->
+  </div>
+  <!-- END wrapper -->
+
+  <Customizer />
+
+  <!-- Per-page scripts (e.g. Homer's assets/js/pages/*.js) -->
+  <slot name="page-scripts" />
+</Layout>

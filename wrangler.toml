@@ -1,0 +1,12 @@
+# TEST Cloudflare Pages project for aunt-mabel-web.
+# Used by: npm run deploy:test
+#
+# PUBLIC_SUPABASE_URL / PUBLIC_SUPABASE_ANON_KEY are build-time vars, not
+# runtime bindings — they are inlined into the bundle by Astro. Set them in
+# .env.local for local dev, and in the Pages project's build environment
+# variables for CI-style builds. They are deliberately NOT listed here.
+
+name = "aunt-mabel-web-test"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]

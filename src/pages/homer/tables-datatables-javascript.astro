@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-javascript.html?raw";
+---
+<AdminLayout title="Javascript Source" pageTitle="Javascript Source" pageSubtitle="DataTables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-javascript-source.js"></script>
+  </Fragment>
+</AdminLayout>

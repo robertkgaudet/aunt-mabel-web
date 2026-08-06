@@ -1,0 +1,11 @@
+---
+import AdminLayout from "../../layouts/homer/AdminLayout.astro";
+import content from "../../content-fragments/tables-datatables-column-searching.html?raw";
+---
+<AdminLayout title="Column Searching" pageTitle="Column Searching" pageSubtitle="DataTables">
+  <Fragment set:html={content} />
+
+  <Fragment slot="page-scripts">
+  <script is:inline src="/assets/js/pages/datatables-column-search.js"></script>
+  </Fragment>
+</AdminLayout>
