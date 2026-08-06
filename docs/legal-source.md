@@ -63,14 +63,22 @@ Six sections.
 Its Terms of Use is website-terms, not product-terms, so most of it is the wrong
 document. Four things are worth lifting:
 
-- ✅ **Governing law** — *"These terms are governed by the laws of the State of
-  Louisiana. Any disputes shall be resolved in the courts of Orleans Parish,
-  Louisiana."* Aunt Mabel is a Louisiana operation under Cajun Relief Foundation;
-  Victora's terms have **no** governing-law clause at all. This fills a real gap.
-  (Parish almost certainly needs to change — the venue should follow Cajun Relief
-  Foundation's registered address, which we have not confirmed. The public Aunt
-  Mabel page lists Lafayette; TrustLight's boilerplate says Orleans. Confirm the
-  registered address before adopting either.)
+- ✅ **Governing law / venue — RESOLVED (2026-08-06).** Take TrustLight's clause
+  but **change the parish**. TrustLight's boilerplate says Orleans Parish, which
+  is its own venue, not ours. Ours is **Lafayette Parish**.
+
+  Confirmed registered address:
+
+  > Cajun Navy Ground Force (DBA of Cajun Relief Foundation)
+  > 4400-A Ambassador Caffery Pkwy #342
+  > Lafayette, LA 70508
+
+  So the clause should read: *"These terms are governed by the laws of the State
+  of Louisiana. Any disputes shall be resolved in the courts of **Lafayette
+  Parish**, Louisiana."*
+
+  Worth keeping because Victora's terms have **no** governing-law clause at all —
+  this fills a real gap.
 - ✅ **AI-generated content disclosure** — *"Some content on this site may be
   drafted or assisted by AI tools. We review all published content for accuracy
   and tone, but we do not guarantee that AI-assisted content is free from errors
