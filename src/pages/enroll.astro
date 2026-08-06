@@ -129,15 +129,77 @@ const TOTAL = STEPS.length;
       </div>
     </section>
 
-    {/* ── Step 3 — placeholder. Real content is the next chunk. ─────── */}
+    {/* ── Step 3 — Who we're calling ─────────────────────────────────── */}
     <section class="step" data-step="2" id="step-recipient" hidden>
-      <h1>Step 3 coming next</h1>
+      <h1 id="r-heading">Tell us about your loved one.</h1>
+      <p class="step-lede" id="r-lede">
+        Just the basics — who Mabel is calling, and when suits them best.
+      </p>
+
+      <form id="recipient-form" novalidate>
+        <div class="field">
+          <label for="r-name" id="r-name-label">Their name</label>
+          <input id="r-name" name="name" type="text" required autocomplete="name"
+                 placeholder="Eleanor" />
+          <p class="field-error" id="r-name-error" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="r-phone" id="r-phone-label">Their phone number</label>
+          <input id="r-phone" name="phone" type="tel" required autocomplete="tel"
+                 placeholder="(337) 555-0142" inputmode="tel" />
+          <p class="field-hint">A US number Mabel can reach them on.</p>
+          <p class="field-error" id="r-phone-error" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="r-time">What time of day should she call?</label>
+          <select id="r-time" name="call_time"></select>
+          <p class="field-hint">Most families pick mid-morning.</p>
+        </div>
+
+        <div class="field">
+          <label for="r-zip" id="r-zip-label">Their ZIP code</label>
+          <input id="r-zip" name="zip" type="text" required inputmode="numeric"
+                 maxlength="5" placeholder="70508" autocomplete="postal-code" />
+          <p class="field-hint">
+            This is how we know to send someone round when a disaster hits their area.
+          </p>
+          <p class="field-error" id="r-zip-error" hidden></p>
+        </div>
+
+        {/* Time-zone confirmation. Never silent: either we show what we
+            inferred and offer a way to change it, or — when the ZIP doesn't
+            resolve — we ask outright. */}
+        <div class="tz-confirm" id="tz-confirm" hidden>
+          <p class="tz-line" id="tz-line"></p>
+          <button type="button" class="btn-quiet" id="tz-change">That's not right — change it</button>
+        </div>
+
+        <div class="field tz-picker" id="tz-picker" hidden>
+          <label for="r-tz" id="r-tz-label">Which time zone are they in?</label>
+          <select id="r-tz" name="timezone"></select>
+          <p class="field-error" id="r-tz-error" hidden></p>
+        </div>
+
+        <p id="recipient-status" class="status" aria-live="polite"></p>
+
+        <div class="step-actions">
+          <button type="submit" class="btn btn-primary" id="continue-3">Continue</button>
+          <button type="button" class="btn-quiet" id="back-3">Back</button>
+        </div>
+      </form>
+    </section>
+
+    {/* ── Step 4 — placeholder. Real content is the next chunk. ─────── */}
+    <section class="step" data-step="3" id="step-contacts" hidden>
+      <h1>Step 4 coming next</h1>
       <p class="step-lede">
-        Placeholder. If you're reading this after signing in, the round-trip
-        worked — you came back into the flow rather than to the home page.
+        Placeholder. The recipient row has been saved — its id is in the debug
+        strip below.
       </p>
       <div class="step-actions">
-        <button type="button" class="btn btn-secondary" id="back-3">Back</button>
+        <button type="button" class="btn btn-secondary" id="back-4">Back</button>
       </div>
     </section>
 
@@ -151,6 +213,7 @@ const TOTAL = STEPS.length;
 
 <script>
   import { getSupabase } from '../scripts/supabase.js';
+  import { timezoneForZip, timezoneLabel, TIMEZONES } from '../scripts/zip-timezone.js';
 
   // ── flow state ────────────────────────────────────────────────────────
   // In-memory only, deliberately — see docs/enrollment-flow-design.md. From
@@ -160,10 +223,12 @@ const TOTAL = STEPS.length;
   // The ONE exception is is_self, which is carried through the auth redirect
   // in the return URL. It is the user's own answer about themselves, contains
   // no third-party data, and without it the post-auth return can't resume.
-  /** @type {{ is_self: boolean | null, account_id: string | null, step: number }} */
+  /** @type {{ is_self: boolean | null, account_id: string | null, recipient_id: string | null, display_name: string | null, step: number }} */
   const state = {
     is_self: null,
     account_id: null,
+    recipient_id: null,
+    display_name: null,
     step: 1,
   };
 
@@ -242,6 +307,18 @@ const TOTAL = STEPS.length;
     return null;
   }
 
+  // Same guard, but reporting into a specific step's status line so the message
+  // appears where the person is looking.
+  /** @type {(node: HTMLElement) => import('@supabase/supabase-js').SupabaseClient | null} */
+  function requireSupabaseFor(node) {
+    if (supabase) return supabase;
+    node.textContent =
+      'We can’t reach our servers right now: this site is missing its configuration. ' +
+      'Nothing you entered was lost — please try again later.';
+    node.setAttribute('data-tone', 'error');
+    return null;
+  }
+
   // ── account: find-or-create ───────────────────────────────────────────
   // Mirrors enrollV2's find-or-create in the engine: someone enrolling a
   // second recipient already has an account and must reuse it.
@@ -278,8 +355,13 @@ const TOTAL = STEPS.length;
     setStatus('Setting up your account…');
     try {
       state.account_id = await findOrCreateAccount(sb, session);
+      // Kept so Step 3 can prefill when the payer is also the recipient,
+      // rather than asking someone for their own name twice.
+      const meta = session.user.user_metadata || {};
+      state.display_name = meta.full_name || meta.name || null;
       renderDebug();
       setStatus('');
+      prepareRecipientStep();
       show(2);
     } catch (err) {
       console.error('[enroll] account create failed', err);
@@ -367,13 +449,230 @@ const TOTAL = STEPS.length;
 
   btn('back-2').addEventListener('click', () => show(0));
   btn('back-3').addEventListener('click', () => show(1));
+  btn('back-4').addEventListener('click', () => show(2));
+
+  // ── step 3 — who we're calling ────────────────────────────────────────
+  const rForm = /** @type {HTMLFormElement} */ (document.getElementById('recipient-form'));
+  const rName = /** @type {HTMLInputElement} */ (document.getElementById('r-name'));
+  const rPhone = /** @type {HTMLInputElement} */ (document.getElementById('r-phone'));
+  const rZip = /** @type {HTMLInputElement} */ (document.getElementById('r-zip'));
+  const rTime = /** @type {HTMLSelectElement} */ (document.getElementById('r-time'));
+  const rTz = /** @type {HTMLSelectElement} */ (document.getElementById('r-tz'));
+  const tzConfirm = el('tz-confirm');
+  const tzPicker = el('tz-picker');
+  const tzLine = el('tz-line');
+  const rStatus = el('recipient-status');
+
+  // Tracks whether the visible zone came from the ZIP or from the person.
+  // Once they override it, a later ZIP edit must not quietly stomp their choice.
+  let tzManual = false;
+
+  // Half-hour options, 6:00 AM to 9:00 PM. A plain <select> rather than
+  // <input type="time"> — it avoids 24-hour-clock confusion and gives the same
+  // control on every browser, which matters for this audience.
+  (function buildTimeOptions() {
+    for (let mins = 6 * 60; mins <= 21 * 60; mins += 30) {
+      const h24 = Math.floor(mins / 60);
+      const m = mins % 60;
+      const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+      const suffix = h24 < 12 ? 'AM' : 'PM';
+      const opt = document.createElement('option');
+      opt.value = `${String(h24).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+      opt.textContent = `${h12}:${String(m).padStart(2, '0')} ${suffix}`;
+      rTime.appendChild(opt);
+    }
+    rTime.value = '09:00';
+  })();
+
+  (function buildTzOptions() {
+    const blank = document.createElement('option');
+    blank.value = '';
+    blank.textContent = 'Please choose…';
+    rTz.appendChild(blank);
+    for (const t of TIMEZONES) {
+      const opt = document.createElement('option');
+      opt.value = t.value;
+      opt.textContent = t.label;
+      rTz.appendChild(opt);
+    }
+  })();
+
+  /** @type {(id: string, msg?: string) => void} */
+  function fieldError(id, msg) {
+    const node = el(id);
+    node.textContent = msg || '';
+    node.hidden = !msg;
+  }
+
+  function clearFieldErrors() {
+    ['r-name-error', 'r-phone-error', 'r-zip-error', 'r-tz-error'].forEach((id) => fieldError(id));
+    rStatus.textContent = '';
+    rStatus.removeAttribute('data-tone');
+  }
+
+  // Same rules as the engine's normalizePhone — one behaviour across the stack.
+  /** @type {(raw: string) => string} */
+  function normalizePhone(raw) {
+    const digits = String(raw).replace(/\D/g, '');
+    if (digits.length === 10) return '+1' + digits;
+    if (digits.length === 11 && digits.startsWith('1')) return '+' + digits;
+    return '';
+  }
+
+  /** Friendly "9:00 AM" for the confirmation sentence. */
+  function selectedTimeLabel() {
+    return rTime.options[rTime.selectedIndex]?.textContent || rTime.value;
+  }
+
+  function renderTzLine() {
+    const tz = rTz.value;
+    if (!tz) return;
+    tzLine.textContent = `We'll call at ${selectedTimeLabel()} ${timezoneLabel(tz)} — is that right?`;
+  }
+
+  // Infer from ZIP, then SHOW IT BACK. Never applied silently, and never
+  // guessed when the lookup can't resolve the prefix.
+  function applyZipInference() {
+    if (tzManual) { renderTzLine(); return; }
+    const zip = rZip.value.trim();
+    const tz = timezoneForZip(zip);
+
+    if (tz) {
+      rTz.value = tz;
+      tzConfirm.hidden = false;
+      tzPicker.hidden = true;
+      renderTzLine();
+      fieldError('r-tz-error');
+      return;
+    }
+
+    // Unresolvable prefix (or incomplete ZIP) → ask outright.
+    tzConfirm.hidden = true;
+    if (/^\d{5}$/.test(zip)) {
+      tzPicker.hidden = false;
+      fieldError('r-tz-error', "We couldn't tell which time zone that ZIP is in — please pick it below.");
+    } else {
+      tzPicker.hidden = true;
+    }
+  }
+
+  rZip.addEventListener('input', () => {
+    rZip.value = rZip.value.replace(/\D/g, '').slice(0, 5);
+    applyZipInference();
+  });
+  rTime.addEventListener('change', renderTzLine);
+  rTz.addEventListener('change', () => {
+    tzManual = true;
+    if (rTz.value) {
+      tzConfirm.hidden = false;
+      renderTzLine();
+      fieldError('r-tz-error');
+    }
+  });
+  btn('tz-change').addEventListener('click', () => {
+    tzManual = true;
+    tzPicker.hidden = false;
+    rTz.focus();
+  });
+
+  // Copy differs when the payer is also the recipient — asking someone to
+  // "tell us about your loved one" when it's them reads as a mistake.
+  function prepareRecipientStep() {
+    if (state.is_self) {
+      el('r-heading').textContent = 'Just confirming your details.';
+      el('r-lede').textContent = "We'll use these to place your daily call.";
+      el('r-name-label').textContent = 'Your name';
+      el('r-phone-label').textContent = 'Your phone number';
+      el('r-zip-label').textContent = 'Your ZIP code';
+      el('r-tz-label').textContent = 'Which time zone are you in?';
+      if (!rName.value && state.display_name) rName.value = state.display_name;
+    } else {
+      el('r-heading').textContent = 'Tell us about your loved one.';
+      el('r-lede').textContent = 'Just the basics — who Mabel is calling, and when suits them best.';
+      el('r-name-label').textContent = 'Their name';
+      el('r-phone-label').textContent = 'Their phone number';
+      el('r-zip-label').textContent = 'Their ZIP code';
+      el('r-tz-label').textContent = 'Which time zone are they in?';
+    }
+  }
+
+  rForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearFieldErrors();
+
+    const sb = requireSupabaseFor(rStatus);
+    if (!sb) return;
+
+    if (!state.account_id) {
+      rStatus.textContent = 'We lost track of your account — please sign in again.';
+      rStatus.setAttribute('data-tone', 'error');
+      show(1);
+      return;
+    }
+
+    const name = rName.value.trim();
+    const phone = normalizePhone(rPhone.value);
+    const zip = rZip.value.trim();
+    const tz = rTz.value;
+
+    let bad = false;
+    if (!name) { fieldError('r-name-error', 'Please tell us their name.'); bad = true; }
+    if (!phone) {
+      fieldError('r-phone-error', "That doesn't look like a US phone number. Ten digits, like (337) 555-0142.");
+      bad = true;
+    }
+    if (!/^\d{5}$/.test(zip)) { fieldError('r-zip-error', 'Please enter a 5-digit ZIP code.'); bad = true; }
+    if (!tz) {
+      tzPicker.hidden = false;
+      fieldError('r-tz-error', 'Please choose a time zone so we call at the right hour.');
+      bad = true;
+    }
+    if (bad) return;
+
+    const submitBtn = btn('continue-3');
+    submitBtn.disabled = true;
+    rStatus.textContent = 'Saving…';
+
+    try {
+      const { data, error } = await sb
+        .from('recipients')
+        .insert({
+          account_id: state.account_id,
+          name,
+          phone,
+          call_time: rTime.value,
+          zip,
+          timezone: tz,
+          is_self: Boolean(state.is_self),
+          consent: false,
+          verbal_consent: false,
+          status: 'pending_payment',
+        })
+        .select('id')
+        .single();
+      if (error) throw error;
+
+      state.recipient_id = data.id;
+      renderDebug();
+      rStatus.textContent = '';
+      submitBtn.disabled = false;
+      show(3);
+    } catch (err) {
+      console.error('[enroll] recipient insert failed', err);
+      const detail = err instanceof Error ? err.message : String(err);
+      rStatus.textContent = `We couldn't save those details: ${detail}`;
+      rStatus.setAttribute('data-tone', 'error');
+      submitBtn.disabled = false;
+    }
+  });
 
   // ── within-flow back/forward ──────────────────────────────────────────
   window.addEventListener('popstate', (e) => {
     const target = e.state && typeof e.state.step === 'number' ? e.state.step : 0;
     if (state.is_self === null) { show(0, { push: false }); return; }
-    // Never land past account creation without an account.
+    // Never land past a step whose prerequisite row doesn't exist yet.
     if (target >= 2 && !state.account_id) { show(1, { push: false }); return; }
+    if (target >= 3 && !state.recipient_id) { show(2, { push: false }); return; }
     show(target, { push: false });
   });
 
@@ -483,6 +782,66 @@ const TOTAL = STEPS.length;
     font-size: 0.82rem; color: var(--soft-ink); font-weight: 300;
     margin: 1.1rem 0 0; text-align: center;
   }
+
+  /* ── step 3 fields ────────────────────────────────────────────────── */
+  #recipient-form .field { margin-bottom: 1.5rem; }
+  #recipient-form input[type='text'],
+  #recipient-form input[type='tel'],
+  #recipient-form select {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 1.02rem;
+    font-weight: 400;
+    padding: 15px 18px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  #recipient-form input:focus,
+  #recipient-form select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.4);
+  }
+  #recipient-form label {
+    display: block;
+    font-family: var(--font-head);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.45rem;
+  }
+  .field-hint {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--soft-ink);
+  }
+  .field-error {
+    margin: 0.45rem 0 0;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--rose-deep);
+  }
+
+  /* Time-zone confirmation — deliberately prominent. A wrong zone means the
+     call lands at the wrong hour, so it reads as a question, not a footnote. */
+  .tz-confirm {
+    background: var(--paper);
+    border: 1px solid var(--gold);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    margin-bottom: 1.5rem;
+  }
+  .tz-line {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-head);
+    font-size: 1.08rem;
+    color: var(--ink);
+  }
+  .tz-picker { margin-top: -0.5rem; }
 
   /* ── actions ──────────────────────────────────────────────────────── */
   .step-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
