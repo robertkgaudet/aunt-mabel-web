@@ -268,6 +268,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </div>
 </BaseLayout>
 
+<script>
+  // ── auth-return rescue ────────────────────────────────────────────────
+  // Supabase validates redirectTo against its Redirect URLs allowlist. When the
+  // URL we ask for is NOT allowlisted it does not error — it silently falls back
+  // to the project's Site URL, dropping the browser on "/" with the auth code
+  // still in the query string. The sign-in actually succeeded; the code just
+  // landed on a page that ignores it.
+  //
+  // This forwards such a landing to /auth/callback, which knows how to finish
+  // the exchange and honour ?redirect=. It fires only when auth-shaped params
+  // are present, so an ordinary visit is untouched.
+  //
+  // This is a safety net, NOT the fix. The fix is allowlisting the callback URL
+  // in Supabase. The net only helps when Site URL points at a domain this app
+  // serves — it cannot rescue a fallback to some other site.
+  (() => {
+    const q = new URLSearchParams(window.location.search);
+    if (!(q.has('code') || q.has('error_description') || q.has('error_code'))) return;
+    console.warn('[auth] Auth params landed on "/" — Supabase likely fell back to Site URL. Forwarding to /auth/callback.');
+    window.location.replace('/auth/callback' + window.location.search + window.location.hash);
+  })();
+</script>
+
 <style>
   /* Home-page layout only. Tokens, buttons, .band-dark, .kicker and the type
      scale all live in src/styles/site.css — nothing is redefined here. */
