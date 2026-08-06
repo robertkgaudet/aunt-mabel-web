@@ -12,6 +12,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+/** @type {import('@supabase/supabase-js').SupabaseClient | null} */
 let _client = null;
 
 export function getSupabase() {

@@ -221,31 +221,33 @@ const TOTAL = STEPS.length;
   // getSupabase() throws when config is missing rather than returning a dead
   // client. Catch it here so Step 2 can SAY the site is misconfigured instead
   // of presenting buttons that silently do nothing.
+  /** @type {import('@supabase/supabase-js').SupabaseClient | null} */
   let supabase = null;
-  let configError = null;
   try {
     supabase = getSupabase();
   } catch (err) {
-    configError = err;
     console.error('[enroll] Supabase not configured:', err);
   }
 
+  // Returns the client, or null after saying loudly that config is missing.
+  // Returning the client (rather than a boolean) lets every call site work with
+  // a value that is known non-null, instead of re-checking the outer variable.
   function requireSupabase() {
-    if (supabase) return true;
+    if (supabase) return supabase;
     setStatus(
       'Sign-in is unavailable: this site is missing its Supabase configuration. ' +
       'Nothing you entered was lost — please try again later.',
       'error'
     );
-    return false;
+    return null;
   }
 
   // ── account: find-or-create ───────────────────────────────────────────
   // Mirrors enrollV2's find-or-create in the engine: someone enrolling a
   // second recipient already has an account and must reuse it.
-  /** @type {(session: any) => Promise<string>} */
-  async function findOrCreateAccount(session) {
-    const { data: existing, error: selErr } = await supabase
+  /** @type {(sb: import('@supabase/supabase-js').SupabaseClient, session: any) => Promise<string>} */
+  async function findOrCreateAccount(sb, session) {
+    const { data: existing, error: selErr } = await sb
       .from('accounts')
       .select('id')
       .eq('auth_user_id', session.user.id)
@@ -253,7 +255,7 @@ const TOTAL = STEPS.length;
     if (selErr) throw selErr;
     if (existing) return existing.id;
 
-    const { data: created, error: insErr } = await supabase
+    const { data: created, error: insErr } = await sb
       .from('accounts')
       .insert({ auth_user_id: session.user.id, email: session.user.email })
       .select('id')
@@ -271,17 +273,18 @@ const TOTAL = STEPS.length;
   }
 
   // Settle the account row, then move into step 3.
-  /** @type {(session: any) => Promise<void>} */
-  async function completeAccountStep(session) {
+  /** @type {(sb: import('@supabase/supabase-js').SupabaseClient, session: any) => Promise<void>} */
+  async function completeAccountStep(sb, session) {
     setStatus('Setting up your account…');
     try {
-      state.account_id = await findOrCreateAccount(session);
+      state.account_id = await findOrCreateAccount(sb, session);
       renderDebug();
       setStatus('');
       show(2);
     } catch (err) {
       console.error('[enroll] account create failed', err);
-      setStatus(`We couldn't finish setting up your account: ${err.message}`, 'error');
+      const detail = err instanceof Error ? err.message : String(err);
+      setStatus(`We couldn't finish setting up your account: ${detail}`, 'error');
     }
   }
 
@@ -304,7 +307,7 @@ const TOTAL = STEPS.length;
     // sign in again — settle the account and move straight on.
     if (supabase) {
       const { data } = await supabase.auth.getSession();
-      if (data?.session) await completeAccountStep(data.session);
+      if (data?.session) await completeAccountStep(supabase, data.session);
     }
   });
 
@@ -317,9 +320,10 @@ const TOTAL = STEPS.length;
   const sentPanel = el('sent-panel');
 
   googleBtn.addEventListener('click', async () => {
-    if (!requireSupabase()) return;
+    const sb = requireSupabase();
+    if (!sb) return;
     setStatus('Taking you to Google…');
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: buildCallbackUrl() },
     });
@@ -328,7 +332,8 @@ const TOTAL = STEPS.length;
 
   magicForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!requireSupabase()) return;
+    const sb = requireSupabase();
+    if (!sb) return;
 
     const email = emailInput.value.trim();
     if (!email) { setStatus('Please enter your email address.', 'error'); return; }
@@ -336,7 +341,7 @@ const TOTAL = STEPS.length;
     magicBtn.disabled = true;
     setStatus('Sending your link…');
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await sb.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: buildCallbackUrl() },
     });
@@ -391,7 +396,7 @@ const TOTAL = STEPS.length;
       const { data } = await supabase.auth.getSession();
       if (data?.session) {
         show(1, { push: false });
-        await completeAccountStep(data.session);
+        await completeAccountStep(supabase, data.session);
         return;
       }
       // Resumed without a session — the sign-in didn't complete. Say so
