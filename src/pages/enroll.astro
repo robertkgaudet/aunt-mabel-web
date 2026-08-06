@@ -1208,11 +1208,18 @@ const TOTAL = STEPS.length;
     margin: 1.1rem 0 0; text-align: center;
   }
 
-  /* ── step 3 fields ────────────────────────────────────────────────── */
-  #recipient-form .field { margin-bottom: 1.5rem; }
-  #recipient-form input[type='text'],
-  #recipient-form input[type='tel'],
-  #recipient-form select {
+  /* ── shared field styling for every step in the flow ──────────────────
+     Keyed to .field, NOT to a form id. These rules were originally written
+     twice, once per form (#recipient-form, #contacts-form), which meant each
+     new step silently rendered bare browser inputs until someone remembered to
+     paste the block again — step 5 did exactly that. Any step that wraps a
+     control in .field is now styled by default; forgetting is no longer
+     possible, and there is one place to change the look of a field. */
+  .field { margin-bottom: 1.5rem; }
+  .field input[type='text'],
+  .field input[type='tel'],
+  .field input[type='email'],
+  .field select {
     width: 100%;
     font-family: var(--font-body);
     font-size: 1.02rem;
@@ -1223,13 +1230,14 @@ const TOTAL = STEPS.length;
     border: 1px solid var(--line);
     border-radius: var(--radius-sm);
   }
-  #recipient-form input:focus,
-  #recipient-form select:focus {
+  .field input:focus,
+  .field select:focus {
     outline: none;
     border-color: var(--gold);
     box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.4);
   }
-  #recipient-form label {
+  .field label,
+  .pseudo-label {
     display: block;
     font-family: var(--font-head);
     font-size: 1.05rem;
@@ -1299,29 +1307,18 @@ const TOTAL = STEPS.length;
     color: var(--rose-deep);
     padding: 0 8px;
   }
-  #contacts-form .field { margin-bottom: 1.25rem; }
-  #contacts-form input[type='text'],
-  #contacts-form input[type='tel'],
-  #contacts-form input[type='email'] {
-    width: 100%;
-    font-family: var(--font-body);
-    font-size: 1.02rem;
-    font-weight: 400;
+  /* Contact cards sit ON --paper, so their inputs take --cream instead —
+     otherwise the field edges vanish into the card. This is the only genuine
+     difference between the steps' fields; everything else is shared above. */
+  .contact-card .field { margin-bottom: 1.25rem; }
+  .contact-card input[type='text'],
+  .contact-card input[type='tel'],
+  .contact-card input[type='email'] {
     padding: 14px 16px;
     background: var(--cream);
-    color: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
   }
-  #contacts-form input:focus {
-    outline: none;
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.4);
-  }
-  #contacts-form label,
-  .pseudo-label {
-    display: block;
-    font-family: var(--font-head);
+  .contact-card label,
+  .contact-card .pseudo-label {
     font-size: 1.02rem;
     font-weight: 600;
     color: var(--ink);
