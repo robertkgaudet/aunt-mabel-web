@@ -600,16 +600,6 @@ const TOTAL = STEPS.length;
     e.preventDefault();
     clearFieldErrors();
 
-    const sb = requireSupabaseFor(rStatus);
-    if (!sb) return;
-
-    if (!state.account_id) {
-      rStatus.textContent = 'We lost track of your account — please sign in again.';
-      rStatus.setAttribute('data-tone', 'error');
-      show(1);
-      return;
-    }
-
     const name = rName.value.trim();
     const phone = normalizePhone(rPhone.value);
     const zip = rZip.value.trim();
@@ -628,6 +618,18 @@ const TOTAL = STEPS.length;
       bad = true;
     }
     if (bad) return;
+
+    // Session/config checks come AFTER field validation on purpose: tell people
+    // what's wrong with what they typed before raising anything about their
+    // account, and never discard a filled-in form to bounce them backwards.
+    const sb = requireSupabaseFor(rStatus);
+    if (!sb) return;
+
+    if (!state.account_id) {
+      rStatus.textContent = 'We lost track of your account — please sign in again.';
+      rStatus.setAttribute('data-tone', 'error');
+      return;
+    }
 
     const submitBtn = btn('continue-3');
     submitBtn.disabled = true;
