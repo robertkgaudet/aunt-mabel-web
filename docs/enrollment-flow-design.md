@@ -115,10 +115,31 @@ Eleanor who we can reach if we're worried"). It stays a nudge: a person with no
 one else to list must still be able to finish, and blocking them would exclude
 exactly the most isolated recipients this service exists for.
 
-### Step 5 — Doctor (optional)
+### Step 5 — Doctor (optional) ✅ BUILT
 
 Writes `doctor_name`, `doctor_phone` on `recipients`. Genuinely optional —
 present a clear way to skip that doesn't read as a dead end or as a warning.
+
+**Only ever an UPDATE, never an INSERT** (settled 2026-08-06). The `recipients`
+row already exists by the time anyone reaches this step, so there is no
+find-or-create here and no branch that could strand a second row. Step 5 reads
+the row back after writing (`select('id, doctor_name, doctor_phone')`) and halts
+if the returned id isn't the one it meant to update — a doctor written onto
+someone else's recipient is worse than a failed save.
+
+**Skipping writes explicit nulls** (settled 2026-08-06) rather than leaving the
+columns untouched. "No doctor" is an answer we asked for and received; leaving
+the columns merely unwritten makes it indistinguishable from a step nobody
+reached. Both exits — Continue with empty fields, and "Skip for now" — land in
+the same place, deliberately: a skip is not a lesser path.
+
+**The doctor is reference information, never an auto-contact.** The step says so
+in as many words ("we never call the doctor automatically"). If that ever stops
+being true, the copy changes *first*.
+
+Because the step is optional it leaves no row behind to prove it happened, so
+the flow carries a `doctor_saved` flag for the back/forward guard. Every other
+step can be gated on the existence of what it wrote; this one can't.
 
 ### Step 6 — Consent (the legal heart of the flow)
 

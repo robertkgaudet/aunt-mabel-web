@@ -292,15 +292,50 @@ const TOTAL = STEPS.length;
       </form>
     </section>
 
-    {/* ── Step 5 — placeholder. Real content is the next chunk. ─────── */}
+    {/* ── Step 5 — Their doctor (optional) ──────────────────────────── */}
     <section class="step" data-step="4" id="step-doctor" hidden>
-      <h1>Step 5 coming next</h1>
+      <h1 id="d-heading">Their doctor, if you know them.</h1>
+      <p class="step-lede" id="d-lede">
+        This one's entirely optional — plenty of people skip it, and nothing
+        about the calls changes either way.
+      </p>
+
+      <form id="doctor-form" novalidate>
+        <div class="field">
+          <label for="d-name">Doctor's name</label>
+          <input id="d-name" type="text" autocomplete="off" placeholder="Dr. Boudreaux" />
+        </div>
+
+        <div class="field">
+          <label for="d-phone">Doctor's phone</label>
+          <input id="d-phone" type="tel" inputmode="tel" placeholder="(337) 555-0188" />
+          <p class="field-error" id="d-phone-error" hidden></p>
+        </div>
+
+        <p class="reassure">
+          We'll include this if we ever need to alert your contacts — we never
+          call the doctor automatically.
+        </p>
+
+        <p id="doctor-status" class="status" aria-live="polite"></p>
+
+        <div class="step-actions">
+          <button type="submit" class="btn btn-primary" id="continue-5">Continue</button>
+          <button type="button" class="btn-quiet" id="skip-5">Skip for now</button>
+          <button type="button" class="btn-quiet" id="back-5">Back</button>
+        </div>
+      </form>
+    </section>
+
+    {/* ── Step 6 — placeholder. Real content is the next chunk. ─────── */}
+    <section class="step" data-step="5" id="step-consent" hidden>
+      <h1>Step 6 coming next</h1>
       <p class="step-lede">
-        Placeholder. The contact rows have been saved — the count is in the debug
-        strip below.
+        Placeholder. What we saved for the doctor is in the debug strip below —
+        those values came back from the database, not from this page.
       </p>
       <div class="step-actions">
-        <button type="button" class="btn btn-secondary" id="back-5">Back</button>
+        <button type="button" class="btn btn-secondary" id="back-6">Back</button>
       </div>
     </section>
 
@@ -328,7 +363,7 @@ const TOTAL = STEPS.length;
   // lives here rather than being scattered through the markup and validation.
   const MAX_CONTACTS = 2;
 
-  /** @type {{ is_self: boolean | null, account_id: string | null, recipient_id: string | null, recipient_name: string | null, display_name: string | null, contact_ids: string[], step: number }} */
+  /** @type {{ is_self: boolean | null, account_id: string | null, recipient_id: string | null, recipient_name: string | null, display_name: string | null, contact_ids: string[], doctor_saved: boolean, doctor_name: string | null, doctor_phone: string | null, step: number }} */
   const state = {
     is_self: null,
     account_id: null,
@@ -336,6 +371,13 @@ const TOTAL = STEPS.length;
     recipient_name: null,
     display_name: null,
     contact_ids: [],
+    // Step 5 is optional, so unlike every other step it leaves no row behind to
+    // prove it happened. This flag is what the popstate guard checks — "they
+    // answered, and the answer was no" is a different state from "they never
+    // got there", and only one of them may land on step 6.
+    doctor_saved: false,
+    doctor_name: null,
+    doctor_phone: null,
     step: 1,
   };
 
@@ -558,6 +600,7 @@ const TOTAL = STEPS.length;
   btn('back-3').addEventListener('click', () => show(1));
   btn('back-4').addEventListener('click', () => show(2));
   btn('back-5').addEventListener('click', () => show(3));
+  btn('back-6').addEventListener('click', () => show(4));
 
   // ── step 4 — emergency contacts ───────────────────────────────────────
   const cForm = /** @type {HTMLFormElement} */ (document.getElementById('contacts-form'));
@@ -709,6 +752,7 @@ const TOTAL = STEPS.length;
       renderDebug();
       cStatus.textContent = '';
       submitBtn.disabled = false;
+      prepareDoctorStep();
       show(4);
     } catch (err) {
       console.error('[enroll] contacts insert failed', err);
@@ -943,6 +987,108 @@ const TOTAL = STEPS.length;
     }
   });
 
+  // ── step 5 — their doctor (optional) ──────────────────────────────────
+  const dForm = /** @type {HTMLFormElement} */ (document.getElementById('doctor-form'));
+  const dName = /** @type {HTMLInputElement} */ (document.getElementById('d-name'));
+  const dPhone = /** @type {HTMLInputElement} */ (document.getElementById('d-phone'));
+  const dStatus = el('doctor-status');
+
+  function prepareDoctorStep() {
+    if (state.is_self) {
+      el('d-heading').textContent = 'Your doctor, if you’d like to tell us.';
+      el('d-lede').textContent =
+        "Entirely optional — plenty of people skip it, and nothing about your calls changes either way.";
+    } else if (state.recipient_name) {
+      el('d-heading').textContent = `${state.recipient_name}’s doctor, if you know them.`;
+    }
+  }
+
+  /**
+   * The one write this step makes. Only ever an UPDATE: by the time anyone can
+   * reach step 5 the recipients row exists, so there is no insert branch here
+   * that could strand a second row.
+   *
+   * @type {(doctorName: string | null, doctorPhone: string | null) => Promise<void>}
+   */
+  async function saveDoctor(doctorName, doctorPhone) {
+    const sb = requireSupabaseFor(dStatus);
+    if (!sb) return;
+    if (!state.recipient_id) {
+      dStatus.textContent = "We lost track of who we're calling — please go back a step.";
+      dStatus.setAttribute('data-tone', 'error');
+      return;
+    }
+
+    const continueBtn5 = btn('continue-5');
+    const skipBtn = btn('skip-5');
+    continueBtn5.disabled = true;
+    skipBtn.disabled = true;
+    dStatus.textContent = 'Saving…';
+
+    try {
+      // Read the row back rather than trusting the update: this is the only
+      // place that can confirm from the browser that we changed the row we
+      // meant to and that the values actually landed.
+      const { data, error } = await sb
+        .from('recipients')
+        .update({ doctor_name: doctorName, doctor_phone: doctorPhone })
+        .eq('id', state.recipient_id)
+        .select('id, doctor_name, doctor_phone')
+        .single();
+      if (error) throw error;
+
+      // An id that came back different would mean we'd written to someone
+      // else's recipient. Halt loudly rather than carry on into consent.
+      if (data.id !== state.recipient_id) {
+        throw new Error(`Updated the wrong record (expected ${state.recipient_id}, got ${data.id}).`);
+      }
+
+      state.doctor_name = data.doctor_name;
+      state.doctor_phone = data.doctor_phone;
+      state.doctor_saved = true;
+      renderDebug();
+      dStatus.textContent = '';
+      continueBtn5.disabled = false;
+      skipBtn.disabled = false;
+      show(5);
+    } catch (err) {
+      console.error('[enroll] doctor update failed', err);
+      const detail = err instanceof Error ? err.message : String(err);
+      dStatus.textContent = `We couldn't save the doctor's details: ${detail}`;
+      dStatus.setAttribute('data-tone', 'error');
+      continueBtn5.disabled = false;
+      skipBtn.disabled = false;
+    }
+  }
+
+  dForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    fieldError('d-phone-error');
+    dStatus.textContent = '';
+    dStatus.removeAttribute('data-tone');
+
+    const name = dName.value.trim();
+    const phoneRaw = dPhone.value.trim();
+
+    // Empty is a valid answer. Only a number they actually typed can be wrong.
+    const phone = phoneRaw ? normalizePhone(phoneRaw) : '';
+    if (phoneRaw && !phone) {
+      fieldError('d-phone-error', "That doesn't look like a US phone number. Ten digits, like (337) 555-0188.");
+      return;
+    }
+
+    await saveDoctor(name || null, phone || null);
+  });
+
+  // Skipping records "no doctor" rather than leaving the columns untouched —
+  // it's an answer we asked for and got, not a question we failed to ask.
+  btn('skip-5').addEventListener('click', async () => {
+    fieldError('d-phone-error');
+    dName.value = '';
+    dPhone.value = '';
+    await saveDoctor(null, null);
+  });
+
   // ── within-flow back/forward ──────────────────────────────────────────
   window.addEventListener('popstate', (e) => {
     const target = e.state && typeof e.state.step === 'number' ? e.state.step : 0;
@@ -951,6 +1097,7 @@ const TOTAL = STEPS.length;
     if (target >= 2 && !state.account_id) { show(1, { push: false }); return; }
     if (target >= 3 && !state.recipient_id) { show(2, { push: false }); return; }
     if (target >= 4 && !state.contact_ids.length) { show(3, { push: false }); return; }
+    if (target >= 5 && !state.doctor_saved) { show(4, { push: false }); return; }
     show(target, { push: false });
   });
 
@@ -1101,6 +1248,22 @@ const TOTAL = STEPS.length;
     font-size: 0.88rem;
     font-weight: 500;
     color: var(--rose-deep);
+  }
+
+  /* Sets expectation about what we do with the doctor's details. Quiet, not a
+     warning box — it's reassurance, and styling it like an alert would make an
+     optional field feel like a hazard. */
+  .reassure {
+    margin: 1.6rem 0 0;
+    padding: 1rem 1.15rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--soft-ink);
+    max-width: 44ch;
   }
 
   /* Time-zone confirmation — deliberately prominent. A wrong zone means the
