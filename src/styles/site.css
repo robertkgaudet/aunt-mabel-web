@@ -60,6 +60,12 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* The browser's own [hidden] rule is a bare `display: none`, so ANY class that
+   sets display (.btn is inline-block, .btn-block is block) silently defeats it —
+   the attribute is set, the element stays on screen. Enforce it once here rather
+   than remembering per component. */
+[hidden] { display: none !important; }
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
