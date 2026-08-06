@@ -2,6 +2,9 @@
 // Public shell for aunt-mabel-web — plain CSS, no Bootstrap, no jQuery.
 // The Homer admin area under /homer/ uses src/layouts/homer/* instead; the
 // two shells never appear on the same page.
+//
+// Header and footer reproduce the real auntmabel.app chrome (logo lockup +
+// Ground Force tag; two-line footer). See docs/brand-capture.md.
 import '../styles/site.css';
 
 interface Props {
@@ -9,7 +12,7 @@ interface Props {
   description?: string;
   /** Set true for auth pages and anything that should stay out of search. */
   noindex?: boolean;
-  /** Hide the header nav on focused pages (login, callback). */
+  /** Drop the nav on focused pages (login, callback, signout). */
   bare?: boolean;
 }
 
@@ -32,30 +35,65 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content="#c25b50" />
+    <meta name="author" content="Ground Force Humanitarian Aid" />
 
-    <!-- Brand faces — same single request as the live auntmabel.app page.
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    {/* Brand faces — same single request as the live auntmabel.app page.
          Fraunces for headings/prose, Libre Franklin for body.
-         See docs/brand-capture.md. -->
+         See docs/brand-capture.md. */}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Libre+Franklin:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <meta property="og:site_name" content="Aunt Mabel" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {/* NOTE: no og:image. The live site points at /og-image.jpg, which 404s
+         there — so there is nothing to copy. Adding the tag without the file
+         would ship a knowingly-broken share preview. See docs/brand-capture.md. */}
+
+    <slot name="head" />
   </head>
   <body>
     <header class="site-header">
       <div class="inner">
-        <a class="brand" href="/">Aunt <span>Mabel</span></a>
-        {!bare && (
-          <nav class="site-nav">
-            <a href="/">Home</a>
-            <a href="/login">Sign in</a>
-          </nav>
-        )}
+        <a class="brand-lockup" href="/">
+          <img
+            class="mark"
+            src="/logo.png"
+            width="46"
+            height="46"
+            alt="Aunt Mabel"
+            decoding="async"
+          />
+          <span class="brand-text">
+            <span class="nm">Aunt Mabel</span>
+            <span class="sub">Everyday calls · disaster check-ins</span>
+          </span>
+        </a>
+
+        <div class="header-right">
+          <span class="gf-tag"><span class="dot"></span> A project of Ground Force Humanitarian Aid</span>
+          {!bare && (
+            <nav class="site-nav">
+              <a href="/login">Sign in</a>
+            </nav>
+          )}
+        </div>
       </div>
     </header>
 
@@ -66,9 +104,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <footer class="site-footer">
       <div class="inner">
         <p>
-          Aunt Mabel is a service of Cajun Navy Ground Force / Ground Force
-          Humanitarian Aid.
+          Aunt Mabel is a project of <span class="gf">Ground Force Humanitarian Aid</span>
+          — protecting and stabilizing the elderly and vulnerable.
         </p>
+        <p class="fine">© 2026 · A call every day, and a knock on the door when it matters most.</p>
       </div>
     </footer>
   </body>

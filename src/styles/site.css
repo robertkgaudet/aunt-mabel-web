@@ -172,18 +172,61 @@ a:hover { color: var(--rose); }
   gap: 1rem;
   flex-wrap: wrap;
 }
-.brand {
+/* Brand lockup: circular logo mark + name over subline. */
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.brand-lockup .mark {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.brand-text { display: block; }
+.brand-lockup .nm {
+  display: block;
   font-family: var(--font-head);
   font-weight: 600;
   font-size: 1.4rem;
   letter-spacing: 0.3px;
   line-height: 1;
-  color: var(--ink);
-  text-decoration: none;
 }
-.brand span { color: var(--rose); }
+.brand-lockup .sub {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--soft-ink);
+  margin-top: 3px;
+}
 
-.site-nav { display: flex; gap: 1.5rem; font-size: 0.95rem; font-weight: 400; }
+.header-right { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+
+/* Ground Force affiliation tag, with its green status dot. */
+.gf-tag {
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sage);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.gf-tag .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gf-green);
+  flex: none;
+}
+
+.site-nav { display: flex; gap: 1.5rem; font-size: 0.95rem; font-weight: 500; }
 .site-nav a { text-decoration: none; color: var(--soft-ink); }
 .site-nav a:hover { color: var(--rose-deep); }
 
@@ -195,8 +238,16 @@ main { flex: 1; }
   font-size: 0.86rem;
   color: var(--soft-ink);
 }
-.site-footer .inner { display: block; text-align: center; }
+.site-footer .inner { display: block; text-align: center; padding: 48px 28px 56px; }
 .site-footer .gf { font-weight: 500; color: var(--ink); }
+.site-footer p { margin: 0; }
+.site-footer .fine { margin-top: 6px; }
+
+@media (max-width: 820px) {
+  .site-header .inner { gap: 0.75rem; }
+  .header-right { gap: 0.9rem; }
+  .gf-tag { font-size: 0.68rem; }
+}
 
 /* ── content ─────────────────────────────────────────────── */
 
