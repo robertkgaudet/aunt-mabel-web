@@ -1,35 +1,31 @@
 ---
-// Enrollment flow — Chunk 1: skeleton + Step 1.
+// Enrollment flow — Chunk 2: step array realigned to spec + Step 2 (account).
 //
-// ARCHITECTURE "C" (hybrid), deliberate:
-//   - Steps marked kind:'collect' are DATA COLLECTION. They live on this one
-//     page and swap client-side, so answering eight short questions never costs
-//     eight page loads.
-//   - Steps marked kind:'handoff' are NOT views on this page. Account creation
-//     and Stripe are real navigation boundaries — a redirect out and back.
-//     They are declared here only so the progress indicator can count them
-//     honestly. Do NOT turn them into JS views: account creation has to survive
-//     an email round-trip, and Stripe owns its own page.
+// SPEC: docs/enrollment-flow-design.md is the source of truth for order and
+// decisions. The array below matches it. If they ever disagree, the doc wins
+// and this array is the thing that's wrong.
 //
-// The step list below is the single source of truth for both the flow order and
-// the "Step N of M" denominator. Add a step here, and the indicator follows.
+// ARCHITECTURE "C" (hybrid):
+//   - kind:'collect' steps swap client-side on this page.
+//   - kind:'handoff' steps are REAL navigation boundaries. Step 2 leaves for
+//     Google or for an email round-trip; Step 7 leaves for Stripe Checkout.
+//     Do not turn either into an in-page view — the flow depends on them
+//     surviving a full trip out of the browser tab and back.
 //
-// SCOPE OF THIS CHUNK: step 1 is real. Step 2 is a visible placeholder that
-// exists only to prove the advance mechanism works. Steps 3-8 are declared but
-// have no content yet. Their titles are inferred from the v2 schema
-// (recipients/contacts + the consent timestamps), NOT from a settled design doc
-// — confirm before building them out.
+// SCOPE OF THIS CHUNK: steps 1 and 2 are real. Step 3 is a visible placeholder
+// proving the post-auth return lands inside the flow. Steps 4-8 are declared
+// for the progress denominator only.
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const STEPS = [
-  { id: 'who-for',    kind: 'collect', title: 'Who is this for?' },
-  { id: 'recipient',  kind: 'collect', title: 'Who are we calling?' },
-  { id: 'schedule',   kind: 'collect', title: 'When should Mabel call?' },
-  { id: 'location',   kind: 'collect', title: 'Where do they live?' },
-  { id: 'contacts',   kind: 'collect', title: 'Who should we tell?' },
-  { id: 'consent',    kind: 'collect', title: 'Consent' },
-  { id: 'account',    kind: 'handoff', title: 'Create your account' },
-  { id: 'payment',    kind: 'handoff', title: 'Payment' },
+  { id: 'who-for',   kind: 'collect',      title: 'Who is this for?' },
+  { id: 'account',   kind: 'handoff',      title: 'Create your account' },
+  { id: 'recipient', kind: 'collect',      title: "Who we're calling" },
+  { id: 'contacts',  kind: 'collect',      title: 'Emergency contacts' },
+  { id: 'doctor',    kind: 'collect',      title: 'Doctor (optional)' },
+  { id: 'consent',   kind: 'collect',      title: 'Consent' },
+  { id: 'payment',   kind: 'handoff',      title: 'Payment' },
+  { id: 'done',      kind: 'confirmation', title: 'Done' },
 ];
 const TOTAL = STEPS.length;
 ---
@@ -41,15 +37,12 @@ const TOTAL = STEPS.length;
   bare={true}
 >
   <div class="wrap enroll" data-total={TOTAL}>
-    {/* ── progress ─────────────────────────────────────────────────── */}
     <div class="progress" role="group" aria-label="Enrollment progress">
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
       <p class="progress-text" id="progress-text" aria-live="polite">Step 1 of {TOTAL}</p>
     </div>
 
-    {/* ── Step 1 — real ────────────────────────────────────────────── */}
+    {/* ── Step 1 — Who is this for? ─────────────────────────────────── */}
     <section class="step" data-step="0" id="step-who-for">
       <h1>Who are we calling each day?</h1>
       <p class="step-lede">
@@ -59,7 +52,6 @@ const TOTAL = STEPS.length;
 
       <fieldset class="choices">
         <legend class="sr-only">Who is this for?</legend>
-
         <label class="choice">
           <input type="radio" name="who-for" value="loved-one" />
           <span class="choice-body">
@@ -68,7 +60,6 @@ const TOTAL = STEPS.length;
           </span>
           <span class="choice-check" aria-hidden="true"></span>
         </label>
-
         <label class="choice">
           <input type="radio" name="who-for" value="myself" />
           <span class="choice-body">
@@ -85,20 +76,72 @@ const TOTAL = STEPS.length;
       </div>
     </section>
 
-    {/* ── Step 2 — placeholder only. Real content is the next chunk. ── */}
-    <section class="step" data-step="1" id="step-recipient" hidden>
-      <h1>Step 2 coming next</h1>
+    {/* ── Step 2 — Create your account (REAL NAVIGATION BOUNDARY) ───── */}
+    <section class="step" data-step="1" id="step-account" hidden>
+      <h1>First, let's set up your account.</h1>
       <p class="step-lede">
-        This screen is a placeholder. It exists so the step-advance can be
-        verified end to end — its real content lands in the next chunk.
+        This is how you'll come back to check on things and manage the calls.
+        No password to remember — use Google, or we'll email you a link.
       </p>
+
+      <div class="auth-panel" id="auth-panel">
+        <button type="button" class="btn btn-secondary btn-block" id="google-btn">
+          Continue with Google
+        </button>
+
+        <div class="divider"><span>or</span></div>
+
+        <form id="magic-form" novalidate>
+          <div class="field">
+            <label for="enroll-email">Your email address</label>
+            <input id="enroll-email" name="email" type="email" required
+                   placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="magic-btn">
+            Send me a sign-in link
+          </button>
+        </form>
+
+        <p class="fineprint">
+          We'll only use this to reach you about your loved one's calls.
+        </p>
+      </div>
+
+      {/* Shown in place of the panel after a magic link is sent — keeps the
+          person inside the flow instead of bouncing them to /auth/check-email,
+          since the emailed link returns them here anyway. */}
+      <div class="sent-panel" id="sent-panel" hidden>
+        <div class="icon-mark">✉</div>
+        <h2 class="sent-title">Check your email</h2>
+        <p id="sent-to" class="sent-to"></p>
+        <p>
+          Click the link we just sent and you'll come straight back here to
+          carry on. The link works for one hour.
+        </p>
+        <p class="hint">Don't see it? Have a look in your spam or junk folder.</p>
+        <button type="button" class="btn-quiet" id="sent-back">Use a different email</button>
+      </div>
+
+      <p id="auth-status" class="status" aria-live="polite"></p>
+
       <div class="step-actions">
         <button type="button" class="btn btn-secondary" id="back-2">Back</button>
       </div>
     </section>
 
-    {/* TEMPORARY — remove before launch. Lets Rob see captured state without
-        opening devtools. Tracked as a cleanup item for the final chunk. */}
+    {/* ── Step 3 — placeholder. Real content is the next chunk. ─────── */}
+    <section class="step" data-step="2" id="step-recipient" hidden>
+      <h1>Step 3 coming next</h1>
+      <p class="step-lede">
+        Placeholder. If you're reading this after signing in, the round-trip
+        worked — you came back into the flow rather than to the home page.
+      </p>
+      <div class="step-actions">
+        <button type="button" class="btn btn-secondary" id="back-3">Back</button>
+      </div>
+    </section>
+
+    {/* TEMPORARY — remove before launch. Tracked in the design doc. */}
     <aside class="debug" id="debug">
       <strong>debug (temporary)</strong>
       <code id="debug-state">{'{}'}</code>
@@ -107,44 +150,62 @@ const TOTAL = STEPS.length;
 </BaseLayout>
 
 <script>
+  import { getSupabase } from '../scripts/supabase.js';
+
   // ── flow state ────────────────────────────────────────────────────────
-  // In-memory only, by design for this chunk.
+  // In-memory only, deliberately — see docs/enrollment-flow-design.md. From
+  // step 3 onward this flow holds data about a third party who has not yet
+  // consented (consent is step 6), so it is not persisted to the browser.
   //
-  // LIMITATION (accepted, noted): a full page reload clears this. Rather than
-  // restore a later step with empty answers — which would silently show someone
-  // a screen whose earlier data is gone — a reload deliberately returns to
-  // step 1. Persisting across reloads (sessionStorage) is a later decision,
-  // and it interacts with what we're allowed to keep before consent, so it is
-  // NOT something to add casually.
+  // The ONE exception is is_self, which is carried through the auth redirect
+  // in the return URL. It is the user's own answer about themselves, contains
+  // no third-party data, and without it the post-auth return can't resume.
+  /** @type {{ is_self: boolean | null, account_id: string | null, step: number }} */
   const state = {
     is_self: null,
+    account_id: null,
+    step: 1,
   };
 
-  const stepEls = Array.from(document.querySelectorAll('.step'));
-  const total = Number(document.querySelector('.enroll').dataset.total);
-  const fill = document.getElementById('progress-fill');
-  const text = document.getElementById('progress-text');
-  const debugEl = document.getElementById('debug-state');
+  /** @type {(id: string) => HTMLElement} */
+  const el = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
+  /** @type {(id: string) => HTMLButtonElement} */
+  const btn = (id) => /** @type {HTMLButtonElement} */ (document.getElementById(id));
+
+  const stepEls = /** @type {HTMLElement[]} */ (Array.from(document.querySelectorAll('.step')));
+  const root = /** @type {HTMLElement} */ (document.querySelector('.enroll'));
+  const total = Number(root.dataset.total);
+  const fill = el('progress-fill');
+  const text = el('progress-text');
+  const debugEl = el('debug-state');
+  const statusEl = el('auth-status');
 
   let current = 0;
 
+  /** @type {() => void} */
   function renderDebug() {
     debugEl.textContent = JSON.stringify(state);
-    console.log('[enroll] state', { ...state, step: current + 1 });
+    console.log('[enroll] state', { ...state });
   }
 
+  /** @type {(msg: string, tone?: string) => void} */
+  function setStatus(msg, tone) {
+    statusEl.textContent = msg || '';
+    if (tone) statusEl.setAttribute('data-tone', tone);
+    else statusEl.removeAttribute('data-tone');
+  }
+
+  /** @type {(index: number, opts?: { push?: boolean }) => void} */
   function show(index, { push = true } = {}) {
     if (index < 0 || index >= stepEls.length) return;
     current = index;
+    state.step = index + 1;
 
-    stepEls.forEach((el, i) => { el.hidden = i !== index; });
+    stepEls.forEach((node, i) => { node.hidden = i !== index; });
 
-    const pct = ((index + 1) / total) * 100;
-    fill.style.width = pct + '%';
+    fill.style.width = (((index + 1) / total) * 100) + '%';
     text.textContent = `Step ${index + 1} of ${total}`;
 
-    // Move focus to the new heading so keyboard and screen-reader users are
-    // taken to the new question rather than left where the old button was.
     const heading = stepEls[index].querySelector('h1');
     if (heading) {
       heading.setAttribute('tabindex', '-1');
@@ -156,185 +217,293 @@ const TOTAL = STEPS.length;
     renderDebug();
   }
 
-  // ── step 1 ────────────────────────────────────────────────────────────
-  const continueBtn = document.getElementById('continue-1');
+  // ── supabase client ───────────────────────────────────────────────────
+  // getSupabase() throws when config is missing rather than returning a dead
+  // client. Catch it here so Step 2 can SAY the site is misconfigured instead
+  // of presenting buttons that silently do nothing.
+  let supabase = null;
+  let configError = null;
+  try {
+    supabase = getSupabase();
+  } catch (err) {
+    configError = err;
+    console.error('[enroll] Supabase not configured:', err);
+  }
 
-  document.querySelectorAll('input[name="who-for"]').forEach((input) => {
+  function requireSupabase() {
+    if (supabase) return true;
+    setStatus(
+      'Sign-in is unavailable: this site is missing its Supabase configuration. ' +
+      'Nothing you entered was lost — please try again later.',
+      'error'
+    );
+    return false;
+  }
+
+  // ── account: find-or-create ───────────────────────────────────────────
+  // Mirrors enrollV2's find-or-create in the engine: someone enrolling a
+  // second recipient already has an account and must reuse it.
+  /** @type {(session: any) => Promise<string>} */
+  async function findOrCreateAccount(session) {
+    const { data: existing, error: selErr } = await supabase
+      .from('accounts')
+      .select('id')
+      .eq('auth_user_id', session.user.id)
+      .maybeSingle();
+    if (selErr) throw selErr;
+    if (existing) return existing.id;
+
+    const { data: created, error: insErr } = await supabase
+      .from('accounts')
+      .insert({ auth_user_id: session.user.id, email: session.user.email })
+      .select('id')
+      .single();
+    if (insErr) throw insErr;
+    return created.id;
+  }
+
+  // Where auth should send people back to. Both Google and the magic link
+  // funnel through /auth/callback, which honours ?redirect= — so is_self rides
+  // along in the return path and one handler covers both providers.
+  function buildCallbackUrl() {
+    const resume = `/enroll?resume=1&is_self=${state.is_self ? '1' : '0'}`;
+    return `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(resume)}`;
+  }
+
+  // Settle the account row, then move into step 3.
+  /** @type {(session: any) => Promise<void>} */
+  async function completeAccountStep(session) {
+    setStatus('Setting up your account…');
+    try {
+      state.account_id = await findOrCreateAccount(session);
+      renderDebug();
+      setStatus('');
+      show(2);
+    } catch (err) {
+      console.error('[enroll] account create failed', err);
+      setStatus(`We couldn't finish setting up your account: ${err.message}`, 'error');
+    }
+  }
+
+  // ── step 1 ────────────────────────────────────────────────────────────
+  const continueBtn = btn('continue-1');
+
+  document.querySelectorAll('input[name="who-for"]').forEach((node) => {
+    const input = /** @type {HTMLInputElement} */ (node);
     input.addEventListener('change', () => {
-      // Explicit Continue rather than auto-advance: this audience benefits from
-      // a beat to change their mind, and a screen that jumps out from under a
-      // tap reads as an error, not as speed.
       state.is_self = input.value === 'myself';
       continueBtn.disabled = false;
       renderDebug();
     });
   });
 
-  continueBtn.addEventListener('click', () => {
-    if (state.is_self === null) return; // no silent advance on missing data
+  continueBtn.addEventListener('click', async () => {
+    if (state.is_self === null) return;
     show(1);
+    // Already signed in (e.g. adding a second recipient)? Don't make them
+    // sign in again — settle the account and move straight on.
+    if (supabase) {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) await completeAccountStep(data.session);
+    }
   });
 
-  document.getElementById('back-2').addEventListener('click', () => show(0));
+  // ── step 2 — auth ─────────────────────────────────────────────────────
+  const googleBtn = btn('google-btn');
+  const magicForm = /** @type {HTMLFormElement} */ (document.getElementById('magic-form'));
+  const magicBtn = btn('magic-btn');
+  const emailInput = /** @type {HTMLInputElement} */ (document.getElementById('enroll-email'));
+  const authPanel = el('auth-panel');
+  const sentPanel = el('sent-panel');
+
+  googleBtn.addEventListener('click', async () => {
+    if (!requireSupabase()) return;
+    setStatus('Taking you to Google…');
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: buildCallbackUrl() },
+    });
+    if (error) setStatus(error.message, 'error');
+  });
+
+  magicForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!requireSupabase()) return;
+
+    const email = emailInput.value.trim();
+    if (!email) { setStatus('Please enter your email address.', 'error'); return; }
+
+    magicBtn.disabled = true;
+    setStatus('Sending your link…');
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: buildCallbackUrl() },
+    });
+
+    if (error) {
+      setStatus(error.message, 'error');
+      magicBtn.disabled = false;
+      return;
+    }
+
+    setStatus('');
+    el('sent-to').textContent = 'Sent to ' + email;
+    authPanel.hidden = true;
+    sentPanel.hidden = false;
+  });
+
+  btn('sent-back').addEventListener('click', () => {
+    sentPanel.hidden = true;
+    authPanel.hidden = false;
+    magicBtn.disabled = false;
+    emailInput.focus();
+  });
+
+  btn('back-2').addEventListener('click', () => show(0));
+  btn('back-3').addEventListener('click', () => show(1));
 
   // ── within-flow back/forward ──────────────────────────────────────────
-  // Browser Back moves between steps instead of dumping people out of the flow.
   window.addEventListener('popstate', (e) => {
     const target = e.state && typeof e.state.step === 'number' ? e.state.step : 0;
-    // Never restore past a step whose prerequisite answer is missing.
-    show(state.is_self === null ? 0 : target, { push: false });
+    if (state.is_self === null) { show(0, { push: false }); return; }
+    // Never land past account creation without an account.
+    if (target >= 2 && !state.account_id) { show(1, { push: false }); return; }
+    show(target, { push: false });
   });
 
-  history.replaceState({ step: 0 }, '', location.pathname);
-  show(0, { push: false });
+  // ── resume after the auth round-trip ──────────────────────────────────
+  // /auth/callback sends people back here as /enroll?resume=1&is_self=0|1
+  // after both Google OAuth and the magic link.
+  async function boot() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('resume') === '1') {
+      state.is_self = params.get('is_self') === '1';
+      // Clean the params off the URL so a later reload doesn't look resumable.
+      history.replaceState({ step: 1 }, '', '/enroll');
+
+      if (!supabase) {
+        show(1, { push: false });
+        requireSupabase();
+        return;
+      }
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        show(1, { push: false });
+        await completeAccountStep(data.session);
+        return;
+      }
+      // Resumed without a session — the sign-in didn't complete. Say so
+      // rather than silently restarting.
+      show(1, { push: false });
+      setStatus('That sign-in didn’t complete. Please try again.', 'error');
+      return;
+    }
+
+    history.replaceState({ step: 0 }, '', location.pathname);
+    show(0, { push: false });
+  }
+
+  boot();
 </script>
 
 <style>
   .enroll { max-width: 44rem; padding-top: 2.5rem; }
 
-  /* ── progress — gentle, not clinical ──────────────────────────────── */
   .progress { margin-bottom: 2.75rem; }
-  .progress-track {
-    height: 4px;
-    background: var(--line);
-    border-radius: 999px;
-    overflow: hidden;
-  }
+  .progress-track { height: 4px; background: var(--line); border-radius: 999px; overflow: hidden; }
   .progress-fill {
-    height: 100%;
-    width: 12.5%;
-    background: var(--gold);
-    border-radius: 999px;
-    transition: width 0.4s ease;
+    height: 100%; width: 12.5%; background: var(--gold);
+    border-radius: 999px; transition: width 0.4s ease;
   }
   .progress-text {
-    margin: 0.6rem 0 0;
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--soft-ink);
-    font-weight: 500;
+    margin: 0.6rem 0 0; font-size: 0.78rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--soft-ink); font-weight: 500;
   }
 
-  /* ── step ─────────────────────────────────────────────────────────── */
   .step h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); font-weight: 600; margin-bottom: 0.6rem; }
   .step h1:focus { outline: none; }
-  .step-lede {
-    font-size: 1.08rem;
-    color: var(--soft-ink);
-    max-width: 40ch;
-    margin: 0 0 2.25rem;
-  }
+  .step-lede { font-size: 1.08rem; color: var(--soft-ink); max-width: 40ch; margin: 0 0 2.25rem; }
 
   /* ── choice cards ─────────────────────────────────────────────────── */
   .choices { border: 0; padding: 0; margin: 0 0 2.25rem; display: grid; gap: 14px; }
-
   .choice {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 26px 60px 26px 28px;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    cursor: pointer;
+    position: relative; display: flex; align-items: flex-start; gap: 16px;
+    padding: 26px 60px 26px 28px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 20px; cursor: pointer;
     transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
   }
   .choice:hover { border-color: var(--rose); transform: translateY(-1px); }
-
-  /* The real radio stays in the DOM for keyboard and screen readers; it is
-     visually replaced by .choice-check. */
-  .choice input {
-    position: absolute;
-    opacity: 0;
-    width: 1px;
-    height: 1px;
-  }
-  .choice:focus-within {
-    outline: 3px solid var(--rose);
-    outline-offset: 2px;
-  }
+  .choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .choice:focus-within { outline: 3px solid var(--rose); outline-offset: 2px; }
   .choice:has(input:checked) {
     border-color: var(--rose);
     box-shadow: 0 0 0 1px var(--rose), 0 18px 36px -24px rgba(45, 36, 23, 0.4);
     background: #fffdf8;
   }
-
   .choice-body { display: block; }
   .choice-title {
-    display: block;
-    font-family: var(--font-head);
-    font-weight: 600;
-    font-size: 1.3rem;
-    color: var(--ink);
-    line-height: 1.2;
+    display: block; font-family: var(--font-head); font-weight: 600;
+    font-size: 1.3rem; color: var(--ink); line-height: 1.2;
   }
   .choice-note {
-    display: block;
-    margin-top: 6px;
-    font-size: 0.95rem;
-    font-weight: 300;
-    color: var(--soft-ink);
-    max-width: 42ch;
+    display: block; margin-top: 6px; font-size: 0.95rem;
+    font-weight: 300; color: var(--soft-ink); max-width: 42ch;
   }
-
   .choice-check {
-    position: absolute;
-    right: 26px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: 2px solid var(--line);
-    background: var(--cream);
+    position: absolute; right: 26px; top: 50%; transform: translateY(-50%);
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid var(--line); background: var(--cream);
     transition: border-color 0.18s ease, background 0.18s ease;
   }
   .choice:has(input:checked) .choice-check {
-    border-color: var(--rose);
-    background: var(--rose);
+    border-color: var(--rose); background: var(--rose);
     box-shadow: inset 0 0 0 4px var(--paper);
+  }
+
+  /* ── step 2 auth panel ────────────────────────────────────────────── */
+  .auth-panel, .sent-panel {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 20px; padding: 30px 28px; margin-bottom: 1.5rem;
+  }
+  .sent-panel { text-align: center; }
+  .sent-title { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .sent-to {
+    font-family: var(--font-head); color: var(--rose-deep);
+    margin: 0 0 1rem; word-break: break-all;
+  }
+  .sent-panel p { color: var(--soft-ink); margin: 0 0 0.75rem; }
+  .fineprint {
+    font-size: 0.82rem; color: var(--soft-ink); font-weight: 300;
+    margin: 1.1rem 0 0; text-align: center;
   }
 
   /* ── actions ──────────────────────────────────────────────────────── */
   .step-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
   .btn-quiet {
-    font-size: 0.95rem;
-    color: var(--soft-ink);
-    text-decoration: none;
+    font-size: 0.95rem; color: var(--soft-ink); text-decoration: none;
+    background: none; border: 0; cursor: pointer; font-family: var(--font-body);
   }
   .btn-quiet:hover { color: var(--rose-deep); text-decoration: underline; }
 
   /* ── temporary debug strip — remove before launch ─────────────────── */
   .debug {
-    margin-top: 3.5rem;
-    padding: 10px 14px;
-    border: 1px dashed var(--line);
-    border-radius: 10px;
-    background: var(--paper);
-    font-size: 0.75rem;
-    color: var(--soft-ink);
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
+    margin-top: 3.5rem; padding: 10px 14px; border: 1px dashed var(--line);
+    border-radius: 10px; background: var(--paper); font-size: 0.75rem;
+    color: var(--soft-ink); display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
   }
   .debug code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink); }
 
   .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
 
   @media (max-width: 820px) {
     .choice { padding: 22px 56px 22px 22px; }
     .choice-title { font-size: 1.18rem; }
+    .auth-panel, .sent-panel { padding: 24px 20px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
