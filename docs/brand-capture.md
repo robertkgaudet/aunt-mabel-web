@@ -9,6 +9,26 @@ This is the style and voice reference for every public page we build. When the
 new site and this document disagree, this document is what the brand actually
 looks and sounds like today — update it deliberately, don't drift from it.
 
+> **Note — org name, 2026-08-06.** On this date the organization name was
+> standardized to **"Cajun Navy Ground Force"** across both repos and all docs,
+> replacing "Ground Force Humanitarian Aid" and "GFHA".
+>
+> **The quotes in this file are deliberately NOT updated.** They still read
+> "Ground Force Humanitarian Aid" because that is what the live auntmabel.app
+> page says, and this document's job is to be an honest record of that page —
+> not of what we wish it said. Rewriting the quotes would make the capture
+> lie about its own source.
+>
+> The practical consequence: **the live site is now out of step with the rest of
+> the project.** auntmabel.app still shows the old name in its header, footer,
+> `author` meta, and JSON-LD provider block. That is a content fix owed to the
+> production site. When it ships, re-capture this page and the quotes below
+> should change on their own.
+>
+> Two more things in this file are also records rather than instructions: the
+> Formspree waitlist (§7) has been replaced in our rebuild by an `/enroll` CTA,
+> and `og-image.jpg` (§5) is referenced by the live page but 404s there.
+
 ---
 
 ## 1. Voice — what makes this copy work

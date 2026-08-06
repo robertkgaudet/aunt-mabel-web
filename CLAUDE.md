@@ -3,8 +3,8 @@
 This is the **frontend repo** for Aunt Mabel: public site, auth, and account
 pages. Read this before making changes.
 
-Shared rules for every Aunt Mabel repo live in `../AUNT-MABEL.md` — read that
-too. The condensed version is below; where the two disagree, the parent wins.
+Shared rules for every Aunt Mabel repo live in `docs/AUNT-MABEL.md` — read that
+too. The condensed version is below; where the two disagree, the blueprint wins.
 
 ## What this repo is
 
