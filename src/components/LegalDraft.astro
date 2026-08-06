@@ -1,0 +1,81 @@
+---
+// Shared shell for the placeholder legal pages (/terms, /privacy).
+//
+// The draft banner is deliberately unmissable and deliberately at the TOP.
+// These pages are linked from a consent checkbox, so someone can tick "I agree
+// to the Terms of Service" and land here — they must not be able to read the
+// page and come away thinking they've read finished terms. When the real
+// content lands, this banner comes out; that's the whole reason it's a
+// component and not copy-pasted into both pages.
+interface Props {
+  heading: string;
+  kicker?: string;
+}
+const { heading, kicker } = Astro.props;
+---
+
+<div class="wrap legal">
+  <p class="draft-banner" role="status">
+    <strong>Draft — pending legal review.</strong>
+    This page is a placeholder. The final wording is being prepared with
+    counsel and will replace it before we take real payments.
+  </p>
+
+  {kicker && <p class="kicker">{kicker}</p>}
+  <h1>{heading}</h1>
+
+  <div class="legal-body">
+    <slot />
+  </div>
+
+  <p class="legal-foot">
+    Questions before then? Please reach out — we'd rather answer first.
+  </p>
+</div>
+
+<style>
+  .legal { max-width: 42rem; padding-bottom: 4rem; }
+
+  /* Rose rather than gold: this is a caveat, not a highlight. */
+  .draft-banner {
+    margin: 0 0 2.5rem;
+    padding: 14px 18px;
+    background: var(--paper);
+    border: 1px solid var(--rose);
+    border-left: 4px solid var(--rose);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .draft-banner strong { font-weight: 600; color: var(--rose-deep); }
+
+  .legal h1 { margin-bottom: 1.5rem; }
+  .legal-body :global(p) {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    font-weight: 300;
+    margin: 0 0 1.15rem;
+  }
+  .legal-body :global(strong) { font-weight: 500; }
+  .legal-body :global(.emphasis) {
+    font-family: var(--font-head);
+    font-size: 1.08rem;
+    font-weight: 400;
+    color: var(--ink);
+    padding: 16px 20px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    margin: 1.6rem 0;
+  }
+  .legal-foot {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--soft-ink);
+  }
+</style>

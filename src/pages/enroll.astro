@@ -327,15 +327,84 @@ const TOTAL = STEPS.length;
       </form>
     </section>
 
-    {/* ── Step 6 — placeholder. Real content is the next chunk. ─────── */}
+    {/* ── Step 6 — Consent ───────────────────────────────────────────
+         THREE SEPARATE BOXES. NONE PRE-CHECKED. NOT BUNDLED.
+         Per docs/enrollment-flow-design.md this step is not to be "improved":
+         combining these, pre-checking any of them, or collapsing them into one
+         control destroys the audit trail that is the entire reason the step
+         exists. TCPA carries statutory per-call damages. ───────────────── */}
     <section class="step" data-step="5" id="step-consent" hidden>
-      <h1>Step 6 coming next</h1>
+      <h1>A couple of important okays.</h1>
       <p class="step-lede">
-        Placeholder. What we saved for the doctor is in the debug strip below —
-        those values came back from the database, not from this page.
+        Nothing surprising here — but these are the ones we're not allowed to
+        assume, so we ask them plainly.
+      </p>
+
+      <form id="consent-form" novalidate>
+        <label class="consent" for="cb-tcpa">
+          <input type="checkbox" id="cb-tcpa" />
+          <span class="consent-body">
+            {/* The sentence lives in the MARKUP, not in JS. Only the name is
+                substituted. An empty consent statement that can still be
+                ticked is the one failure this step must never have, so the
+                operative wording ships in the HTML and cannot depend on a
+                script having run. */}
+            <span class="consent-text" id="cb-tcpa-text">
+              I confirm that <span id="cb-tcpa-who">the person you're enrolling</span>
+              agrees to receive a friendly automated daily call from Aunt Mabel —
+              or that I'm authorized to set this up on their behalf.
+            </span>
+            <span class="consent-note">
+              On her very first call, Mabel will gently confirm this with them too.
+            </span>
+          </span>
+        </label>
+
+        <label class="consent" for="cb-medical">
+          <input type="checkbox" id="cb-medical" />
+          <span class="consent-body">
+            <span class="consent-text">
+              I understand Aunt Mabel is a friendly wellness check-in — not an
+              emergency, medical, or monitoring service — and is not a
+              substitute for 911 or professional care.
+            </span>
+          </span>
+        </label>
+
+        <label class="consent" for="cb-terms">
+          <input type="checkbox" id="cb-terms" />
+          <span class="consent-body">
+            <span class="consent-text">
+              I agree to the
+              <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+              and
+              <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+            </span>
+            <span class="consent-note">Both open in a new tab — you won't lose your place.</span>
+          </span>
+        </label>
+
+        <p id="consent-status" class="status" aria-live="polite"></p>
+
+        <div class="step-actions">
+          <button type="submit" class="btn btn-primary" id="continue-6" disabled>Continue</button>
+          <button type="button" class="btn-quiet" id="back-6">Back</button>
+        </div>
+        <p class="consent-gate" id="consent-gate">
+          Please tick all three to carry on.
+        </p>
+      </form>
+    </section>
+
+    {/* ── Step 7 — placeholder. Real content is the next chunk. ─────── */}
+    <section class="step" data-step="6" id="step-payment" hidden>
+      <h1>Step 7 coming next</h1>
+      <p class="step-lede">
+        Placeholder. The consent flag and both timestamps are in the debug strip
+        below — those came back from the database, not from this page.
       </p>
       <div class="step-actions">
-        <button type="button" class="btn btn-secondary" id="back-6">Back</button>
+        <button type="button" class="btn btn-secondary" id="back-7">Back</button>
       </div>
     </section>
 
@@ -363,7 +432,7 @@ const TOTAL = STEPS.length;
   // lives here rather than being scattered through the markup and validation.
   const MAX_CONTACTS = 2;
 
-  /** @type {{ is_self: boolean | null, account_id: string | null, recipient_id: string | null, recipient_name: string | null, display_name: string | null, contact_ids: string[], doctor_saved: boolean, doctor_name: string | null, doctor_phone: string | null, step: number }} */
+  /** @type {{ is_self: boolean | null, account_id: string | null, recipient_id: string | null, recipient_name: string | null, display_name: string | null, contact_ids: string[], doctor_saved: boolean, doctor_name: string | null, doctor_phone: string | null, consent: boolean, tos_accepted_at: string | null, not_medical_ack_at: string | null, step: number }} */
   const state = {
     is_self: null,
     account_id: null,
@@ -378,6 +447,11 @@ const TOTAL = STEPS.length;
     doctor_saved: false,
     doctor_name: null,
     doctor_phone: null,
+    // Mirrors of what the database returned, not of what the boxes looked like.
+    // The only consent record that counts is the one that landed in Postgres.
+    consent: false,
+    tos_accepted_at: null,
+    not_medical_ack_at: null,
     step: 1,
   };
 
@@ -601,6 +675,7 @@ const TOTAL = STEPS.length;
   btn('back-4').addEventListener('click', () => show(2));
   btn('back-5').addEventListener('click', () => show(3));
   btn('back-6').addEventListener('click', () => show(4));
+  btn('back-7').addEventListener('click', () => show(5));
 
   // ── step 4 — emergency contacts ───────────────────────────────────────
   const cForm = /** @type {HTMLFormElement} */ (document.getElementById('contacts-form'));
@@ -1050,6 +1125,7 @@ const TOTAL = STEPS.length;
       dStatus.textContent = '';
       continueBtn5.disabled = false;
       skipBtn.disabled = false;
+      prepareConsentStep();
       show(5);
     } catch (err) {
       console.error('[enroll] doctor update failed', err);
@@ -1089,6 +1165,122 @@ const TOTAL = STEPS.length;
     await saveDoctor(null, null);
   });
 
+  // ── step 6 — consent ──────────────────────────────────────────────────
+  // Three boxes, read independently, never combined into one flag. See the
+  // warning in docs/enrollment-flow-design.md before changing anything here.
+  const consentForm = /** @type {HTMLFormElement} */ (document.getElementById('consent-form'));
+  const consentStatus = el('consent-status');
+  const consentGate = el('consent-gate');
+  const consentBoxIds = ['cb-tcpa', 'cb-medical', 'cb-terms'];
+  /** @type {HTMLInputElement[]} */
+  const consentBoxes = consentBoxIds.map(
+    (id) => /** @type {HTMLInputElement} */ (document.getElementById(id))
+  );
+
+  function refreshConsentGate() {
+    const all = consentBoxes.every((b) => b.checked);
+    btn('continue-6').disabled = !all;
+    consentGate.hidden = all;
+  }
+  consentBoxes.forEach((b) => b.addEventListener('change', refreshConsentGate));
+
+  function prepareConsentStep() {
+    // Only the name is dynamic; the sentence around it is in the markup. The
+    // fallback already reads correctly, so a missing name degrades to wording
+    // that is still true rather than to "null" or an empty box.
+    if (state.recipient_name) el('cb-tcpa-who').textContent = state.recipient_name;
+    refreshConsentGate();
+  }
+
+  consentForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    consentStatus.textContent = '';
+    consentStatus.removeAttribute('data-tone');
+
+    // Belt and braces: the button is disabled, but never write a consent
+    // record on the strength of a disabled attribute alone.
+    if (!consentBoxes.every((b) => b.checked)) {
+      refreshConsentGate();
+      return;
+    }
+
+    const sb = requireSupabaseFor(consentStatus);
+    if (!sb) return;
+    if (!state.account_id || !state.recipient_id) {
+      consentStatus.textContent = 'We lost track of your enrollment — please go back a step.';
+      consentStatus.setAttribute('data-tone', 'error');
+      return;
+    }
+
+    const submitBtn = btn('continue-6');
+    submitBtn.disabled = true;
+    consentStatus.textContent = 'Recording that…';
+
+    try {
+      // ORDER MATTERS. PostgREST can't make a two-table write atomic, so the
+      // account timestamps go first and recipients.consent goes LAST. If this
+      // breaks in the middle we're left with an acceptance record and consent
+      // still false — nobody gets called. The reverse would let us call
+      // someone whose ToS acceptance we never recorded.
+      const { data: acct, error: acctSelErr } = await sb
+        .from('accounts')
+        .select('id, tos_accepted_at, not_medical_ack_at')
+        .eq('id', state.account_id)
+        .single();
+      if (acctSelErr) throw acctSelErr;
+
+      // Only fill what's empty. Coming Back and pressing Continue again is the
+      // same acceptance, not a new one — the audit question is when they FIRST
+      // accepted, so an existing timestamp is never overwritten.
+      /** @type {Record<string, string>} */
+      const patch = {};
+      // 'now' is a Postgres literal evaluated server-side at transaction time.
+      // Deliberately not a client Date: a browser clock is not evidence.
+      if (!acct.tos_accepted_at) patch.tos_accepted_at = 'now';
+      if (!acct.not_medical_ack_at) patch.not_medical_ack_at = 'now';
+
+      let accountRow = acct;
+      if (Object.keys(patch).length) {
+        const { data, error } = await sb
+          .from('accounts')
+          .update(patch)
+          .eq('id', state.account_id)
+          .select('id, tos_accepted_at, not_medical_ack_at')
+          .single();
+        if (error) throw error;
+        accountRow = data;
+      }
+      if (!accountRow.tos_accepted_at || !accountRow.not_medical_ack_at) {
+        throw new Error('The acceptance timestamps did not save.');
+      }
+
+      const { data: rec, error: recErr } = await sb
+        .from('recipients')
+        .update({ consent: true })
+        .eq('id', state.recipient_id)
+        .select('id, consent')
+        .single();
+      if (recErr) throw recErr;
+      if (rec.id !== state.recipient_id || rec.consent !== true) {
+        throw new Error('Consent did not save against the right person.');
+      }
+
+      state.consent = rec.consent;
+      state.tos_accepted_at = accountRow.tos_accepted_at;
+      state.not_medical_ack_at = accountRow.not_medical_ack_at;
+      renderDebug();
+      consentStatus.textContent = '';
+      submitBtn.disabled = false;
+      show(6);
+    } catch (err) {
+      console.error('[enroll] consent write failed', err);
+      const detail = err instanceof Error ? err.message : String(err);
+      consentStatus.textContent = `We couldn't record that: ${detail}`;
+      consentStatus.setAttribute('data-tone', 'error');
+      submitBtn.disabled = false;
+    }
+  });
+
   // ── within-flow back/forward ──────────────────────────────────────────
   window.addEventListener('popstate', (e) => {
     const target = e.state && typeof e.state.step === 'number' ? e.state.step : 0;
@@ -1098,6 +1290,7 @@ const TOTAL = STEPS.length;
     if (target >= 3 && !state.recipient_id) { show(2, { push: false }); return; }
     if (target >= 4 && !state.contact_ids.length) { show(3, { push: false }); return; }
     if (target >= 5 && !state.doctor_saved) { show(4, { push: false }); return; }
+    if (target >= 6 && !state.consent) { show(5, { push: false }); return; }
     show(target, { push: false });
   });
 
@@ -1357,6 +1550,63 @@ const TOTAL = STEPS.length;
   }
 
   /* ── actions ──────────────────────────────────────────────────────── */
+  /* ── step 6 consent ───────────────────────────────────────────────────
+     Each box is its own card with real space around it. This is deliberate:
+     three statements crammed into a tight stack read as one block of
+     boilerplate to be clicked past, which is precisely what unbundling them
+     is meant to prevent. */
+  .consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    cursor: pointer;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .consent:hover { border-color: var(--rose); }
+  .consent:has(input:checked) {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(217, 164, 65, 0.25);
+  }
+  .consent:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(217, 164, 65, 0.4);
+  }
+  .consent input[type='checkbox'] {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    accent-color: var(--rose-deep);
+    cursor: pointer;
+  }
+  .consent-body { display: block; }
+  .consent-text {
+    display: block;
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .consent-text a { color: var(--rose-deep); text-decoration: underline; }
+  .consent-note {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.86rem;
+    font-weight: 300;
+    color: var(--soft-ink);
+  }
+  .consent-gate {
+    margin: 0.9rem 0 0;
+    font-size: 0.86rem;
+    font-weight: 300;
+    color: var(--soft-ink);
+  }
+
   .step-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
   .btn-quiet {
     font-size: 0.95rem; color: var(--soft-ink); text-decoration: none;

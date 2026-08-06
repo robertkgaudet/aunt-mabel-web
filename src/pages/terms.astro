@@ -1,0 +1,45 @@
+---
+// Terms of Service — PLACEHOLDER.
+//
+// This page exists so the consent checkbox in the enrollment flow links to a
+// real URL instead of a 404. The enrollment flow asks people to agree to these
+// terms, so the page they're agreeing to must at minimum resolve and say
+// honestly that it isn't finished yet.
+//
+// Real content is a separate follow-up — source material and the open
+// questions for the attorney are in docs/legal-source.md.
+//
+// Per CLAUDE.md: legal documents name the entity ("Cajun Relief Foundation,
+// d/b/a Cajun Navy Ground Force"), not the brand alone.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LegalDraft from '../components/LegalDraft.astro';
+---
+
+<BaseLayout title="Terms of Service · Aunt Mabel" noindex={true}>
+  <LegalDraft heading="Terms of Service" kicker="Legal">
+    <p>
+      These Terms will govern your use of the Aunt Mabel daily wellness-call
+      service, operated by <strong>Cajun Relief Foundation, d/b/a Cajun Navy
+      Ground Force</strong>.
+    </p>
+    <p>
+      They're being finalized with counsel now. When they're ready, this page
+      will carry the full Terms in plain language, covering what the service
+      does and doesn't promise, how billing and cancellation work, and what
+      happens to a call schedule during a disaster.
+    </p>
+    <p>
+      Until then, one thing is worth saying plainly, because it's the point
+      people most need to understand before they sign up:
+    </p>
+    <p class="emphasis">
+      Aunt Mabel is a friendly daily check-in. It is not an emergency service,
+      a medical service, or a monitoring service, and it is not a substitute
+      for calling 911 or for professional care.
+    </p>
+    <p>
+      If you have a question in the meantime, please get in touch before
+      enrolling rather than after.
+    </p>
+  </LegalDraft>
+</BaseLayout>

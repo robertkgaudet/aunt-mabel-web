@@ -141,7 +141,7 @@ Because the step is optional it leaves no row behind to prove it happened, so
 the flow carries a `doctor_saved` flag for the back/forward guard. Every other
 step can be gated on the existence of what it wrote; this one can't.
 
-### Step 6 — Consent (the legal heart of the flow)
+### Step 6 — Consent (the legal heart of the flow) ✅ BUILT
 
 **Three separate checkboxes. Unbundled. None pre-checked. None combined into a
 single "I agree to everything."**
@@ -159,6 +159,33 @@ All three are **timestamped** (`timestamptz`) for audit — see
 collapsing them into one control destroys the audit trail's meaning and the
 legal defensibility that is the entire reason the step exists. TCPA carries
 statutory per-call damages.
+
+**Implementation decisions (settled 2026-08-06):**
+
+- **The consent sentences live in the markup, not in JavaScript.** Only the
+  recipient's name is substituted, into a `<span>` inside an otherwise complete
+  sentence. An empty consent statement that can still be ticked is the one
+  failure this step must never have, so the operative wording ships in the HTML
+  and never depends on a script having run. The no-name fallback ("the person
+  you're enrolling") reads correctly on its own.
+- **Timestamps are the Postgres literal `'now'`, evaluated server-side.** A
+  browser clock is not evidence.
+- **An existing timestamp is never overwritten.** Coming Back and pressing
+  Continue again is the same acceptance, not a new one; the audit question is
+  when the payer *first* accepted. Only null columns are filled.
+- **Write order is deliberate: account timestamps first, `recipients.consent`
+  last.** See the atomicity gap below.
+
+> ⚠️ **Open — the two-table write is not atomic.** This step writes `accounts`
+> and `recipients` through two separate PostgREST calls, and nothing makes them
+> a single transaction. A failure between them leaves a partial consent record.
+> The order is chosen so the surviving state is the safe one: acceptance
+> timestamps recorded with `consent` still false means **nobody gets called**.
+> The reverse order would allow calling someone whose ToS acceptance was never
+> recorded, which is the outcome TCPA makes expensive. **The real fix is a
+> Postgres function (an RPC) doing both updates in one transaction, called
+> instead of the two updates.** That needs a migration, so it is deliberately
+> not bundled into this chunk — but it should land before real payments.
 
 This is the payer's consent layer only. The recipient's **verbal consent** is
 captured separately, on the first call, via the `call_analyzed` webhook
