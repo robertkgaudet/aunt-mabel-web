@@ -1217,57 +1217,41 @@ const TOTAL = STEPS.length;
     consentStatus.textContent = 'Recording that…';
 
     try {
-      // ORDER MATTERS. PostgREST can't make a two-table write atomic, so the
-      // account timestamps go first and recipients.consent goes LAST. If this
-      // breaks in the middle we're left with an acceptance record and consent
-      // still false — nobody gets called. The reverse would let us call
-      // someone whose ToS acceptance we never recorded.
-      const { data: acct, error: acctSelErr } = await sb
-        .from('accounts')
-        .select('id, tos_accepted_at, not_medical_ack_at')
-        .eq('id', state.account_id)
+      // ONE call, therefore ONE transaction. record_consent() updates both
+      // accounts and recipients inside a single statement, so consent can never
+      // land half-recorded — see migrations/0003_record_consent_fn.sql. This
+      // replaced a two-call sequence that had no transaction around it.
+      //
+      // The function runs SECURITY INVOKER, so RLS still decides what the
+      // caller may touch, and it raises rather than quietly updating zero rows.
+      // Timestamps are now() inside that transaction — still never a browser
+      // clock — and it coalesces, so an existing acceptance is preserved.
+      const { data: recorded, error: rpcErr } = await sb
+        .rpc('record_consent', {
+          p_account_id: state.account_id,
+          p_recipient_id: state.recipient_id,
+        })
         .single();
-      if (acctSelErr) throw acctSelErr;
 
-      // Only fill what's empty. Coming Back and pressing Continue again is the
-      // same acceptance, not a new one — the audit question is when they FIRST
-      // accepted, so an existing timestamp is never overwritten.
-      /** @type {Record<string, string>} */
-      const patch = {};
-      // 'now' is a Postgres literal evaluated server-side at transaction time.
-      // Deliberately not a client Date: a browser clock is not evidence.
-      if (!acct.tos_accepted_at) patch.tos_accepted_at = 'now';
-      if (!acct.not_medical_ack_at) patch.not_medical_ack_at = 'now';
-
-      let accountRow = acct;
-      if (Object.keys(patch).length) {
-        const { data, error } = await sb
-          .from('accounts')
-          .update(patch)
-          .eq('id', state.account_id)
-          .select('id, tos_accepted_at, not_medical_ack_at')
-          .single();
-        if (error) throw error;
-        accountRow = data;
-      }
-      if (!accountRow.tos_accepted_at || !accountRow.not_medical_ack_at) {
-        throw new Error('The acceptance timestamps did not save.');
+      if (rpcErr) {
+        // 42501 is the ownership guard inside the function: the account or
+        // recipient doesn't belong to whoever is signed in. Say something a
+        // person can act on rather than surfacing the raw Postgres text.
+        if (rpcErr.code === '42501') {
+          throw new Error('we couldn’t match this to your account — please sign in again');
+        }
+        throw rpcErr;
       }
 
-      const { data: rec, error: recErr } = await sb
-        .from('recipients')
-        .update({ consent: true })
-        .eq('id', state.recipient_id)
-        .select('id, consent')
-        .single();
-      if (recErr) throw recErr;
-      if (rec.id !== state.recipient_id || rec.consent !== true) {
-        throw new Error('Consent did not save against the right person.');
+      // Read-back verification, unchanged in spirit: these values are what the
+      // database now holds, returned by the same transaction that wrote them.
+      if (recorded.consent !== true || !recorded.tos_accepted_at || !recorded.not_medical_ack_at) {
+        throw new Error('The consent record came back incomplete.');
       }
 
-      state.consent = rec.consent;
-      state.tos_accepted_at = accountRow.tos_accepted_at;
-      state.not_medical_ack_at = accountRow.not_medical_ack_at;
+      state.consent = recorded.consent;
+      state.tos_accepted_at = recorded.tos_accepted_at;
+      state.not_medical_ack_at = recorded.not_medical_ack_at;
       renderDebug();
       consentStatus.textContent = '';
       submitBtn.disabled = false;
