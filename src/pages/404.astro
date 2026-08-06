@@ -1,0 +1,30 @@
+---
+// Branded 404.
+//
+// This page exists to make Astro emit dist/404.html. Without that file,
+// Cloudflare Pages falls back to serving index.html with a 200 for every
+// unmatched URL — a silent fallback that makes broken links look like
+// working pages. Do not delete it.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found · Aunt Mabel" noindex={true}>
+  <div class="wrap notfound">
+    <p class="kicker">404</p>
+    <h1>That page took a wrong turn.</h1>
+    <p class="lede">
+      We couldn't find what you were looking for. It may have moved, or the
+      link might have a typo in it.
+    </p>
+    <p class="actions">
+      <a class="btn btn-primary" href="/">Take me home</a>
+      <a class="btn btn-secondary" href="/login">Sign in</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound { max-width: 40rem; }
+  .notfound .lede { margin-bottom: 2rem; }
+  .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 0; }
+</style>

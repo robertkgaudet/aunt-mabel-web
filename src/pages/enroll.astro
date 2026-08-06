@@ -1,0 +1,39 @@
+---
+// Placeholder for the enrollment flow.
+//
+// The home page CTA points here. Until the real flow is built, this page
+// exists so that clicking the CTA lands somewhere that explains itself,
+// rather than bouncing to the home page or hitting a bare 404.
+//
+// REPLACE THIS with the real enrollment flow — do not build on top of it.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Enrollment opens shortly · Aunt Mabel"
+  description="Aunt Mabel enrollment is opening shortly."
+  noindex={true}
+>
+  <div class="wrap enroll-soon">
+    <p class="kicker">Almost ready</p>
+    <h1>We're getting Mabel ready.</h1>
+    <p class="lede">
+      Enrollment opens shortly. We're setting up the last few things so her
+      first call goes out exactly the way it should.
+    </p>
+    <p class="body-note">
+      If you'd like to be told the moment it opens, email
+      <a href="mailto:programs@groundforce.ngo">programs@groundforce.ngo</a>
+      and we'll come find you.
+    </p>
+    <p class="actions">
+      <a class="btn btn-secondary" href="/">Back to home</a>
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .enroll-soon { max-width: 40rem; }
+  .body-note { color: var(--soft-ink); margin: 0 0 2rem; }
+  .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 0; }
+</style>
