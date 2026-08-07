@@ -215,13 +215,18 @@ recipient has welcomed the calls on Mabel's first call.
 thing a payer reads is that they are not being charged for something their
 parent hasn't agreed to yet. Don't reorder this to put the price first.
 
-**The founding code is a soft gate, not an entitlement check** (settled
-2026-08-06). It lives in `PUBLIC_FOUNDING_CODE`, which is **inlined into the
-browser bundle at build time and readable by anyone** — it filters honest
-mistakes, nothing more. If the founding rate ever needs to be genuinely
-restricted, either validate it server-side in the engine or use a **Stripe promo
-code** (already enabled on the session via `allow_promotion_codes`), which is
-what this document originally specified and remains the cleanest option.
+**The founding rate is a Stripe promo code, not a price this app can request**
+(settled 2026-08-06, superseding a briefly-shipped client-side code). The client
+no longer holds any code, and the engine no longer accepts a `founding` plan at
+all — `/api/create-checkout-session` is unauthenticated, so an accepted
+`plan: "founding"` was a discount anyone could take just by posting it, with no
+code needed. That was a wider hole than the client-side check it replaced.
+
+Customers now enter their code on Stripe's hosted page, where Stripe validates
+it, caps redemptions and handles expiry. Step 7 keeps one quiet line — "Have a
+founding family code? You can enter it at the next step." — because a family who
+was *given* a code would otherwise hunt for a box that isn't there and assume
+they had lost their discount. Signpost, not a field.
 
 **Returning from Stripe re-reads the recipient from Supabase** (settled
 2026-08-06) rather than persisting flow state or putting a recipient id in the

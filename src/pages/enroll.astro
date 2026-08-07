@@ -424,18 +424,13 @@ const TOTAL = STEPS.length;
         your account, no phone call needed.
       </p>
 
-      <div class="founding" id="founding-block">
-        <button type="button" class="linkish" id="founding-toggle">
-          Have a founding family code?
-        </button>
-        <div class="founding-fields" id="founding-fields" hidden>
-          <div class="field">
-            <label for="p-code">Founding family code</label>
-            <input id="p-code" type="text" autocomplete="off" spellcheck="false" placeholder="Enter your code" />
-            <p class="field-hint" id="p-code-hint" hidden></p>
-          </div>
-        </div>
-      </div>
+      {/* No code field here on purpose — Stripe's hosted page has one, and it
+          validates. This line exists so a founding family who was GIVEN a code
+          doesn't hunt for a box that isn't here and assume they've lost their
+          discount. Silence would be cleaner markup and worse for the person. */}
+      <p class="promo-note">
+        Have a founding family code? You can enter it at the next step.
+      </p>
 
       <p id="payment-status" class="status" aria-live="polite"></p>
 
@@ -1337,58 +1332,19 @@ const TOTAL = STEPS.length;
 
   // ── step 7 — payment (navigation boundary) ────────────────────────────
   //
-  // Display prices only. The AUTHORITATIVE amounts are the Stripe price ids in
-  // the engine's wrangler.toml (STRIPE_PRICE_STANDARD / STRIPE_PRICE_FOUNDING).
-  // If a price changes in Stripe, change it here too — a page promising $39
-  // while Stripe charges something else is the worst kind of wrong.
-  const PLAN_PRICES = { standard: '$39', founding: '$29' };
+  // Display price only. The AUTHORITATIVE amount is the Stripe price id in the
+  // engine's wrangler.toml (STRIPE_PRICE_STANDARD). If it changes in Stripe,
+  // change it here too — a page promising $39 while Stripe charges something
+  // else is the worst kind of wrong.
+  //
+  // There is no founding price here. The $29 rate is a Stripe promo code the
+  // customer enters on Stripe's hosted page, so Stripe applies and validates the
+  // discount and this page never has to know about it.
+  const STANDARD_PRICE = '$39';
+  const PLAN = 'standard';
 
   const ENGINE_URL = import.meta.env.PUBLIC_ENGINE_URL;
-  // ⚠️ NOT A SECRET — inlined into this bundle at build time and readable by
-  // anyone. A soft gate for the pilot, not an entitlement check. See
-  // .env.example, and the note in docs/enrollment-flow-design.md.
-  const FOUNDING_CODE = (import.meta.env.PUBLIC_FOUNDING_CODE || '').trim();
-
   const pStatus = el('payment-status');
-  const pCode = /** @type {HTMLInputElement} */ (document.getElementById('p-code'));
-  const foundingFields = el('founding-fields');
-  /** @type {'standard' | 'founding'} */
-  let plan = 'standard';
-
-  // An input that can never succeed is worse than no input, so the founding
-  // affordance only appears when a code is actually configured.
-  if (!FOUNDING_CODE) {
-    el('founding-block').hidden = true;
-    console.warn('[enroll] PUBLIC_FOUNDING_CODE is not set — founding-code entry hidden.');
-  }
-
-  btn('founding-toggle').addEventListener('click', () => {
-    foundingFields.hidden = !foundingFields.hidden;
-    if (!foundingFields.hidden) pCode.focus();
-  });
-
-  function applyFoundingCode() {
-    const entered = pCode.value.trim();
-    const hint = el('p-code-hint');
-
-    if (!entered) {
-      plan = 'standard';
-      hint.hidden = true;
-    } else if (FOUNDING_CODE && entered.toLowerCase() === FOUNDING_CODE.toLowerCase()) {
-      plan = 'founding';
-      hint.textContent = "That's the founding family rate — $29/month, locked in.";
-      hint.setAttribute('data-tone', 'good');
-      hint.hidden = false;
-    } else {
-      // Not an error state: a mistyped code shouldn't feel like a rejection.
-      plan = 'standard';
-      hint.textContent = "We didn't recognise that code, so you're on the standard rate.";
-      hint.removeAttribute('data-tone');
-      hint.hidden = false;
-    }
-    el('p-price').textContent = PLAN_PRICES[plan];
-  }
-  pCode.addEventListener('input', applyFoundingCode);
 
   function preparePaymentStep() {
     const who = state.recipient_name;
@@ -1400,7 +1356,7 @@ const TOTAL = STEPS.length;
         btn('continue-7').textContent = 'Start my daily calls →';
       }
     }
-    el('p-price').textContent = PLAN_PRICES[plan];
+    el('p-price').textContent = STANDARD_PRICE;
   }
 
   /** "Eleanor" → "Eleanor's"; "Chris" → "Chris'". */
@@ -1432,7 +1388,7 @@ const TOTAL = STEPS.length;
       const res = await fetch(`${ENGINE_URL}/api/create-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ recipient_id: state.recipient_id, plan }),
+        body: JSON.stringify({ recipient_id: state.recipient_id, plan: PLAN }),
       });
       const body = await res.json().catch(() => null);
 
@@ -1897,14 +1853,14 @@ const TOTAL = STEPS.length;
   .price-sep { margin: 0 0.5rem; color: var(--line); }
   .price-cancel { font-size: 0.98rem; font-weight: 300; color: var(--soft-ink); }
 
-  .founding { margin: 0 0 1.75rem; }
-  .linkish {
-    background: none; border: 0; padding: 0; cursor: pointer;
-    font-family: var(--font-body); font-size: 0.92rem; font-weight: 400;
-    color: var(--rose-deep); text-decoration: underline;
+  /* Quiet by design: it's a signpost for the few who hold a code, not an
+     invitation for everyone else to go looking for a discount. */
+  .promo-note {
+    margin: 0 0 1.75rem;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--soft-ink);
   }
-  .founding-fields { margin-top: 1rem; max-width: 22rem; }
-  .field-hint[data-tone='good'] { color: var(--rose-deep); font-weight: 500; }
 
   /* ── step 8 done ─────────────────────────────────────────────────────── */
   .done-next {
