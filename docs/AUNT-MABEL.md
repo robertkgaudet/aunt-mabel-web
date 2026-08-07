@@ -147,7 +147,8 @@ This is a standing rule, not a roadmap item: it constrains the voice agent, the
 website, the emails, and the legal pages equally. It sits alongside the
 not-a-medical-service positioning and the open attorney items.
 
-Three pieces of planned work follow from it, all detailed in
+Three pieces of work follow from it — **the second is a core MVP requirement
+that blocks launch**, not a future enhancement. All detailed in
 [`aunt-mabel-engine/docs/ROADMAP.md`](../../aunt-mabel-engine/docs/ROADMAP.md)
 § Emergency posture & between-call reachability:
 
@@ -158,16 +159,22 @@ Three pieces of planned work follow from it, all detailed in
    **regardless** of what the person decides. No reassurance that helps someone
    talk themselves out of calling 911. Retell prompt is the source of truth;
    `prompts/mabel-persona.md` is synced to match.
-2. **In-the-moment family connect (near-term).** Distress detected *during* a
-   call triggers an immediate notification to the emergency contact — "let me
-   let Sarah know right now" — rather than waiting for the post-call analysis
-   that escalation hangs off today. Richer version warm-transfers the live call
-   to the family member.
-3. **Between-call reachability tiers (future).** Baseline is honest
-   expectation-setting: a scheduled daily check-in, not an on-demand lifeline.
-   Premium adds a paid real-person callback line — whose wording is a legal
-   question, of the same class as the disaster-check "effort, not guaranteed
-   arrival" item already with the attorney.
+2. 🔴 **In-the-moment family connect — CORE MVP REQUIREMENT, every account.**
+   Distress detected *during* a call triggers an immediate notification to the
+   emergency contact — "let me let Sarah know right now" — rather than waiting
+   for the post-call analysis that escalation hangs off today.
+
+   **Promoted from a future upcharge to core**, because an elderly person in
+   distress must never be told, in effect, "I'll call back tomorrow." Reaching
+   their family in the moment is central to the product's purpose, not a tier
+   sold to families who can afford it. It may raise the base price and may delay
+   MVP launch — **both accepted**, and neither reopens the decision.
+3. **Reachability tiers.** **Core, every account, in MVP:** Mabel leads with 911,
+   and immediately reaches the emergency contact on detected distress. **Later
+   enhancement:** warm-transfer the live call to the family member. **Later
+   premium (optional):** a paid real-person callback line — whose wording is a
+   legal question, of the same class as the disaster-check "effort, not
+   guaranteed arrival" item already with the attorney.
 
 ## Consent (applies wherever consent is read or written)
 
