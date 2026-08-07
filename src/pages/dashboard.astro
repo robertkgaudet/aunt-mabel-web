@@ -1,0 +1,242 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title="Your dashboard · Aunt Mabel">
+  <div class="dash-main">
+    <div class="dash-title-row">
+      <h1 class="dash-h1" id="greeting">Welcome back.</h1>
+      <span class="dash-date" id="today"></span>
+    </div>
+    <p class="dash-lede" id="lede"></p>
+
+    <div class="dash-cards" id="cards"></div>
+
+    <p class="dash-footnote">
+      Mabel calls once a day and simply says hello. If something sounds off — or nobody
+      picks up — we email you right away.
+    </p>
+  </div>
+</DashboardLayout>
+
+<script>
+  import {
+    initDashboard,
+    greeting,
+    firstName,
+    friendlyTime,
+    friendlyZone,
+  } from '../scripts/dashboard.js';
+
+  /**
+   * When is the next call, in the recipient's own timezone?
+   *
+   * Their clock is the one that matters — a 9:00 AM call time means 9:00 AM
+   * where THEY are, so "today or tomorrow?" has to be answered there and not in
+   * the browser's zone. Returns '' when the call time is malformed, which the
+   * caller shows as "not set" rather than inventing a time.
+   */
+  function nextCallLabel(callTime, timezone) {
+    const pretty = friendlyTime(callTime);
+    if (!pretty) return '';
+
+    let nowThere;
+    try {
+      nowThere = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone || 'America/Chicago',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      }).format(new Date());
+    } catch {
+      // An unknown timezone string should not take the card down with it.
+      return pretty;
+    }
+
+    // Both sides are zero-padded HH:MM, so a string compare is a time compare.
+    const due = String(callTime).padStart(5, '0');
+    return (due > nowThere ? 'Today at ' : 'Tomorrow at ') + pretty;
+  }
+
+  /**
+   * Everything shown on a card comes from the recipient row — status, consent,
+   * call time. There is deliberately no call history here: the calls table is
+   * empty until the scheduler starts writing to it, and a cheerful invented
+   * "she sounded good this morning" would be a lie about someone's parent.
+   * 3b fills this in with real call data.
+   */
+  function describe(r) {
+    if (r.status === 'pending_payment') {
+      return {
+        tone: 'is-paused',
+        chipClass: 'quiet',
+        chip: 'Not started',
+        glyph: '•',
+        line: 'Sign-up isn’t finished yet.',
+        sub: 'Mabel won’t call until the free trial is started.',
+        cta: 'Finish signing up →',
+        href: '/enroll',
+      };
+    }
+
+    if (r.status === 'paused') {
+      return {
+        tone: 'is-paused',
+        chipClass: 'quiet',
+        chip: 'Paused',
+        glyph: '•',
+        line: 'Calls are paused.',
+        sub: 'Mabel isn’t calling at the moment.',
+        cta: 'See details →',
+        href: null,
+      };
+    }
+
+    // Active, but nobody has said yes on a call yet. This is the honest state
+    // for everyone between paying and Mabel's first successful call.
+    if (!r.verbal_consent) {
+      return {
+        tone: 'is-waiting',
+        chipClass: 'waiting',
+        chip: 'First call coming up',
+        glyph: '📞',
+        line: 'Mabel’s first call is on the way.',
+        sub: 'She’ll introduce herself and ask if the daily calls are welcome before anything else.',
+        cta: 'See details →',
+        href: null,
+      };
+    }
+
+    return {
+      tone: '',
+      chipClass: 'good',
+      chip: 'Calling daily',
+      glyph: '☀️',
+      line: 'Mabel has been calling every day.',
+      sub: 'Each morning’s call will show up here.',
+      cta: 'See details →',
+      href: null,
+    };
+  }
+
+  function card(r) {
+    const d = describe(r);
+    const time = friendlyTime(r.call_time);
+    const zone = friendlyZone(r.timezone);
+    const meta = time ? `Calls at ${time}${zone ? ' · ' + zone : ''}` : 'Call time not set';
+    const next = nextCallLabel(r.call_time, r.timezone);
+    const href = d.href || `/dashboard/recipient?id=${encodeURIComponent(r.id)}`;
+
+    const a = document.createElement('a');
+    a.className = `dash-card ${d.tone}`.trim();
+    a.href = href;
+
+    a.innerHTML = `
+      <div class="dash-card-head">
+        <div>
+          <div class="dash-card-name"></div>
+          <div class="dash-card-meta"></div>
+        </div>
+        <span class="chip ${d.chipClass}"></span>
+      </div>
+
+      <div class="dash-status">
+        <span class="dash-status-glyph" aria-hidden="true">${d.glyph}</span>
+        <p class="dash-status-line"></p>
+      </div>
+      <p class="dash-status-sub"></p>
+
+      <div class="dash-rule"></div>
+
+      <div class="dash-card-foot">
+        <div>
+          <div class="dash-eyebrow">Next call</div>
+          <div class="next-call"></div>
+        </div>
+      </div>
+
+      <div class="dash-card-cta"></div>
+    `;
+
+    // Names and free text go in as textContent, never interpolated into the
+    // markup above — a recipient's name is user-supplied data.
+    a.querySelector('.dash-card-name').textContent = r.name || 'Unnamed';
+    a.querySelector('.dash-card-meta').textContent = meta;
+    a.querySelector('.chip').textContent = d.chip;
+    a.querySelector('.dash-status-line').textContent = d.line;
+    a.querySelector('.dash-status-sub').textContent = d.sub;
+    a.querySelector('.next-call').textContent =
+      r.status === 'active' ? next || 'Not scheduled' : '—';
+    a.querySelector('.dash-card-cta').textContent = d.cta;
+
+    return a;
+  }
+
+  (async () => {
+    const ctx = await initDashboard();
+    if (!ctx) return; // redirected, or the failure slot is already showing why
+    const { supabase, account } = ctx;
+
+    document.getElementById('dash-content').hidden = false;
+
+    const name = firstName(account);
+    document.getElementById('greeting').textContent = name
+      ? `${greeting()}, ${name}.`
+      : `${greeting()}.`;
+    document.getElementById('today').textContent = new Date().toLocaleDateString(undefined, {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    const { data: recipients, error } = await supabase
+      .from('recipients')
+      .select('id, name, phone, timezone, call_time, status, verbal_consent, created_at')
+      .eq('account_id', account.id)
+      .order('created_at', { ascending: true });
+
+    const cards = document.getElementById('cards');
+    const lede = document.getElementById('lede');
+
+    if (error) {
+      console.error('[dashboard] recipients load failed', error);
+      lede.textContent = 'We could not load your loved ones just now. Please refresh in a moment.';
+      return;
+    }
+
+    if (!recipients || recipients.length === 0) {
+      lede.textContent = 'There’s nobody on your account yet.';
+      cards.innerHTML = `
+        <div class="dash-empty">
+          <h2>Let’s add your first loved one</h2>
+          <p>Tell Mabel who to call, when to call, and who to reach if something seems wrong.</p>
+          <a class="dash-btn" href="/enroll">Get started</a>
+        </div>
+      `;
+      return;
+    }
+
+    const active = recipients.filter((r) => r.status === 'active');
+    const waiting = active.filter((r) => !r.verbal_consent);
+    lede.textContent =
+      waiting.length === active.length && active.length > 0
+        ? 'Everything is set up. Mabel’s first call is on the way.'
+        : `Mabel is calling ${active.length === 1 ? 'one person' : active.length + ' people'} on your account each day.`;
+
+    for (const r of recipients) cards.appendChild(card(r));
+
+    // Up to three per account for now. Past that, the tile would promise
+    // something the enrollment flow will refuse.
+    if (recipients.length < 3) {
+      const add = document.createElement('a');
+      add.className = 'dash-add';
+      add.href = '/enroll';
+      add.innerHTML = `
+        <div class="dash-add-plus" aria-hidden="true">+</div>
+        <div class="dash-add-title">Add another loved one</div>
+        <div class="dash-add-sub">Mabel can call up to three people on your account.</div>
+      `;
+      cards.appendChild(add);
+    }
+  })();
+</script>

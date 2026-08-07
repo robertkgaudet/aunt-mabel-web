@@ -1,0 +1,348 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+
+{/*
+  Astro builds this site statically, so there is no /dashboard/recipient/[id]
+  route to pre-render — the ids are UUIDs that only exist in Supabase. The id
+  travels as a query parameter instead, and the page loads the row client-side
+  under RLS, which is what actually enforces "only your own recipients".
+*/}
+<DashboardLayout title="Loved one · Aunt Mabel">
+  <div class="dash-main">
+    <a class="dash-back" href="/dashboard">← Everyone</a>
+
+    <div class="dash-title-row">
+      <h1 class="dash-h1" id="r-name">…</h1>
+    </div>
+    <p class="dash-lede" id="r-meta"></p>
+
+    <section class="panel">
+      <h2>Her days</h2>
+      <p class="panel-sub" id="timeline-sub">A calendar of calls, and Mabel’s note from each one.</p>
+      <div class="stub-note">
+        This is where the month calendar and the call-by-call notes will appear. They
+        arrive with the next piece of work, once the scheduler has real calls recorded
+        against this person — we’d rather show nothing than invent them.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 id="manage-title">Manage these calls</h2>
+      <p class="panel-sub">Change anything here and Mabel will know before the next call.</p>
+
+      <div class="manage-grid" id="manage-grid"></div>
+
+      <div id="edit-region" hidden></div>
+
+      <div class="dash-actions">
+        <a class="dash-btn dark" href="/enroll">+ Add another loved one</a>
+        <button class="dash-btn ghost" id="manage-billing" type="button">
+          Pause or cancel
+        </button>
+      </div>
+      <p class="dash-note" id="manage-note" hidden></p>
+      <p class="hint" style="margin-top:12px">
+        Pausing and cancelling both run through Stripe, where your billing lives.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>What Mabel asks about</h2>
+      <p class="panel-sub">
+        The same warm check-in every day. These aren’t adjustable yet.
+      </p>
+      <div class="manage-grid">
+        <div class="manage-tile" aria-disabled="true">
+          <div class="manage-label">Every call</div>
+          <div class="manage-value">How they slept, whether they’ve eaten, and how they’re feeling</div>
+        </div>
+        <div class="manage-tile" aria-disabled="true">
+          <div class="manage-label">Watching for</div>
+          <div class="manage-value">Falls, pain, confusion, missed medication, low mood</div>
+        </div>
+        <div class="manage-tile" aria-disabled="true">
+          <div class="manage-label">And simply</div>
+          <div class="manage-value">A friendly conversation, for as long as they’d like one</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</DashboardLayout>
+
+<script>
+  import {
+    initDashboard,
+    engineFetch,
+    friendlyTime,
+    friendlyZone,
+  } from '../../scripts/dashboard.js';
+
+  const note = (el, message, kind) => {
+    el.textContent = message;
+    el.className = `dash-note ${kind || ''}`.trim();
+    el.hidden = false;
+  };
+
+  const esc = (s) => String(s ?? '');
+
+  (async () => {
+    const ctx = await initDashboard();
+    if (!ctx) return;
+    const { supabase, session, account } = ctx;
+
+    document.getElementById('dash-content').hidden = false;
+
+    const id = new URLSearchParams(window.location.search).get('id') || '';
+    const fatal = (msg) => {
+      document.getElementById('r-name').textContent = 'Not found';
+      document.getElementById('r-meta').textContent = msg;
+      document.querySelectorAll('.panel').forEach((p) => (p.hidden = true));
+    };
+
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+      fatal('That link doesn’t point to anyone on your account.');
+      return;
+    }
+
+    // account_id is in the filter as well as RLS. RLS is what enforces this —
+    // but saying it out loud here means a future change to the policy can't
+    // quietly widen what this page shows.
+    const { data: r, error } = await supabase
+      .from('recipients')
+      .select(
+        'id, name, phone, timezone, call_time, status, verbal_consent, doctor_name, doctor_phone, zip'
+      )
+      .eq('id', id)
+      .eq('account_id', account.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error('[recipient] load failed', error);
+      fatal('We couldn’t load this person just now. Please refresh in a moment.');
+      return;
+    }
+    if (!r) {
+      fatal('That link doesn’t point to anyone on your account.');
+      return;
+    }
+
+    const { data: contacts } = await supabase
+      .from('contacts')
+      .select('id, name, email, phone, relationship, notify_method')
+      .eq('recipient_id', r.id)
+      .order('created_at', { ascending: true });
+
+    // ------------------------------------------------------------- header
+    const firstName = (r.name || '').split(/\s+/)[0] || 'them';
+    document.getElementById('r-name').textContent = r.name || 'Unnamed';
+    document.getElementById('manage-title').textContent = `Manage ${firstName}’s calls`;
+    document.getElementById('timeline-sub').textContent =
+      `A calendar of calls, and Mabel’s note from each one.`;
+
+    const time = friendlyTime(r.call_time);
+    const zone = friendlyZone(r.timezone);
+    const statusWord =
+      r.status === 'active'
+        ? r.verbal_consent
+          ? 'Calling daily'
+          : 'First call coming up'
+        : r.status === 'paused'
+          ? 'Paused'
+          : 'Sign-up not finished';
+    document.getElementById('r-meta').textContent =
+      `${statusWord} · ${time ? `calls at ${time}` : 'call time not set'}${zone ? ` · ${zone}` : ''}`;
+
+    // ------------------------------------------------------------- manage
+    const grid = document.getElementById('manage-grid');
+    const region = document.getElementById('edit-region');
+    const manageNote = document.getElementById('manage-note');
+
+    const contactSummary = () => {
+      if (!contacts || contacts.length === 0) return 'Nobody added yet';
+      return contacts.map((c) => c.name).filter(Boolean).join(', ') || 'Nobody added yet';
+    };
+    const doctorSummary = () =>
+      r.doctor_name ? `${r.doctor_name}${r.doctor_phone ? ` · ${r.doctor_phone}` : ''}` : 'Not added';
+
+    const tiles = [
+      { key: 'time', label: 'Call time', value: () => (time ? `Every day at ${friendlyTime(r.call_time)}${zone ? ` (${zone})` : ''}` : 'Not set') },
+      { key: 'contacts', label: 'Who we alert', value: contactSummary },
+      { key: 'doctor', label: 'Their doctor', value: doctorSummary },
+    ];
+
+    function paintTiles() {
+      grid.innerHTML = '';
+      for (const t of tiles) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'manage-tile';
+        b.innerHTML = '<div class="manage-label"></div><div class="manage-value"></div>';
+        b.querySelector('.manage-label').textContent = t.label;
+        b.querySelector('.manage-value').textContent = t.value();
+        b.addEventListener('click', () => openEditor(t.key));
+        grid.appendChild(b);
+      }
+    }
+
+    function closeEditor() {
+      region.hidden = true;
+      region.innerHTML = '';
+    }
+
+    async function save(patch, after) {
+      manageNote.hidden = true;
+      const { data, error: saveErr } = await supabase
+        .from('recipients')
+        .update(patch)
+        .eq('id', r.id)
+        .select('id, call_time, doctor_name, doctor_phone')
+        .single();
+
+      if (saveErr) {
+        console.error('[recipient] save failed', saveErr);
+        note(manageNote, 'We couldn’t save that just now. Please try again.', 'error');
+        return false;
+      }
+      Object.assign(r, data);
+      if (after) after();
+      paintTiles();
+      closeEditor();
+      note(manageNote, 'Saved.', 'ok');
+      return true;
+    }
+
+    function openEditor(key) {
+      region.hidden = false;
+
+      if (key === 'time') {
+        region.innerHTML = `
+          <div class="panel" style="margin:18px 0 0;background:var(--cream)">
+            <div class="field">
+              <label for="edit-time">What time should Mabel call?</label>
+              <input id="edit-time" type="time" value="${esc(r.call_time)}" />
+              <p class="hint">In ${esc(zone || r.timezone)} — ${esc(firstName)}’s own clock.</p>
+            </div>
+            <div class="dash-actions">
+              <button class="dash-btn" id="edit-save" type="button">Save</button>
+              <button class="dash-btn ghost" id="edit-cancel" type="button">Cancel</button>
+            </div>
+          </div>
+        `;
+        region.querySelector('#edit-save').addEventListener('click', () => {
+          const v = region.querySelector('#edit-time').value;
+          if (!/^\d{2}:\d{2}$/.test(v)) {
+            note(manageNote, 'Please pick a time.', 'error');
+            return;
+          }
+          save({ call_time: v });
+        });
+      }
+
+      if (key === 'doctor') {
+        region.innerHTML = `
+          <div class="panel" style="margin:18px 0 0;background:var(--cream)">
+            <div class="field">
+              <label for="edit-doc-name">Doctor’s name</label>
+              <input id="edit-doc-name" type="text" value="${esc(r.doctor_name)}" placeholder="Optional" />
+            </div>
+            <div class="field">
+              <label for="edit-doc-phone">Doctor’s phone</label>
+              <input id="edit-doc-phone" type="tel" value="${esc(r.doctor_phone)}" placeholder="Optional" />
+            </div>
+            <div class="dash-actions">
+              <button class="dash-btn" id="edit-save" type="button">Save</button>
+              <button class="dash-btn ghost" id="edit-cancel" type="button">Cancel</button>
+            </div>
+          </div>
+        `;
+        region.querySelector('#edit-save').addEventListener('click', () => {
+          const name = region.querySelector('#edit-doc-name').value.trim();
+          const phone = region.querySelector('#edit-doc-phone').value.trim();
+          // Both optional — but a phone with no name is a dead end, so say so.
+          if (phone && !name) {
+            note(manageNote, 'Please add the doctor’s name too.', 'error');
+            return;
+          }
+          save({ doctor_name: name || null, doctor_phone: phone || null });
+        });
+      }
+
+      if (key === 'contacts') {
+        const rows = (contacts || []).map(
+          (c, i) => `
+            <div class="field">
+              <label for="c-name-${i}">Contact ${i + 1} — name</label>
+              <input id="c-name-${i}" type="text" value="${esc(c.name)}" />
+            </div>
+            <div class="field">
+              <label for="c-email-${i}">Contact ${i + 1} — email</label>
+              <input id="c-email-${i}" type="email" value="${esc(c.email)}" />
+            </div>`
+        ).join('');
+
+        region.innerHTML = `
+          <div class="panel" style="margin:18px 0 0;background:var(--cream)">
+            ${rows || '<p class="sub-body">Nobody is set up to be alerted yet.</p>'}
+            <p class="hint">
+              Alerts go by email. Adding or removing people is part of the sign-up flow for now.
+            </p>
+            <div class="dash-actions">
+              ${contacts && contacts.length ? '<button class="dash-btn" id="edit-save" type="button">Save</button>' : ''}
+              <button class="dash-btn ghost" id="edit-cancel" type="button">Close</button>
+            </div>
+          </div>
+        `;
+
+        const saveBtn = region.querySelector('#edit-save');
+        if (saveBtn) {
+          saveBtn.addEventListener('click', async () => {
+            manageNote.hidden = true;
+            for (let i = 0; i < contacts.length; i++) {
+              const name = region.querySelector(`#c-name-${i}`).value.trim();
+              const email = region.querySelector(`#c-email-${i}`).value.trim();
+              if (!name || !email) {
+                note(manageNote, 'Each contact needs a name and an email.', 'error');
+                return;
+              }
+              const { error: cErr } = await supabase
+                .from('contacts')
+                .update({ name, email })
+                .eq('id', contacts[i].id);
+              if (cErr) {
+                console.error('[recipient] contact save failed', cErr);
+                note(manageNote, 'We couldn’t save that just now. Please try again.', 'error');
+                return;
+              }
+              contacts[i].name = name;
+              contacts[i].email = email;
+            }
+            paintTiles();
+            closeEditor();
+            note(manageNote, 'Saved.', 'ok');
+          });
+        }
+      }
+
+      const cancelBtn = region.querySelector('#edit-cancel');
+      if (cancelBtn) cancelBtn.addEventListener('click', closeEditor);
+    }
+
+    paintTiles();
+
+    // ------------------------------------------------------------ billing
+    const billingBtn = document.getElementById('manage-billing');
+    billingBtn.addEventListener('click', async () => {
+      billingBtn.disabled = true;
+      manageNote.hidden = true;
+      try {
+        const { url } = await engineFetch('/api/create-portal-session', {}, session);
+        window.location.href = url;
+      } catch (err) {
+        console.error('[recipient] portal failed', err);
+        note(manageNote, err.message || 'We couldn’t open billing just now.', 'error');
+        billingBtn.disabled = false;
+      }
+    });
+  })();
+</script>

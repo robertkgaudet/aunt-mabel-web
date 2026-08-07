@@ -1,33 +1,28 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+// The old /account stub is now /dashboard. Anything already linking here — a
+// bookmark, an old email, the site nav before it was updated — lands on the
+// real thing instead of a dead page.
+//
+// A meta refresh rather than a server redirect: this site builds statically to
+// Cloudflare Pages, so there is no server here to answer with a 301.
 ---
 
-<BaseLayout title="Your account · Aunt Mabel" noindex={true}>
-  <div class="wrap" id="content" hidden>
-    <h1>Your account</h1>
-    <p class="lede">
-      Signed in as <strong id="user-email"></strong>.
-    </p>
-
-    <!-- Placeholder. Recipients, contacts, call history and billing land here
-         once the signup flow is designed. -->
-
-    <p style="margin-top:2rem">
-      <a class="btn btn-secondary" href="/signout">Sign out</a>
-    </p>
-  </div>
-</BaseLayout>
-
-<script>
-  // Reference implementation of the per-page guard. Copy these three lines
-  // into any page that requires a signed-in user.
-  import { requireSession } from '../scripts/auth.js';
-
-  (async () => {
-    const session = await requireSession();
-    if (!session) return; // requireSession already redirected to /login
-
-    document.getElementById('user-email').textContent = session.user.email ?? '';
-    document.getElementById('content').hidden = false;
-  })();
-</script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Your account · Aunt Mabel</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="refresh" content="0; url=/dashboard" />
+    <link rel="canonical" href="/dashboard" />
+  </head>
+  <body>
+    <p>Your account has moved. <a href="/dashboard">Go to your dashboard</a>.</p>
+    <script>
+      // Fires immediately; the meta refresh above is the fallback for anyone
+      // with JavaScript off. replace() keeps /account out of the back button,
+      // so "back" from the dashboard doesn't bounce them straight forward again.
+      window.location.replace('/dashboard');
+    </script>
+  </body>
+</html>

@@ -1405,9 +1405,24 @@ const TOTAL = STEPS.length;
     pStatus.textContent = 'Taking you to our payment page…';
 
     try {
+      // The engine now requires the signed-in user's token here, and checks
+      // that this recipient belongs to that user before creating a session.
+      // Without it a stranger could attach their card to someone else's
+      // recipient row, which is why the endpoint stopped being open.
+      const { data: sess } = await supabase.auth.getSession();
+      if (!sess?.session) {
+        pStatus.textContent = 'Please sign in again before paying.';
+        pStatus.setAttribute('data-tone', 'error');
+        goBtn.disabled = false;
+        return;
+      }
+
       const res = await fetch(`${ENGINE_URL}/api/create-checkout-session`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sess.session.access_token}`,
+        },
         body: JSON.stringify({ recipient_id: state.recipient_id, plan: PLAN }),
       });
       const body = await res.json().catch(() => null);

@@ -1,0 +1,503 @@
+/* =============================================================
+   Dashboard — the signed-in area
+   -------------------------------------------------------------
+   Built from the Claude Design mockup. Every colour in that mockup was already
+   a token in site.css (#f6efe2 = --cream, #c25b50 = --rose, and so on), so
+   nothing here introduces a new palette — it reuses the site's own.
+
+   Deliberately its own stylesheet rather than more rules in site.css: the
+   public pages and the dashboard share tokens but not layout, and keeping the
+   two apart is what stopped Step 5's inputs inheriting the wrong form styles.
+   ============================================================= */
+
+/* ---------------------------------------------------------------- shell */
+
+.dash-body {
+  min-height: 100vh;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dash-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(246, 239, 226, 0.94);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.dash-header-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dash-wordmark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.dash-wordmark:hover { color: var(--ink); }
+
+.dash-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper);
+  font-family: var(--font-head);
+  font-size: 15px;
+  line-height: 1;
+}
+
+.dash-wordmark-text {
+  font-family: var(--font-head);
+  font-size: 21px;
+  letter-spacing: -0.01em;
+}
+
+/* ---------------------------------------------------------------- user menu */
+
+.dash-user-wrap { position: relative; }
+
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  padding: 5px 10px 5px 5px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s ease;
+}
+.dash-user:hover { border-color: #c9bda3; }
+
+.dash-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.dash-user-name { font-size: 13.5px; font-weight: 400; }
+.dash-caret { font-size: 9px; color: var(--soft-ink); padding-right: 2px; }
+
+.dash-menu {
+  position: absolute;
+  right: 0;
+  top: 46px;
+  width: 210px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(45, 36, 23, 0.13);
+  overflow: hidden;
+  padding: 6px;
+}
+
+.dash-menu a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.dash-menu a:hover { background: #f1e9d8; color: var(--ink); }
+.dash-menu a.muted { color: var(--soft-ink); }
+
+/* ---------------------------------------------------------------- layout */
+
+.dash-main { max-width: 1040px; margin: 0 auto; padding: 44px 24px 90px; }
+.dash-main.narrow { max-width: 720px; padding-top: 26px; }
+
+.dash-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--soft-ink);
+  text-decoration: none;
+  margin-bottom: 22px;
+}
+.dash-back:hover { color: var(--rose); }
+
+.dash-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.dash-h1 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+
+.dash-date { font-size: 13px; color: var(--soft-ink); }
+
+.dash-lede {
+  margin: 0 0 34px;
+  font-size: 16.5px;
+  color: var(--soft-ink);
+  max-width: 46ch;
+  line-height: 1.55;
+}
+
+.dash-fatal {
+  background: var(--paper);
+  border: 1px solid rgba(194, 91, 80, 0.35);
+  border-left: 4px solid var(--rose);
+  border-radius: 14px;
+  padding: 20px 22px;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+/* ---------------------------------------------------------------- cards */
+
+.dash-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 22px;
+}
+
+.dash-card {
+  display: block;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--gf-green);
+  border-radius: 18px;
+  padding: 26px 26px 24px;
+  text-decoration: none;
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(45, 36, 23, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.dash-card:hover {
+  color: var(--ink);
+  box-shadow: 0 10px 26px rgba(45, 36, 23, 0.1);
+  transform: translateY(-2px);
+}
+.dash-card.is-waiting { border-top-color: var(--gold); }
+.dash-card.is-paused { border-top-color: #cfc6b4; }
+
+.dash-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dash-card-name {
+  font-family: var(--font-head);
+  font-size: 27px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.dash-card-meta { font-size: 12.5px; color: var(--soft-ink); margin-top: 3px; }
+
+.chip {
+  font-size: 11.5px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-weight: 400;
+  border: 1px solid transparent;
+}
+.chip.good {
+  background: rgba(122, 182, 72, 0.16);
+  color: #4d7a24;
+  border-color: rgba(122, 182, 72, 0.35);
+}
+.chip.waiting {
+  background: rgba(217, 164, 65, 0.16);
+  color: #8a6414;
+  border-color: rgba(217, 164, 65, 0.45);
+}
+.chip.quiet {
+  background: rgba(45, 36, 23, 0.06);
+  color: var(--soft-ink);
+  border-color: var(--line);
+}
+
+.dash-status {
+  margin: 20px 0 0;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.dash-status-glyph { font-size: 17px; line-height: 1.35; }
+.dash-status-line {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 18.5px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.dash-status-sub {
+  margin: 8px 0 0 27px;
+  font-size: 13.5px;
+  color: var(--soft-ink);
+  line-height: 1.5;
+}
+
+.dash-rule { height: 1px; background: var(--line); margin: 22px 0 16px; }
+
+.dash-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dash-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--soft-ink);
+  margin-bottom: 6px;
+}
+
+.dash-card-cta { margin-top: 18px; font-size: 13.5px; color: var(--rose); font-weight: 400; }
+
+/* The "add another" tile — a first-class path, not an afterthought. */
+.dash-add {
+  border: 1px dashed #cfc0a2;
+  border-radius: 18px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  min-height: 180px;
+  color: var(--soft-ink);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.dash-add:hover { border-color: var(--rose); color: var(--rose); }
+.dash-add-plus { font-size: 24px; font-family: var(--font-head); line-height: 1; }
+.dash-add-title { font-family: var(--font-head); font-size: 18px; color: var(--ink); }
+.dash-add-sub { font-size: 12.5px; max-width: 24ch; line-height: 1.5; }
+
+.dash-footnote {
+  margin: 40px 0 0;
+  font-size: 12.5px;
+  color: var(--soft-ink);
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+/* ---------------------------------------------------------------- panels */
+
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px 28px;
+  margin-bottom: 20px;
+}
+
+.panel h2 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: 21px;
+  margin: 0 0 4px;
+}
+.panel .panel-sub { margin: 0 0 18px; font-size: 13px; color: var(--soft-ink); }
+
+.field { margin-bottom: 18px; }
+.field:last-of-type { margin-bottom: 0; }
+
+.field label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--soft-ink);
+  margin-bottom: 7px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--cream);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--ink);
+}
+.field input:focus,
+.field select:focus { outline: none; border-color: var(--rose); }
+.field input[readonly] { color: var(--soft-ink); cursor: not-allowed; }
+.field .hint { margin: 6px 0 0; font-size: 12.5px; color: var(--soft-ink); }
+
+.dash-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  cursor: pointer;
+  background: var(--rose);
+  color: var(--paper);
+  transition: background 0.15s ease;
+}
+.dash-btn:hover { background: var(--rose-deep); }
+.dash-btn[disabled] { opacity: 0.55; cursor: default; }
+
+.dash-btn.dark { background: var(--ink); }
+.dash-btn.dark:hover { background: #453722; }
+
+.dash-btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.dash-btn.ghost:hover { background: transparent; border-color: #c9bda3; }
+
+.dash-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
+
+.sub-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.sub-title { font-family: var(--font-head); font-size: 20px; }
+.sub-body { margin: 0 0 18px; font-size: 14.5px; color: var(--soft-ink); line-height: 1.6; }
+
+/* Alert preferences — informational rows, honestly styled as such. */
+.pref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+.pref-label { font-size: 15px; }
+.pref-hint { font-size: 12.5px; color: var(--soft-ink); margin-top: 3px; }
+
+.pref-state {
+  flex: none;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--soft-ink);
+  background: var(--cream);
+}
+.pref-state.on {
+  background: rgba(111, 125, 94, 0.14);
+  color: #4c5a3c;
+  border-color: rgba(111, 125, 94, 0.35);
+}
+
+/* ---------------------------------------------------------------- manage */
+
+.manage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.manage-tile {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 16px 17px;
+  background: var(--cream);
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.manage-tile:hover { border-color: #c9bda3; background: #f1e9d8; }
+.manage-tile[disabled] { cursor: default; opacity: 0.75; }
+.manage-tile[disabled]:hover { border-color: var(--line); background: var(--cream); }
+
+.manage-label {
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--soft-ink);
+  margin-bottom: 7px;
+}
+.manage-value { font-size: 14.5px; line-height: 1.45; }
+
+.stub-note {
+  background: var(--cream);
+  border: 1px dashed #cfc0a2;
+  border-radius: 14px;
+  padding: 20px 22px;
+  font-size: 14px;
+  color: var(--soft-ink);
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------- status */
+
+.dash-note { margin-top: 14px; font-size: 13.5px; line-height: 1.5; }
+.dash-note.error { color: var(--rose-deep); }
+.dash-note.ok { color: #4d7a24; }
+
+.dash-empty {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 34px 30px;
+  text-align: center;
+}
+.dash-empty h2 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+.dash-empty p { margin: 0 auto 20px; font-size: 15px; color: var(--soft-ink); max-width: 44ch; line-height: 1.6; }
+
+@media (max-width: 560px) {
+  .dash-h1 { font-size: 30px; }
+  .dash-main { padding: 30px 18px 70px; }
+  .dash-header-inner { padding: 12px 18px; }
+  .dash-user-name { display: none; }
+}

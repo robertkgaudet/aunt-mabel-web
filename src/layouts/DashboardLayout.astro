@@ -1,0 +1,85 @@
+---
+// Shell for the signed-in area (/dashboard/*).
+//
+// Deliberately NOT BaseLayout. The public pages carry the marketing chrome —
+// logo lockup, partnership tag, "Sign in". Once someone is signed in they get
+// the mockup's quieter header instead: wordmark on the left, their own name and
+// a small menu on the right. Sharing one header would have meant a growing pile
+// of conditionals in the public shell.
+//
+// site.css comes first for the brand tokens and the two web fonts; dashboard.css
+// layers the signed-in layout on top of them.
+import '../styles/site.css';
+import '../styles/dashboard.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {/* Nothing behind a sign-in belongs in a search index. */}
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#c25b50" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+  </head>
+
+  <body class="dash-body">
+    <header class="dash-header">
+      <div class="dash-header-inner">
+        <a class="dash-wordmark" href="/dashboard">
+          <span class="dash-mark" aria-hidden="true">M</span>
+          <span class="dash-wordmark-text">Aunt Mabel</span>
+        </a>
+
+        <div class="dash-user-wrap">
+          {/*
+            Hidden until the account loads. Rendering an empty pill and then
+            popping a name into it is the same flicker the public nav was fixed
+            for — blank-then-correct beats wrong-then-correct.
+          */}
+          <button
+            class="dash-user"
+            id="dash-user"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="dash-menu"
+            hidden
+          >
+            <span class="dash-avatar" id="dash-user-initials" aria-hidden="true"></span>
+            <span class="dash-user-name" id="dash-user-name"></span>
+            <span class="dash-caret" aria-hidden="true">▾</span>
+          </button>
+
+          <div class="dash-menu" id="dash-menu" role="menu" hidden>
+            <a href="/dashboard/account" role="menuitem">Account settings</a>
+            <a href="/signout" class="muted" role="menuitem">Sign out</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      {/*
+        Every dashboard page keeps these two siblings: the failure slot and the
+        content. initDashboard() swaps between them, so a page that cannot load
+        its account says why instead of sitting blank.
+      */}
+      <div class="dash-main" id="dash-fatal-wrap">
+        <div class="dash-fatal" id="dash-fatal" hidden></div>
+      </div>
+
+      <div id="dash-content" hidden>
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>

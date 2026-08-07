@@ -1,0 +1,314 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+
+<DashboardLayout title="Your account · Aunt Mabel">
+  <div class="dash-main narrow">
+    <a class="dash-back" href="/dashboard">← Everyone</a>
+
+    <h1 class="dash-h1" style="font-size:36px;margin-bottom:6px">Your account</h1>
+    <p class="dash-lede">This is about you, not the people Mabel calls.</p>
+
+    <section class="panel">
+      <h2>Who you are</h2>
+      <p class="panel-sub">The name we greet you by, and where we send alerts.</p>
+
+      <div class="field">
+        <label for="holder-name">Your name</label>
+        <input id="holder-name" type="text" autocomplete="name" placeholder="Your name" />
+      </div>
+
+      <div class="field">
+        <label for="holder-email">Email</label>
+        <input id="holder-email" type="email" readonly />
+        <p class="hint">
+          This is the address you signed in with, so it can’t be changed here.
+        </p>
+      </div>
+
+      <div class="dash-actions">
+        <button class="dash-btn" id="save-name" type="button">Save changes</button>
+      </div>
+      <p class="dash-note" id="name-note" hidden></p>
+    </section>
+
+    <section class="panel">
+      <h2>Your subscription</h2>
+      <p class="panel-sub">Read live from Stripe, so it always matches what you’ll be billed.</p>
+
+      <div id="sub-body">
+        <p class="sub-body" id="sub-loading">Checking with Stripe…</p>
+      </div>
+
+      <div class="dash-actions">
+        <button class="dash-btn dark" id="open-portal" type="button">Manage billing</button>
+        <button class="dash-btn ghost" id="open-portal-receipts" type="button">
+          See past receipts
+        </button>
+      </div>
+      <p class="dash-note" id="portal-note" hidden></p>
+    </section>
+
+    <section class="panel">
+      <h2>How we reach you</h2>
+      <p class="panel-sub">We only get in touch when something needs you.</p>
+
+      <div class="pref">
+        <div>
+          <div class="pref-label">Email me when something is flagged</div>
+          <div class="pref-hint" id="alert-email-hint"></div>
+        </div>
+        <span class="pref-state on">On</span>
+      </div>
+
+      <div class="pref">
+        <div>
+          <div class="pref-label">Email me if no one answers</div>
+          <div class="pref-hint">After Mabel has tried and couldn’t reach them</div>
+        </div>
+        <span class="pref-state on">On</span>
+      </div>
+
+      <div class="pref">
+        <div>
+          <div class="pref-label">Weekly summary</div>
+          <div class="pref-hint">One short note per person. Not built yet.</div>
+        </div>
+        <span class="pref-state">Coming</span>
+      </div>
+
+      <p class="hint" style="margin-top:16px">
+        Alerts go by email. We don’t send texts yet — when we do, you’ll be able to choose here.
+      </p>
+    </section>
+  </div>
+</DashboardLayout>
+
+<script>
+  import { initDashboard, engineFetch } from '../../scripts/dashboard.js';
+
+  const note = (el, message, kind) => {
+    el.textContent = message;
+    el.className = `dash-note ${kind || ''}`.trim();
+    el.hidden = false;
+  };
+
+  /** Cents → "$39" or "$38.50". Whole dollars lose the trailing ".00". */
+  function money(cents, currency) {
+    if (cents == null) return '';
+    const value = cents / 100;
+    const formatted = new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency: (currency || 'usd').toUpperCase(),
+      minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+    }).format(value);
+    return formatted;
+  }
+
+  /**
+   * What a subscription actually costs after any promo code.
+   *
+   * The founding rate is a Stripe promo code, so the discount exists only in
+   * Stripe — this is the one place it can be read truthfully. If we can't work
+   * out the arithmetic, we return the list price and say nothing about a
+   * discount rather than printing a number that might be wrong.
+   */
+  function effectiveAmount(s) {
+    if (s.unit_amount == null) return null;
+    const d = s.discount;
+    if (!d) return s.unit_amount;
+    if (d.percent_off != null) return Math.round(s.unit_amount * (1 - d.percent_off / 100));
+    if (d.amount_off != null) return Math.max(0, s.unit_amount - d.amount_off);
+    return s.unit_amount;
+  }
+
+  function daysUntil(ms) {
+    if (!ms) return null;
+    return Math.max(0, Math.ceil((ms - Date.now()) / 86400000));
+  }
+
+  const longDate = (ms) =>
+    new Date(ms).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+
+  /** One readable line per recipient — they can genuinely differ. */
+  function lineFor(entry) {
+    const who = entry.recipient_name || 'This person';
+    const s = entry.subscription;
+
+    if (entry.error === 'unreadable') {
+      return `${who} — we couldn’t reach Stripe for this one. Open Manage billing to see it.`;
+    }
+    if (!s) {
+      return entry.recipient_status === 'pending_payment'
+        ? `${who} — sign-up was never finished, so there’s no subscription yet.`
+        : `${who} — no subscription on file.`;
+    }
+
+    const amount = money(effectiveAmount(s), s.currency);
+    const per = s.interval ? `/${s.interval}` : '';
+
+    if (s.status === 'trialing') {
+      const left = daysUntil(s.trial_end);
+      const when = left === 0 ? 'today' : left === 1 ? 'tomorrow' : `in ${left} days`;
+      return `${who} — free trial, ends ${when}${amount ? `, then ${amount}${per}` : ''}.`;
+    }
+    if (s.status === 'active') {
+      if (s.cancel_at_period_end) {
+        return `${who} — cancelling. Calls continue until ${longDate(s.current_period_end)}.`;
+      }
+      return `${who} — ${amount || 'active'}${amount ? per : ''}, renews ${longDate(s.current_period_end)}.`;
+    }
+    if (s.status === 'past_due' || s.status === 'unpaid') {
+      return `${who} — a payment didn’t go through. Open Manage billing to fix it.`;
+    }
+    if (s.status === 'canceled') return `${who} — cancelled.`;
+    return `${who} — ${s.status}.`;
+  }
+
+  /** The headline chip and title, summarised across everyone on the account. */
+  function summarise(entries) {
+    const subs = entries.map((e) => e.subscription).filter(Boolean);
+    if (subs.length === 0) return { chip: 'Not started', chipClass: 'quiet', title: 'No billing set up yet' };
+
+    const trialing = subs.filter((s) => s.status === 'trialing');
+    const trouble = subs.filter((s) => s.status === 'past_due' || s.status === 'unpaid');
+
+    if (trouble.length) return { chip: 'Needs attention', chipClass: 'waiting', title: 'A payment didn’t go through' };
+
+    if (trialing.length) {
+      // Soonest trial end is the one that matters — it's the next thing to happen.
+      const soonest = Math.min(...trialing.map((s) => s.trial_end || Infinity));
+      const left = daysUntil(soonest);
+      return {
+        chip: 'Free trial',
+        chipClass: 'waiting',
+        title: left === 0 ? 'Ends today' : left === 1 ? '1 day left' : `${left} days left`,
+      };
+    }
+
+    const active = subs.filter((s) => s.status === 'active');
+    if (active.length) {
+      const total = active.reduce((sum, s) => sum + (effectiveAmount(s) || 0), 0);
+      const currency = active[0].currency;
+      const per = active[0].interval ? ` / ${active[0].interval}` : '';
+      return { chip: 'Active', chipClass: 'good', title: total ? `${money(total, currency)}${per}` : 'Active' };
+    }
+
+    return { chip: 'Cancelled', chipClass: 'quiet', title: 'No active subscription' };
+  }
+
+  (async () => {
+    const ctx = await initDashboard();
+    if (!ctx) return;
+    const { supabase, session, account } = ctx;
+
+    document.getElementById('dash-content').hidden = false;
+
+    const nameInput = document.getElementById('holder-name');
+    const emailInput = document.getElementById('holder-email');
+    nameInput.value = account.holder_name || '';
+    emailInput.value = account.email || session.user.email || '';
+    document.getElementById('alert-email-hint').textContent =
+      `${account.email || session.user.email || ''} · usually within a few minutes`;
+
+    // ---------------------------------------------------------------- name
+    const saveBtn = document.getElementById('save-name');
+    const nameNote = document.getElementById('name-note');
+
+    saveBtn.addEventListener('click', async () => {
+      const value = nameInput.value.trim();
+      if (!value) {
+        note(nameNote, 'Please enter your name.', 'error');
+        nameInput.focus();
+        return;
+      }
+
+      saveBtn.disabled = true;
+      nameNote.hidden = true;
+
+      // Read the row back rather than trusting the write. Confirming by effect
+      // is the difference between "we sent an update" and "your name is saved."
+      const { data, error } = await supabase
+        .from('accounts')
+        .update({ holder_name: value })
+        .eq('id', account.id)
+        .select('id, holder_name')
+        .single();
+
+      saveBtn.disabled = false;
+
+      if (error) {
+        console.error('[account] save failed', error);
+        note(nameNote, 'We couldn’t save that just now. Please try again.', 'error');
+        return;
+      }
+      if (data.id !== account.id) {
+        note(nameNote, 'Something went wrong saving that. Please refresh and try again.', 'error');
+        return;
+      }
+
+      account.holder_name = data.holder_name;
+      document.getElementById('dash-user-name').textContent = data.holder_name;
+      note(nameNote, 'Saved.', 'ok');
+    });
+
+    // ------------------------------------------------------- subscription
+    const body = document.getElementById('sub-body');
+    try {
+      const result = await engineFetch('/api/subscription-status', {}, session);
+      const entries = result.recipients || [];
+      const head = summarise(entries);
+
+      body.innerHTML = `
+        <div class="sub-head">
+          <span class="chip ${head.chipClass}"></span>
+          <span class="sub-title"></span>
+        </div>
+        <div id="sub-lines"></div>
+      `;
+      body.querySelector('.chip').textContent = head.chip;
+      body.querySelector('.sub-title').textContent = head.title;
+
+      const lines = body.querySelector('#sub-lines');
+      if (entries.length === 0) {
+        const p = document.createElement('p');
+        p.className = 'sub-body';
+        p.textContent = 'Once you add someone and start the free trial, the details show up here.';
+        lines.appendChild(p);
+      } else {
+        for (const entry of entries) {
+          const p = document.createElement('p');
+          p.className = 'sub-body';
+          p.style.marginBottom = '8px';
+          p.textContent = lineFor(entry);
+          lines.appendChild(p);
+        }
+      }
+    } catch (err) {
+      console.error('[account] subscription status failed', err);
+      body.innerHTML = '<p class="sub-body"></p>';
+      body.querySelector('p').textContent =
+        'We couldn’t reach Stripe to check your subscription. Manage billing below still works.';
+    }
+
+    // ------------------------------------------------------------- portal
+    const portalNote = document.getElementById('portal-note');
+    const openPortal = async (button) => {
+      button.disabled = true;
+      portalNote.hidden = true;
+      try {
+        const { url } = await engineFetch('/api/create-portal-session', {}, session);
+        window.location.href = url;
+      } catch (err) {
+        console.error('[account] portal failed', err);
+        note(portalNote, err.message || 'We couldn’t open billing just now.', 'error');
+        button.disabled = false;
+      }
+    };
+
+    for (const id of ['open-portal', 'open-portal-receipts']) {
+      const btn = document.getElementById(id);
+      btn.addEventListener('click', () => openPortal(btn));
+    }
+  })();
+</script>
