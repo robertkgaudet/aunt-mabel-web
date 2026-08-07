@@ -448,9 +448,11 @@ const TOTAL = STEPS.length;
     <section class="step" data-step="7" id="step-done" hidden>
       <p class="kicker">All set</p>
       <h1 id="d-done-heading">That's everything.</h1>
+      <p class="done-when" id="d-done-when">
+        Mabel will call every day at the time you chose.
+      </p>
       <p class="step-lede" id="d-done-lede">
-        Your first three days are free, and Mabel will ring for the first time
-        at the hour you chose.
+        Your first three days are free — nothing is charged until then.
       </p>
 
       <div class="done-next">
@@ -468,8 +470,15 @@ const TOTAL = STEPS.length;
       </p>
 
       <div class="step-actions">
-        <a class="btn btn-primary" href="/">Back to Aunt Mabel</a>
+        <a class="btn btn-primary" href="/welcome">Everything you'll want to know →</a>
+        <a class="btn-quiet" href="/">Back to Aunt Mabel</a>
       </div>
+      {/* No "we've emailed you a copy" line here: the flow sends no email at
+          all yet. Worth adding the sentence only once an email actually goes
+          out. */}
+      <p class="fineprint">
+        Worth bookmarking — that guide is where the answers live.
+      </p>
     </section>
 
     {/* TEMPORARY — remove before launch. Tracked in the design doc. */}
@@ -1359,6 +1368,17 @@ const TOTAL = STEPS.length;
     el('p-price').textContent = STANDARD_PRICE;
   }
 
+  /** "09:00" → "9:00 AM". Returns '' for anything unexpected rather than
+      rendering a raw 24-hour string at someone. */
+  function friendlyTime(hhmm) {
+    const m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm || '').trim());
+    if (!m) return '';
+    const h24 = Number(m[1]);
+    if (h24 > 23) return '';
+    const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+    return `${h12}:${m[2]} ${h24 < 12 ? 'AM' : 'PM'}`;
+  }
+
   /** "Eleanor" → "Eleanor's"; "Chris" → "Chris'". */
   function possessive(name) {
     return /s$/i.test(name) ? `${name}'` : `${name}'s`;
@@ -1427,7 +1447,7 @@ const TOTAL = STEPS.length;
     // creates the recipient minutes earlier, in this same sitting.
     const { data: rows, error } = await supabase
       .from('recipients')
-      .select('id, name, status, account_id')
+      .select('id, name, status, account_id, call_time')
       .eq('account_id', account.id)
       .order('created_at', { ascending: false })
       .limit(1);
@@ -1465,10 +1485,24 @@ const TOTAL = STEPS.length;
       // row a moment later; making this screen wait on it would show a scary
       // failure for a payment that actually succeeded.
       state.consent = true;
+      const who = recipient.name;
+      const when = friendlyTime(recipient.call_time);
+
       el('d-done-heading').textContent = state.is_self
         ? "That's everything."
-        : `That's everything — ${recipient.name} is all set.`;
-      el('done-first-call').textContent = `Mabel makes her first call to ${recipient.name} at the time you picked.`;
+        : `That's everything — ${who} is all set.`;
+
+      // Deliberately NOT "tomorrow". The scheduler calls within a window around
+      // call_time, so the first call may land today or tomorrow depending on
+      // when they enrolled — and naming a day we can't guarantee is a promise
+      // this page shouldn't make. "Every day at 9:00 AM" is true either way.
+      el('d-done-when').textContent = when
+        ? `Mabel will call ${state.is_self ? 'you' : who} every day at ${when}.`
+        : `Mabel will call ${state.is_self ? 'you' : who} every day at the time you chose.`;
+
+      el('done-first-call').textContent = when
+        ? `Mabel's first call comes at ${when}.`
+        : `Mabel makes her first call at the time you picked.`;
       renderDebug();
       show(7, { push: false });
       return;
@@ -1863,6 +1897,13 @@ const TOTAL = STEPS.length;
   }
 
   /* ── step 8 done ─────────────────────────────────────────────────────── */
+  .done-when {
+    font-family: var(--font-head);
+    font-size: 1.28rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin: 0 0 0.75rem;
+  }
   .done-next {
     margin: 2rem 0;
     padding: 22px 26px;

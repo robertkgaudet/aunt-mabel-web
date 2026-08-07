@@ -1,0 +1,296 @@
+---
+// The Family Guide — the page someone lands on after enrolling, and the one
+// they come back to later.
+//
+// ⚠️ PLACEHOLDER COPY. Every section below is holding wording pending Rob's
+// approved family-guide draft. It is deliberately conservative: the safety
+// section mirrors language already approved on /terms rather than making new
+// claims, and the disaster paragraph is phrased as EFFORT, never as a
+// guaranteed arrival — see docs/legal-source.md §4 item 8, open attorney items
+// (b) and (c). `noindex` stays on until the real copy lands.
+//
+// DELIBERATELY NOT PERSONALIZED. This page is permanent and bookmarkable, so it
+// is written to work for someone arriving cold months later. Passing a
+// recipient's name through a query string would put a third party's name into
+// browser history, shared links and referrer headers to buy a little warmth on
+// one visit — the flow's no-third-party-data-in-URLs rule applies here too.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const SUPPORT_EMAIL = 'Mabel@AuntMabel.app';
+---
+
+<BaseLayout
+  title="Your family guide · Aunt Mabel"
+  description="Everything you'll want to know about your loved one's daily call from Aunt Mabel."
+  noindex={true}
+>
+  <div class="wrap guide">
+    <header class="guide-head">
+      <p class="kicker">You're all set</p>
+      <h1>Welcome to the family.</h1>
+      <p class="guide-lede">
+        Mabel will call your loved one at their chosen time, every day. Below is
+        everything worth knowing — how to introduce her, what the calls are
+        like, and how to reach us. Keep this page bookmarked; it's here whenever
+        you need it.
+      </p>
+    </header>
+
+    <nav class="guide-toc" aria-label="On this page">
+      <a href="#talking">Talking to them about Mabel</a>
+      <a href="#expect">What to expect</a>
+      <a href="#safety">Important to know</a>
+      <a href="#account">Your account</a>
+    </nav>
+
+    {/* ── 1 ─────────────────────────────────────────────────────────── */}
+    <section class="guide-section" id="talking">
+      <p class="section-num">One</p>
+      <h2>How to talk to them about Aunt Mabel</h2>
+      <p>
+        This conversation goes better when it's framed as company rather than
+        supervision. Most people don't want to be checked up on — but almost
+        everyone likes being thought of.
+      </p>
+      <p>
+        It helps to be straightforward that Mabel is an automated caller. People
+        work it out quickly, and being told upfront lands far better than
+        discovering it. Mabel will say so herself, gently, if she's ever asked.
+      </p>
+      <ul class="guide-list">
+        <li><strong>Lead with the company, not the safety.</strong> "Someone friendly to talk to each day" sits better than "so we know you're okay."</li>
+        <li><strong>Say it's automated.</strong> Plainly and early. It isn't a thing to work around.</li>
+        <li><strong>Let it be theirs to end.</strong> Knowing they can stop it any time makes saying yes much easier.</li>
+        <li><strong>Give it a couple of weeks.</strong> The first call is the strangest one. It gets comfortable quickly.</li>
+      </ul>
+    </section>
+
+    {/* ── 2 ─────────────────────────────────────────────────────────── */}
+    <section class="guide-section" id="expect">
+      <p class="section-num">Two</p>
+      <h2>What to expect</h2>
+      <p>
+        Mabel calls at the same time each day. She's warm and unhurried — she
+        asks how they slept, how they're feeling, what they've got on. It's a
+        real conversation, not a checklist.
+      </p>
+      <p>
+        <strong>The first call is a little different.</strong> On it, Mabel will
+        gently confirm they're happy to keep hearing from her. If they'd rather
+        not, we stop right there and you aren't charged.
+      </p>
+      <p>
+        If someone doesn't pick up, Mabel tries again later the same day. If she
+        still can't reach them, we'll let you know.
+      </p>
+      <p>
+        If anything in a conversation sounds concerning, we contact the people
+        you named as emergency contacts — the same day, with what she heard.
+      </p>
+    </section>
+
+    {/* ── 3 ─────────────────────────────────────────────────────────── */}
+    <section class="guide-section" id="safety">
+      <p class="section-num">Three</p>
+      <h2>Important to know</h2>
+
+      <div class="safety-callout">
+        <p>
+          <strong>Aunt Mabel is a friendly daily check-in — not an emergency,
+          medical, or monitoring service.</strong> She is not a substitute for
+          calling 911, and not a substitute for professional care.
+        </p>
+        <p class="safety-emergency">
+          In an emergency, call <strong>911</strong>.
+        </p>
+      </div>
+
+      <p>Being plain about where the edges are:</p>
+      <ul class="guide-list">
+        <li><strong>Mabel calls once a day.</strong> She isn't listening between calls, and she can't detect a fall or a medical event.</li>
+        <li><strong>She won't call a doctor.</strong> If you gave us a doctor's details, we pass them along when we alert your contacts. We never call them ourselves.</li>
+        <li><strong>She isn't medical advice.</strong> Mabel doesn't diagnose anything or weigh in on medication.</li>
+        <li><strong>Alerts go to the people you named.</strong> If nobody is reachable, we can't escalate further on our own.</li>
+      </ul>
+
+      <h3>When disaster strikes</h3>
+      <p>
+        When a disaster reaches your loved one's area, we ask our partner
+        <strong>Cajun Navy Ground Force</strong> to make an in-person wellness
+        check. Their teams are often already on the ground in affected
+        communities.
+      </p>
+      <p class="honest-note">
+        We want to be honest about what that is and isn't. It is a commitment to
+        <strong>try</strong> — it is not a guarantee that someone will reach a
+        particular door at a particular time. Disasters are chaotic, roads close,
+        and demand can outstrip any team. Please don't treat the in-person check
+        as a substitute for an evacuation plan.
+      </p>
+    </section>
+
+    {/* ── 4 ─────────────────────────────────────────────────────────── */}
+    <section class="guide-section" id="account">
+      <p class="section-num">Four</p>
+      <h2>Your account, and how to cancel</h2>
+      <p>
+        Your first three days are free. After that it's $39 a month, and you can
+        stop any time.
+      </p>
+      <p>
+        <strong>Cancelling is meant to be easy.</strong> Email us and we'll take
+        care of it — no phone call, no retention conversation, no being passed
+        around. If you cancel during the free trial, you're never charged at all.
+      </p>
+      <p>
+        Changing the call time, updating a phone number, adding or swapping an
+        emergency contact — email us for any of it and we'll sort it out.
+      </p>
+
+      <div class="contact-card-guide">
+        <p class="contact-label">Talk to a person</p>
+        <p class="contact-email">
+          <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+        </p>
+        <p class="contact-note">
+          A real human reads these. If something's wrong with a call, say so —
+          it's the fastest way to get it fixed.
+        </p>
+      </div>
+    </section>
+
+    <p class="guide-foot">
+      Aunt Mabel is operated by Trustlight LLC. The in-person disaster check is
+      carried out by our partner, Cajun Navy Ground Force.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .guide { max-width: 44rem; padding-bottom: 5rem; }
+
+  .guide-head { margin-bottom: 2.5rem; }
+  .guide-head h1 { margin-bottom: 1rem; }
+  .guide-lede {
+    font-size: 1.12rem;
+    line-height: 1.65;
+    font-weight: 300;
+    color: var(--soft-ink);
+    max-width: 40ch;
+  }
+
+  /* Quiet jump links — this page is long and people come back to it looking
+     for one specific thing. */
+  .guide-toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    padding: 1rem 0;
+    margin-bottom: 3rem;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .guide-toc a {
+    font-size: 0.88rem;
+    font-weight: 400;
+    color: var(--rose-deep);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .guide-toc a:hover { border-bottom-color: var(--rose); }
+
+  .guide-section { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+  .section-num {
+    margin: 0 0 0.4rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--rose);
+  }
+  .guide-section h2 {
+    font-size: clamp(1.5rem, 3vw, 1.95rem);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .guide-section h3 {
+    font-family: var(--font-head);
+    font-size: 1.22rem;
+    font-weight: 600;
+    margin: 2.25rem 0 0.85rem;
+    color: var(--ink);
+  }
+  .guide-section p {
+    font-size: 1.02rem;
+    line-height: 1.72;
+    font-weight: 300;
+    margin: 0 0 1.1rem;
+  }
+  .guide-section strong { font-weight: 500; color: var(--ink); }
+
+  .guide-list { margin: 1.25rem 0 1.5rem; padding-left: 1.2rem; }
+  .guide-list li {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Rose, not gold: this is the one part of the page that must read as a
+     limit rather than a feature. */
+  .safety-callout {
+    padding: 22px 26px;
+    margin: 1.5rem 0 2rem;
+    background: var(--paper);
+    border: 1px solid var(--rose);
+    border-left: 4px solid var(--rose);
+    border-radius: var(--radius-sm);
+  }
+  .safety-callout p:last-child { margin-bottom: 0; }
+  .safety-emergency {
+    font-family: var(--font-head);
+    font-size: 1.15rem;
+    color: var(--rose-deep);
+  }
+  .safety-emergency strong { color: var(--rose-deep); font-weight: 600; }
+
+  .honest-note {
+    padding: 18px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+
+  .contact-card-guide {
+    margin-top: 2rem;
+    padding: 24px 28px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
+  .contact-label {
+    margin: 0 0 0.35rem !important;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--soft-ink);
+  }
+  .contact-email {
+    margin: 0 0 0.6rem !important;
+    font-family: var(--font-head);
+    font-size: 1.35rem;
+    font-weight: 600;
+  }
+  .contact-email a { color: var(--rose-deep); text-decoration: none; border-bottom: 2px solid var(--rose); }
+  .contact-note { margin: 0 !important; font-size: 0.92rem; color: var(--soft-ink); }
+
+  .guide-foot {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.86rem;
+    font-weight: 300;
+    color: var(--soft-ink);
+  }
+</style>
