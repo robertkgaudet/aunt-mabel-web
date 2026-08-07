@@ -211,6 +211,21 @@ Full detail, including the RLS-vs-service-role fork this choice implies, is in
 
 ## Working conventions (every repo)
 
+- **MOVE FAST — always build a fast path to test.** Rob cannot and will not wait
+  on slow feedback loops (e.g. waiting up to 15 minutes for a cron tick to test
+  a call). Whenever a feature can only be exercised through a slow or scheduled
+  path, **also** provide an immediate on-demand trigger — an authenticated test
+  endpoint, a manual invoke, a bypass of timing windows — so it can be tested
+  instantly and iterated on rapidly. **Default to giving Rob a way to fire the
+  thing NOW.** Test-only triggers are marked clearly and removed or secured
+  before launch, but **they exist from the start**. Slow-only test paths are
+  unacceptable.
+
+  The trigger is additional, never a substitute: it must exercise the real code
+  path rather than a lookalike, or it proves nothing. And a shortcut around a
+  *timing* control is not licence to shortcut a *safety* control — see
+  `/api/place-call-now` in the engine, which skips the call window and the
+  same-day dedup but still refuses to ring anyone whose payer never consented.
 - **Recon before build.** Read current state (the actual file, the actual DB
   row, the actual live log) before changing anything or proposing a fix.
 - **Deploy flow**: build → deploy → verify by effect → commit.
