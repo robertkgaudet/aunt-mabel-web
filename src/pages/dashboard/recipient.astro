@@ -17,14 +17,43 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     </div>
     <p class="dash-lede" id="r-meta"></p>
 
-    <section class="panel">
-      <h2>Her days</h2>
-      <p class="panel-sub" id="timeline-sub">A calendar of calls, and Mabel’s note from each one.</p>
-      <div class="stub-note">
-        This is where the month calendar and the call-by-call notes will appear. They
-        arrive with the next piece of work, once the scheduler has real calls recorded
-        against this person — we’d rather show nothing than invent them.
+    {/* Flagged calls surface here, above everything — a concern must never be
+        something you have to scroll into a timeline to discover. */}
+    <div id="alerts"></div>
+
+    <section class="panel" id="days-panel">
+      <div class="cal-head">
+        <div>
+          <h2 class="cal-month" id="cal-month">…</h2>
+        </div>
+        <div class="cal-nav">
+          <span class="cal-summary" id="cal-summary"></span>
+          <button class="cal-arrow" id="cal-prev" type="button" aria-label="Previous month">‹</button>
+          <button class="cal-arrow" id="cal-next" type="button" aria-label="Next month">›</button>
+        </div>
       </div>
+
+      <div id="cal-wrap">
+        <div class="cal-dow" aria-hidden="true">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+
+        <div class="cal-legend">
+          <div><span class="cal-swatch good"></span>Good call</div>
+          <div><span class="cal-swatch flag"></span>Flagged a concern</div>
+          <div><span class="cal-swatch quiet"></span>No answer</div>
+          <div><span class="cal-swatch pending"></span>Still writing up</div>
+          <div><span class="cal-swatch none"></span>No call</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="timeline-panel">
+      <h2>Recent calls</h2>
+      <p class="panel-sub">A short note from Mabel after every check-in.</p>
+      <div id="timeline"></div>
     </section>
 
     <section class="panel">
@@ -32,14 +61,11 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
       <p class="panel-sub">Change anything here and Mabel will know before the next call.</p>
 
       <div class="manage-grid" id="manage-grid"></div>
-
       <div id="edit-region" hidden></div>
 
       <div class="dash-actions">
         <a class="dash-btn dark" href="/enroll">+ Add another loved one</a>
-        <button class="dash-btn ghost" id="manage-billing" type="button">
-          Pause or cancel
-        </button>
+        <button class="dash-btn ghost" id="manage-billing" type="button">Pause or cancel</button>
       </div>
       <p class="dash-note" id="manage-note" hidden></p>
       <p class="hint" style="margin-top:12px">
@@ -49,9 +75,7 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 
     <section class="panel">
       <h2>What Mabel asks about</h2>
-      <p class="panel-sub">
-        The same warm check-in every day. These aren’t adjustable yet.
-      </p>
+      <p class="panel-sub">The same warm check-in every day. These aren’t adjustable yet.</p>
       <div class="manage-grid">
         <div class="manage-tile" aria-disabled="true">
           <div class="manage-label">Every call</div>
@@ -83,8 +107,81 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     el.className = `dash-note ${kind || ''}`.trim();
     el.hidden = false;
   };
-
   const esc = (s) => String(s ?? '');
+
+  const MONTHS = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
+
+  /**
+   * Split a Postgres DATE ('2026-08-20') into parts by hand.
+   *
+   * ⚠️ NOT `new Date('2026-08-20')` — that parses as UTC midnight, so anyone
+   * west of Greenwich renders it as the 19th. A call log that shows every call
+   * on the wrong day would be quietly, confidently wrong, which is worse than
+   * visibly broken. call_date is already the LOCAL date in the recipient's
+   * timezone (see migration 0007), so it needs no conversion at all.
+   */
+  function parseYMD(s) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || ''));
+    if (!m) return null;
+    return { y: Number(m[1]), mo: Number(m[2]) - 1, d: Number(m[3]) };
+  }
+
+  /** Today, as seen in the recipient's own timezone — their day, not ours. */
+  function todayThere(timezone) {
+    try {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: timezone || 'America/Chicago',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(new Date());
+      return parseYMD(parts);
+    } catch {
+      const now = new Date();
+      return { y: now.getFullYear(), mo: now.getMonth(), d: now.getDate() };
+    }
+  }
+
+  /**
+   * One day can hold several call rows — the scheduler retries, and `attempt`
+   * counts them. So a day is summarised, not read off a single row:
+   *
+   *   escalated  → flag   (a concern shows even if a later attempt went fine)
+   *   completed  → good   (missed at 9, reached at 9:20, is a good day)
+   *   no_answer  → quiet
+   *   placed     → pending (still being written up; NOT a failure)
+   */
+  function dayOutcome(calls) {
+    if (!calls || !calls.length) return null;
+    if (calls.some((c) => c.escalate)) return 'flag';
+    if (calls.some((c) => c.status === 'completed')) return 'good';
+    if (calls.some((c) => c.status === 'no_answer' || c.status === 'failed')) return 'quiet';
+    if (calls.some((c) => c.status === 'placed')) return 'pending';
+    return null;
+  }
+
+  function durationLabel(seconds) {
+    if (seconds == null) return '';
+    if (seconds < 60) return `${seconds} sec`;
+    return `${Math.round(seconds / 60)} min`;
+  }
+
+  /** Clock time of the call, shown in the recipient's timezone. */
+  function callClock(iso, timezone) {
+    if (!iso) return '';
+    try {
+      return new Intl.DateTimeFormat(undefined, {
+        timeZone: timezone || 'America/Chicago',
+        hour: 'numeric',
+        minute: '2-digit',
+      }).format(new Date(iso));
+    } catch {
+      return '';
+    }
+  }
 
   (async () => {
     const ctx = await initDashboard();
@@ -105,9 +202,6 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
       return;
     }
 
-    // account_id is in the filter as well as RLS. RLS is what enforces this —
-    // but saying it out loud here means a future change to the policy can't
-    // quietly widen what this page shows.
     const { data: r, error } = await supabase
       .from('recipients')
       .select(
@@ -137,8 +231,6 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     const firstName = (r.name || '').split(/\s+/)[0] || 'them';
     document.getElementById('r-name').textContent = r.name || 'Unnamed';
     document.getElementById('manage-title').textContent = `Manage ${firstName}’s calls`;
-    document.getElementById('timeline-sub').textContent =
-      `A calendar of calls, and Mabel’s note from each one.`;
 
     const time = friendlyTime(r.call_time);
     const zone = friendlyZone(r.timezone);
@@ -153,6 +245,283 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     document.getElementById('r-meta').textContent =
       `${statusWord} · ${time ? `calls at ${time}` : 'call time not set'}${zone ? ` · ${zone}` : ''}`;
 
+    // -------------------------------------------------------------- calls
+    // One fetch, rendered many ways. At pilot scale this is tens of rows; the
+    // cap exists so a year of history can't turn into an unbounded payload,
+    // and the timeline says plainly when it has been reached.
+    const CALL_CAP = 400;
+    const { data: calls, error: callsErr } = await supabase
+      .from('calls')
+      .select(
+        'id, call_date, attempt, status, duration_seconds, summary, sentiment, escalate, escalate_reason, consent_confirmed, created_at, ended_at'
+      )
+      .eq('recipient_id', r.id)
+      .order('call_date', { ascending: false })
+      .order('created_at', { ascending: false })
+      .limit(CALL_CAP);
+
+    const daysPanel = document.getElementById('days-panel');
+    const timelinePanel = document.getElementById('timeline-panel');
+    const alerts = document.getElementById('alerts');
+
+    if (callsErr) {
+      console.error('[recipient] calls load failed', callsErr);
+      daysPanel.innerHTML =
+        '<h2>Her days</h2><p class="panel-sub">We couldn’t load the call history just now. Please refresh in a moment.</p>';
+      daysPanel.querySelector('h2').textContent = `${firstName}’s days`;
+      timelinePanel.hidden = true;
+    } else if (!calls || calls.length === 0) {
+      // ---------------------------------------------------- no calls yet
+      // Deliberately NOT an empty calendar. Thirty blank squares next to a
+      // legend that explains what grey means reads as thirty missed calls.
+      const when = time ? `at ${time}${zone ? ` ${zone.toLowerCase()}` : ''}` : 'soon';
+      daysPanel.innerHTML = `
+        <div class="first-call">
+          <div class="glyph" aria-hidden="true">📞</div>
+          <h3></h3>
+          <p></p>
+        </div>
+      `;
+      daysPanel.querySelector('h3').textContent =
+        r.status === 'active' ? 'Mabel’s first call is coming up' : 'No calls yet';
+      daysPanel.querySelector('p').textContent =
+        r.status === 'active'
+          ? `She calls ${when}. Once she’s spoken to ${firstName}, this is where every call will appear — a month at a glance, and a note from each one.`
+          : `Once ${firstName}’s calls begin, this is where they’ll appear.`;
+      timelinePanel.hidden = true;
+    } else {
+      renderCalls(calls);
+    }
+
+    function renderCalls(rows) {
+      // Bucket by local call date once; both the calendar and the "worst day"
+      // lookups read from this rather than re-scanning.
+      const byDate = new Map();
+      for (const c of rows) {
+        if (!byDate.has(c.call_date)) byDate.set(c.call_date, []);
+        byDate.get(c.call_date).push(c);
+      }
+
+      // ------------------------------------------------------- alerts
+      const flagged = rows.filter((c) => c.escalate);
+      // Most recent three. Older concerns stay visible in the timeline; the
+      // point here is what needs attention now, not a complete record.
+      for (const c of flagged.slice(0, 3)) {
+        const p = parseYMD(c.call_date);
+        const when = p ? `${MONTHS[p.mo]} ${p.d}` : '';
+        const card = document.createElement('div');
+        card.className = 'alert-card';
+        card.innerHTML = `
+          <div class="alert-eyebrow">Worth a look</div>
+          <div class="alert-title"></div>
+          <p class="alert-body"></p>
+          <div class="dash-actions" style="margin-top:0"></div>
+        `;
+        card.querySelector('.alert-title').textContent =
+          `Mabel flagged a concern on ${when}.`;
+        card.querySelector('.alert-body').textContent =
+          c.escalate_reason || c.summary || 'Mabel flagged this call for a follow-up.';
+
+        // A real phone link, because it is the only action on this card we can
+        // actually carry out. The mockup also offered "listen to the call" and
+        // "mark as handled" — we don't record calls, and `calls` has no write
+        // policy under RLS by design, so neither button could do anything.
+        const actions = card.querySelector('.dash-actions');
+        if (r.phone) {
+          const tel = document.createElement('a');
+          tel.className = 'dash-btn';
+          tel.href = `tel:${r.phone.replace(/[^\d+]/g, '')}`;
+          tel.textContent = `Call ${firstName}`;
+          actions.appendChild(tel);
+        }
+        alerts.appendChild(card);
+      }
+
+      // ----------------------------------------------------- calendar
+      const earliest = parseYMD(rows[rows.length - 1].call_date);
+      const today = todayThere(r.timezone);
+      let view = { y: today.y, mo: today.mo };
+
+      const grid = document.getElementById('cal-grid');
+      const label = document.getElementById('cal-month');
+      const summary = document.getElementById('cal-summary');
+      const prev = document.getElementById('cal-prev');
+      const next = document.getElementById('cal-next');
+
+      function paintMonth() {
+        const { y, mo } = view;
+        label.textContent = `${MONTHS[mo]} ${y}`;
+
+        const firstDow = new Date(y, mo, 1).getDay();
+        const daysInMonth = new Date(y, mo + 1, 0).getDate();
+
+        grid.innerHTML = '';
+        for (let i = 0; i < firstDow; i++) {
+          const pad = document.createElement('div');
+          pad.className = 'cal-cell pad';
+          grid.appendChild(pad);
+        }
+
+        const tally = { good: 0, flag: 0, quiet: 0, pending: 0 };
+        for (let d = 1; d <= daysInMonth; d++) {
+          const key = `${y}-${String(mo + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          const dayCalls = byDate.get(key);
+          const outcome = dayOutcome(dayCalls);
+          if (outcome) tally[outcome] = (tally[outcome] || 0) + 1;
+
+          const isToday = y === today.y && mo === today.mo && d === today.d;
+          const isFuture =
+            y > today.y || (y === today.y && (mo > today.mo || (mo === today.mo && d > today.d)));
+
+          const cell = document.createElement('div');
+          cell.className = `cal-cell ${outcome || (isFuture ? 'future' : 'none')}${isToday ? ' today' : ''}`;
+          cell.textContent = String(d);
+          if (outcome) {
+            const names = {
+              good: 'Good call',
+              flag: 'Flagged a concern',
+              quiet: 'No answer',
+              pending: 'Still being written up',
+            };
+            cell.title = `${MONTHS[mo]} ${d} — ${names[outcome]}`;
+          }
+          grid.appendChild(cell);
+        }
+
+        const bits = [];
+        if (tally.good) bits.push(`${tally.good} good ${tally.good === 1 ? 'call' : 'calls'}`);
+        if (tally.flag) bits.push(`${tally.flag} flagged`);
+        if (tally.quiet) bits.push(`${tally.quiet} no answer`);
+        if (tally.pending) bits.push(`${tally.pending} pending`);
+        summary.textContent = bits.length ? bits.join(' · ') : 'No calls this month';
+
+        // Paging stops where the data does in one direction and at the present
+        // in the other — there is nothing to show beyond either edge.
+        const atEarliest =
+          !earliest || (y < earliest.y || (y === earliest.y && mo <= earliest.mo));
+        const atLatest = y > today.y || (y === today.y && mo >= today.mo);
+        prev.disabled = atEarliest;
+        next.disabled = atLatest;
+      }
+
+      prev.addEventListener('click', () => {
+        view = view.mo === 0 ? { y: view.y - 1, mo: 11 } : { y: view.y, mo: view.mo - 1 };
+        paintMonth();
+      });
+      next.addEventListener('click', () => {
+        view = view.mo === 11 ? { y: view.y + 1, mo: 0 } : { y: view.y, mo: view.mo + 1 };
+        paintMonth();
+      });
+      paintMonth();
+
+      // ----------------------------------------------------- timeline
+      const timeline = document.getElementById('timeline');
+      const PAGE = 8;
+      let shown = PAGE;
+
+      function paintTimeline() {
+        timeline.innerHTML = '';
+        for (const c of rows.slice(0, shown)) {
+          const p = parseYMD(c.call_date);
+          const dateLabel = p
+            ? new Date(p.y, p.mo, p.d).toLocaleDateString(undefined, {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+              })
+            : c.call_date;
+
+          const pending = c.status === 'placed' && !c.summary;
+          const noAnswer = c.status === 'no_answer' || c.status === 'failed';
+
+          const row = document.createElement('div');
+          row.className = `call-row${c.escalate ? ' flagged' : ''}`;
+          row.innerHTML = `
+            <div class="call-when">
+              <div class="call-date"></div>
+              <div class="call-time"></div>
+              <div class="call-dur"></div>
+            </div>
+            <div class="call-body">
+              <div class="call-sentiment"><span class="call-dot"></span><span class="sent-text"></span></div>
+              <p class="call-summary"></p>
+            </div>
+          `;
+
+          row.querySelector('.call-date').textContent = dateLabel;
+          row.querySelector('.call-time').textContent = callClock(c.created_at, r.timezone);
+          row.querySelector('.call-dur').textContent = noAnswer
+            ? '—'
+            : durationLabel(c.duration_seconds);
+
+          const dot = row.querySelector('.call-dot');
+          const sent = row.querySelector('.sent-text');
+          const body = row.querySelector('.call-summary');
+
+          if (c.escalate) {
+            dot.className = 'call-dot flag';
+            sent.textContent = c.sentiment || 'Flagged';
+          } else if (pending) {
+            dot.className = 'call-dot pending';
+            sent.textContent = 'Just finished';
+          } else if (noAnswer) {
+            dot.className = 'call-dot quiet';
+            sent.textContent = c.status === 'failed' ? 'Couldn’t connect' : 'No answer';
+          } else {
+            dot.className = 'call-dot';
+            sent.textContent = c.sentiment || 'Called';
+          }
+
+          if (c.summary) {
+            body.textContent = c.summary;
+          } else if (pending) {
+            // Placed, but the analysis webhook hasn't landed. This is a normal
+            // in-between state for a few minutes after a call, and saying so is
+            // the difference between "still going" and "something went wrong".
+            body.className = 'call-summary muted';
+            body.textContent = 'Mabel is still writing up this call.';
+          } else if (noAnswer) {
+            body.className = 'call-summary muted';
+            body.textContent =
+              c.status === 'failed'
+                ? 'The call couldn’t be connected.'
+                : `Mabel called but couldn’t reach ${firstName}.`;
+          } else {
+            body.className = 'call-summary muted';
+            body.textContent = 'No note was recorded for this call.';
+          }
+
+          if (c.escalate && c.escalate_reason) {
+            const why = document.createElement('div');
+            why.className = 'call-reason';
+            why.textContent = c.escalate_reason;
+            row.querySelector('.call-body').appendChild(why);
+          }
+
+          timeline.appendChild(row);
+        }
+
+        if (rows.length > shown) {
+          const more = document.createElement('button');
+          more.type = 'button';
+          more.className = 'call-more';
+          more.textContent = `Show ${Math.min(PAGE, rows.length - shown)} more of ${rows.length} calls →`;
+          more.addEventListener('click', () => {
+            shown += PAGE;
+            paintTimeline();
+          });
+          timeline.appendChild(more);
+        } else if (rows.length >= CALL_CAP) {
+          const capped = document.createElement('p');
+          capped.className = 'hint';
+          capped.style.marginTop = '16px';
+          capped.textContent = `Showing the most recent ${CALL_CAP} calls.`;
+          timeline.appendChild(capped);
+        }
+      }
+      paintTimeline();
+    }
+
     // ------------------------------------------------------------- manage
     const grid = document.getElementById('manage-grid');
     const region = document.getElementById('edit-region');
@@ -166,7 +535,14 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
       r.doctor_name ? `${r.doctor_name}${r.doctor_phone ? ` · ${r.doctor_phone}` : ''}` : 'Not added';
 
     const tiles = [
-      { key: 'time', label: 'Call time', value: () => (time ? `Every day at ${friendlyTime(r.call_time)}${zone ? ` (${zone})` : ''}` : 'Not set') },
+      {
+        key: 'time',
+        label: 'Call time',
+        value: () =>
+          friendlyTime(r.call_time)
+            ? `Every day at ${friendlyTime(r.call_time)}${zone ? ` (${zone})` : ''}`
+            : 'Not set',
+      },
       { key: 'contacts', label: 'Who we alert', value: contactSummary },
       { key: 'doctor', label: 'Their doctor', value: doctorSummary },
     ];
@@ -190,7 +566,7 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
       region.innerHTML = '';
     }
 
-    async function save(patch, after) {
+    async function save(patch) {
       manageNote.hidden = true;
       const { data, error: saveErr } = await supabase
         .from('recipients')
@@ -205,7 +581,6 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
         return false;
       }
       Object.assign(r, data);
-      if (after) after();
       paintTiles();
       closeEditor();
       note(manageNote, 'Saved.', 'ok');
@@ -259,7 +634,6 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
         region.querySelector('#edit-save').addEventListener('click', () => {
           const name = region.querySelector('#edit-doc-name').value.trim();
           const phone = region.querySelector('#edit-doc-phone').value.trim();
-          // Both optional — but a phone with no name is a dead end, so say so.
           if (phone && !name) {
             note(manageNote, 'Please add the doctor’s name too.', 'error');
             return;
@@ -269,8 +643,9 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
       }
 
       if (key === 'contacts') {
-        const rows = (contacts || []).map(
-          (c, i) => `
+        const rowsHtml = (contacts || [])
+          .map(
+            (c, i) => `
             <div class="field">
               <label for="c-name-${i}">Contact ${i + 1} — name</label>
               <input id="c-name-${i}" type="text" value="${esc(c.name)}" />
@@ -279,11 +654,12 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
               <label for="c-email-${i}">Contact ${i + 1} — email</label>
               <input id="c-email-${i}" type="email" value="${esc(c.email)}" />
             </div>`
-        ).join('');
+          )
+          .join('');
 
         region.innerHTML = `
           <div class="panel" style="margin:18px 0 0;background:var(--cream)">
-            ${rows || '<p class="sub-body">Nobody is set up to be alerted yet.</p>'}
+            ${rowsHtml || '<p class="sub-body">Nobody is set up to be alerted yet.</p>'}
             <p class="hint">
               Alerts go by email. Adding or removing people is part of the sign-up flow for now.
             </p>
