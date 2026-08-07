@@ -81,9 +81,16 @@ begin
 end;
 $$;
 
--- Postgres grants EXECUTE to PUBLIC on new functions by default. Take that back
--- first, then hand it to signed-in users only. RLS would already stop an anon
--- caller from changing anything, but there is no reason to leave the door open.
+-- ⚠️ CORRECTION (added after this migration was applied; SQL below unchanged).
+-- The original comment here claimed these two lines limited execution to
+-- signed-in users. They do not. Supabase's default privileges grant EXECUTE to
+-- anon AND authenticated explicitly when a function is created in `public`, and
+-- revoking from PUBLIC does not remove an explicit grant held by a named role —
+-- so `anon` still held EXECUTE after this ran.
+--
+-- No data was reachable: SECURITY INVOKER + RLS means an anon caller matches
+-- zero rows and the FOUND checks above bounce the call with 42501. The explicit
+-- revoke lives in migrations/0004_record_consent_lockdown.sql.
 revoke execute on function public.record_consent(uuid, uuid) from public;
 grant  execute on function public.record_consent(uuid, uuid) to authenticated;
 

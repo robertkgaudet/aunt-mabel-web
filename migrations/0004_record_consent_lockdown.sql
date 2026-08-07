@@ -1,0 +1,44 @@
+-- Aunt Mabel — lock record_consent() down to signed-in callers
+-- Run manually in the Supabase SQL editor (aunt-mabel project).
+--
+-- CORRECTING THE RECORD
+-- Migration 0003 contained `revoke execute ... from public` and a comment
+-- claiming that limited execution to signed-in users. That comment was wrong.
+--
+-- Supabase configures default privileges so that functions created in the
+-- public schema are granted EXECUTE to anon AND authenticated explicitly, at
+-- creation time. Revoking from PUBLIC removes only the implicit grant to the
+-- PUBLIC pseudo-role; it does not touch an explicit grant held by a named role.
+-- So after 0003, `anon` still held EXECUTE and could call the function.
+--
+-- WHAT THIS WAS AND WASN'T
+-- No data was ever reachable. record_consent() is SECURITY INVOKER, so RLS
+-- applies to every statement inside it: an anon caller matches zero rows, the
+-- function's own FOUND checks fire, and the call bounces with 42501 having read
+-- and written nothing. Verified against the live function with the anon key.
+--
+-- This migration is therefore defense-in-depth, not a fix for an exposure. The
+-- reason to apply it anyway: a consent-recording function should not be
+-- reachable by unauthenticated callers at all, so that RLS is the second line
+-- of defense rather than the only one.
+
+revoke execute on function public.record_consent(uuid, uuid) from anon;
+
+-- Note for future functions: Supabase's default privileges will grant EXECUTE
+-- to anon again for anything new created in `public`. Revoking anon is a
+-- per-function step until those defaults are changed centrally.
+--
+-- Note on re-running 0003: `create or replace function` preserves the existing
+-- privileges, so this revoke survives a replace. A DROP followed by CREATE would
+-- NOT — the default grants would come back and this migration would need
+-- re-running.
+
+-- Verification (run after; expect anon = false, authenticated = true):
+-- select
+--   has_function_privilege('anon',          'public.record_consent(uuid,uuid)', 'execute') as anon_can_execute,
+--   has_function_privilege('authenticated', 'public.record_consent(uuid,uuid)', 'execute') as authenticated_can_execute;
+--
+-- Full picture of who holds what (expect no 'anon=X/' entry):
+-- select proacl from pg_proc p
+--   join pg_namespace n on n.oid = p.pronamespace
+--  where n.nspname = 'public' and p.proname = 'record_consent';
