@@ -136,6 +136,39 @@ on 2026-08-06. Don't reintroduce it into user-visible text.
     redacted. Keep real error logging in failure branches; remove only true
     debug-only scaffolding once its job is done.
 
+## Emergency posture (standing rule, every repo)
+
+> **Aunt Mabel is never emergency response.** Real emergencies route to 911,
+> always. Family-connect is a comfort-and-notification layer — **not** a
+> substitute for emergency services. Nothing in the product, the persona, the UI
+> copy, or the marketing may imply otherwise.
+
+This is a standing rule, not a roadmap item: it constrains the voice agent, the
+website, the emails, and the legal pages equally. It sits alongside the
+not-a-medical-service positioning and the open attorney items.
+
+Three pieces of planned work follow from it, all detailed in
+[`aunt-mabel-engine/docs/ROADMAP.md`](../../aunt-mabel-engine/docs/ROADMAP.md)
+§ Emergency posture & between-call reachability:
+
+1. **Persona refinement (near-term).** Mabel already urges 911 on a reported
+   fall — that stays. The refinement: a cost or logistics objection ("I can't
+   afford an ambulance") must not soften the urgency. She acknowledges the
+   worry, keeps pointing firmly to emergency care, and escalates to family
+   **regardless** of what the person decides. No reassurance that helps someone
+   talk themselves out of calling 911. Retell prompt is the source of truth;
+   `prompts/mabel-persona.md` is synced to match.
+2. **In-the-moment family connect (near-term).** Distress detected *during* a
+   call triggers an immediate notification to the emergency contact — "let me
+   let Sarah know right now" — rather than waiting for the post-call analysis
+   that escalation hangs off today. Richer version warm-transfers the live call
+   to the family member.
+3. **Between-call reachability tiers (future).** Baseline is honest
+   expectation-setting: a scheduled daily check-in, not an on-demand lifeline.
+   Premium adds a paid real-person callback line — whose wording is a legal
+   question, of the same class as the disaster-check "effort, not guaranteed
+   arrival" item already with the attorney.
+
 ## Consent (applies wherever consent is read or written)
 
 Consent is layered and the layers are never conflated:
