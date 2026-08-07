@@ -236,6 +236,18 @@ a:hover { color: var(--rose); }
 .site-nav a { text-decoration: none; color: var(--soft-ink); }
 .site-nav a:hover { color: var(--rose-deep); }
 
+/* Auth-aware nav. The page ships as static HTML, so which links belong here is
+   only known once the session is resolved client-side. Until then BOTH sets are
+   hidden: showing "Sign in" to someone who is signed in is wrong information,
+   and a brief blank is the lesser fault. `visibility` rather than `display` so
+   the header doesn't reflow when the answer arrives. */
+.site-nav[data-auth='unknown'] a { visibility: hidden; }
+.site-nav[data-auth='unknown'] .auth-in { display: none; }
+.site-nav[data-auth='out'] .auth-in { display: none; }
+.site-nav[data-auth='in'] .auth-out { display: none; }
+.site-nav .auth-signout { color: var(--soft-ink); opacity: 0.75; }
+.site-nav .auth-signout:hover { opacity: 1; }
+
 main { flex: 1; }
 
 .site-footer {
