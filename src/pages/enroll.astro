@@ -396,15 +396,84 @@ const TOTAL = STEPS.length;
       </form>
     </section>
 
-    {/* ── Step 7 — placeholder. Real content is the next chunk. ─────── */}
+    {/* ── Step 7 — Payment — NAVIGATION BOUNDARY ─────────────────────
+         Leaves for Stripe Checkout and comes back as a fresh page load. Per
+         docs/enrollment-flow-design.md this must stay a real boundary; do not
+         turn it into an in-page view. ─────────────────────────────────── */}
     <section class="step" data-step="6" id="step-payment" hidden>
-      <h1>Step 7 coming next</h1>
-      <p class="step-lede">
-        Placeholder. The consent flag and both timestamps are in the debug strip
-        below — those came back from the database, not from this page.
+      <h1 id="p-heading">Nearly there.</h1>
+
+      {/* The trial leads, deliberately. This is the reassurance-at-payment
+          moment: the first thing someone reads should be that they are not
+          being charged for something their parent hasn't agreed to yet. */}
+      <div class="trial-lead">
+        <p class="trial-headline" id="p-trial">Your first 3 days are free.</p>
+        <p class="trial-sub" id="p-trial-sub">
+          We won't charge you until they've welcomed the calls.
+        </p>
+      </div>
+
+      <p class="price-line">
+        <strong id="p-price">$39</strong><span class="price-unit">/month</span>
+        <span class="price-sep">·</span><span class="price-cancel">cancel anytime</span>
       </p>
+
+      <p class="step-lede" id="p-explain">
+        Mabel calls every day at the time you chose. If something sounds wrong,
+        we reach out to the people you named. Cancel whenever you like — from
+        your account, no phone call needed.
+      </p>
+
+      <div class="founding" id="founding-block">
+        <button type="button" class="linkish" id="founding-toggle">
+          Have a founding family code?
+        </button>
+        <div class="founding-fields" id="founding-fields" hidden>
+          <div class="field">
+            <label for="p-code">Founding family code</label>
+            <input id="p-code" type="text" autocomplete="off" spellcheck="false" placeholder="Enter your code" />
+            <p class="field-hint" id="p-code-hint" hidden></p>
+          </div>
+        </div>
+      </div>
+
+      <p id="payment-status" class="status" aria-live="polite"></p>
+
       <div class="step-actions">
-        <button type="button" class="btn btn-secondary" id="back-7">Back</button>
+        <button type="button" class="btn btn-primary" id="continue-7">Start the daily calls →</button>
+        <button type="button" class="btn-quiet" id="back-7">Back</button>
+      </div>
+
+      <p class="fineprint">
+        Payment is handled by Stripe. We never see or store your card details.
+      </p>
+    </section>
+
+    {/* ── Step 8 — Done ──────────────────────────────────────────────── */}
+    <section class="step" data-step="7" id="step-done" hidden>
+      <p class="kicker">All set</p>
+      <h1 id="d-done-heading">That's everything.</h1>
+      <p class="step-lede" id="d-done-lede">
+        Your first three days are free, and Mabel will ring for the first time
+        at the hour you chose.
+      </p>
+
+      <div class="done-next">
+        <p class="done-next-title">What happens next</p>
+        <ol class="done-list">
+          <li id="done-first-call">Mabel makes her first call at the time you picked.</li>
+          <li>On that first call she'll gently check they're happy to keep hearing from her.</li>
+          <li>If they'd rather not, we stop straight away and you're never charged.</li>
+        </ol>
+      </div>
+
+      <p class="step-lede">
+        If anything ever sounds wrong on a call, we'll let your emergency
+        contacts know the same day.
+      </p>
+
+      <div class="step-actions">
+        <a class="btn btn-primary" href="/">Back to Aunt Mabel</a>
       </div>
     </section>
 
@@ -1255,6 +1324,7 @@ const TOTAL = STEPS.length;
       renderDebug();
       consentStatus.textContent = '';
       submitBtn.disabled = false;
+      preparePaymentStep();
       show(6);
     } catch (err) {
       console.error('[enroll] consent write failed', err);
@@ -1264,6 +1334,203 @@ const TOTAL = STEPS.length;
       submitBtn.disabled = false;
     }
   });
+
+  // ── step 7 — payment (navigation boundary) ────────────────────────────
+  //
+  // Display prices only. The AUTHORITATIVE amounts are the Stripe price ids in
+  // the engine's wrangler.toml (STRIPE_PRICE_STANDARD / STRIPE_PRICE_FOUNDING).
+  // If a price changes in Stripe, change it here too — a page promising $39
+  // while Stripe charges something else is the worst kind of wrong.
+  const PLAN_PRICES = { standard: '$39', founding: '$29' };
+
+  const ENGINE_URL = import.meta.env.PUBLIC_ENGINE_URL;
+  // ⚠️ NOT A SECRET — inlined into this bundle at build time and readable by
+  // anyone. A soft gate for the pilot, not an entitlement check. See
+  // .env.example, and the note in docs/enrollment-flow-design.md.
+  const FOUNDING_CODE = (import.meta.env.PUBLIC_FOUNDING_CODE || '').trim();
+
+  const pStatus = el('payment-status');
+  const pCode = /** @type {HTMLInputElement} */ (document.getElementById('p-code'));
+  const foundingFields = el('founding-fields');
+  /** @type {'standard' | 'founding'} */
+  let plan = 'standard';
+
+  // An input that can never succeed is worse than no input, so the founding
+  // affordance only appears when a code is actually configured.
+  if (!FOUNDING_CODE) {
+    el('founding-block').hidden = true;
+    console.warn('[enroll] PUBLIC_FOUNDING_CODE is not set — founding-code entry hidden.');
+  }
+
+  btn('founding-toggle').addEventListener('click', () => {
+    foundingFields.hidden = !foundingFields.hidden;
+    if (!foundingFields.hidden) pCode.focus();
+  });
+
+  function applyFoundingCode() {
+    const entered = pCode.value.trim();
+    const hint = el('p-code-hint');
+
+    if (!entered) {
+      plan = 'standard';
+      hint.hidden = true;
+    } else if (FOUNDING_CODE && entered.toLowerCase() === FOUNDING_CODE.toLowerCase()) {
+      plan = 'founding';
+      hint.textContent = "That's the founding family rate — $29/month, locked in.";
+      hint.setAttribute('data-tone', 'good');
+      hint.hidden = false;
+    } else {
+      // Not an error state: a mistyped code shouldn't feel like a rejection.
+      plan = 'standard';
+      hint.textContent = "We didn't recognise that code, so you're on the standard rate.";
+      hint.removeAttribute('data-tone');
+      hint.hidden = false;
+    }
+    el('p-price').textContent = PLAN_PRICES[plan];
+  }
+  pCode.addEventListener('input', applyFoundingCode);
+
+  function preparePaymentStep() {
+    const who = state.recipient_name;
+    if (who) {
+      el('p-trial-sub').textContent = `We won't charge you until ${who} has welcomed the calls.`;
+      btn('continue-7').textContent = `Start ${possessive(who)} daily calls →`;
+      if (state.is_self) {
+        el('p-trial-sub').textContent = "We won't charge you until you've had your first call.";
+        btn('continue-7').textContent = 'Start my daily calls →';
+      }
+    }
+    el('p-price').textContent = PLAN_PRICES[plan];
+  }
+
+  /** "Eleanor" → "Eleanor's"; "Chris" → "Chris'". */
+  function possessive(name) {
+    return /s$/i.test(name) ? `${name}'` : `${name}'s`;
+  }
+
+  btn('continue-7').addEventListener('click', async () => {
+    pStatus.textContent = '';
+    pStatus.removeAttribute('data-tone');
+
+    if (!ENGINE_URL) {
+      console.error('[enroll] PUBLIC_ENGINE_URL is not set');
+      pStatus.textContent = "We can't reach our payment service right now. Nothing was charged — please try again later.";
+      pStatus.setAttribute('data-tone', 'error');
+      return;
+    }
+    if (!state.recipient_id) {
+      pStatus.textContent = "We lost track of who we're calling — please go back a step.";
+      pStatus.setAttribute('data-tone', 'error');
+      return;
+    }
+
+    const goBtn = btn('continue-7');
+    goBtn.disabled = true;
+    pStatus.textContent = 'Taking you to our payment page…';
+
+    try {
+      const res = await fetch(`${ENGINE_URL}/api/create-checkout-session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipient_id: state.recipient_id, plan }),
+      });
+      const body = await res.json().catch(() => null);
+
+      if (!res.ok || !body?.ok || !body.url) {
+        throw new Error(body?.error || `checkout session failed (${res.status})`);
+      }
+      // Leaving the site. Everything after this happens on Stripe.
+      window.location.href = body.url;
+    } catch (err) {
+      console.error('[enroll] create-checkout-session failed', err);
+      pStatus.textContent = "We couldn't start checkout just then. Nothing was charged — please try again.";
+      pStatus.setAttribute('data-tone', 'error');
+      goBtn.disabled = false;
+    }
+  });
+
+  // ── returning from Stripe ─────────────────────────────────────────────
+  // A full page load, so the in-memory state is gone — that is the deliberate
+  // no-persistence rule, not a bug. Rather than stashing third-party details in
+  // the browser or in a URL, re-read the recipient from Supabase using the
+  // payer's own session. They are reading their own row through RLS.
+  /** @type {() => Promise<{ id: string, name: string, status: string } | null>} */
+  async function latestRecipientForSession() {
+    if (!supabase) return null;
+    const { data: sess } = await supabase.auth.getSession();
+    if (!sess?.session) return null;
+
+    const { data: account, error: acctErr } = await supabase
+      .from('accounts')
+      .select('id')
+      .eq('auth_user_id', sess.session.user.id)
+      .maybeSingle();
+    if (acctErr || !account) return null;
+
+    // Most recently created is the one they were just paying for — the flow
+    // creates the recipient minutes earlier, in this same sitting.
+    const { data: rows, error } = await supabase
+      .from('recipients')
+      .select('id, name, status, account_id')
+      .eq('account_id', account.id)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (error || !rows?.length) return null;
+
+    state.account_id = account.id;
+    state.recipient_id = rows[0].id;
+    state.recipient_name = rows[0].name;
+    return rows[0];
+  }
+
+  /** @type {(outcome: 'success' | 'cancelled') => Promise<void>} */
+  async function handleStripeReturn(outcome) {
+    history.replaceState({ step: outcome === 'success' ? 7 : 6 }, '', '/enroll');
+    const recipient = await latestRecipientForSession();
+
+    if (outcome === 'success') {
+      // Never show the confirmation we cannot stand behind. This URL is
+      // guessable, and without a session there is no recipient to confirm — so
+      // an unconditional "all set" would tell someone their parent is enrolled
+      // on no evidence at all. Note it deliberately does NOT say "nothing was
+      // charged" here, unlike the cancelled path: on this branch something may
+      // well have been.
+      if (!recipient) {
+        show(0, { push: false });
+        setStatus(
+          "We couldn't confirm that from here — you may have been signed out. " +
+          'If you completed payment it is recorded; please sign in to see your account.',
+          'error'
+        );
+        return;
+      }
+
+      // Deliberately NOT gated on status === 'active'. The webhook activates the
+      // row a moment later; making this screen wait on it would show a scary
+      // failure for a payment that actually succeeded.
+      state.consent = true;
+      el('d-done-heading').textContent = state.is_self
+        ? "That's everything."
+        : `That's everything — ${recipient.name} is all set.`;
+      el('done-first-call').textContent = `Mabel makes her first call to ${recipient.name} at the time you picked.`;
+      renderDebug();
+      show(7, { push: false });
+      return;
+    }
+
+    // Cancelled: come back to the payment step with the flow intact and
+    // nothing that reads like a telling-off.
+    if (recipient) {
+      preparePaymentStep();
+      show(6, { push: false });
+      pStatus.textContent = "No worries — nothing was charged. Come back whenever you're ready.";
+      renderDebug();
+      return;
+    }
+    // Session or account gone: say so plainly rather than restarting silently.
+    show(0, { push: false });
+    setStatus("We couldn't pick up where you left off. Nothing was charged — please sign in and start again.", 'error');
+  }
 
   // ── within-flow back/forward ──────────────────────────────────────────
   window.addEventListener('popstate', (e) => {
@@ -1283,6 +1550,14 @@ const TOTAL = STEPS.length;
   // after both Google OAuth and the magic link.
   async function boot() {
     const params = new URLSearchParams(window.location.search);
+
+    // Back from Stripe Checkout. Handled before the resume branch: this is a
+    // fresh page load carrying its own outcome, not a sign-in round trip.
+    const checkout = params.get('checkout');
+    if (checkout === 'success' || checkout === 'cancelled') {
+      await handleStripeReturn(checkout);
+      return;
+    }
 
     if (params.get('resume') === '1') {
       state.is_self = params.get('is_self') === '1';
@@ -1590,6 +1865,68 @@ const TOTAL = STEPS.length;
     font-weight: 300;
     color: var(--soft-ink);
   }
+
+  /* ── step 7 payment ───────────────────────────────────────────────────
+     The trial panel is the loudest thing on the step, above the price, on
+     purpose: someone paying for a service aimed at their parent needs to see
+     "not charged yet" before they see a number. */
+  .trial-lead {
+    padding: 20px 24px;
+    margin-bottom: 1.5rem;
+    background: var(--paper);
+    border: 1px solid var(--gold);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius-sm);
+  }
+  .trial-headline {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-head);
+    font-size: 1.32rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .trial-sub { margin: 0; font-size: 0.98rem; font-weight: 300; color: var(--soft-ink); }
+
+  .price-line {
+    margin: 0 0 1.5rem;
+    font-family: var(--font-head);
+    color: var(--ink);
+  }
+  .price-line strong { font-size: 2.1rem; font-weight: 600; }
+  .price-unit { font-size: 1.05rem; color: var(--soft-ink); }
+  .price-sep { margin: 0 0.5rem; color: var(--line); }
+  .price-cancel { font-size: 0.98rem; font-weight: 300; color: var(--soft-ink); }
+
+  .founding { margin: 0 0 1.75rem; }
+  .linkish {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    font-family: var(--font-body); font-size: 0.92rem; font-weight: 400;
+    color: var(--rose-deep); text-decoration: underline;
+  }
+  .founding-fields { margin-top: 1rem; max-width: 22rem; }
+  .field-hint[data-tone='good'] { color: var(--rose-deep); font-weight: 500; }
+
+  /* ── step 8 done ─────────────────────────────────────────────────────── */
+  .done-next {
+    margin: 2rem 0;
+    padding: 22px 26px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+  }
+  .done-next-title {
+    margin: 0 0 0.85rem;
+    font-family: var(--font-head);
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .done-list { margin: 0; padding-left: 1.15rem; }
+  .done-list li {
+    font-size: 0.98rem; font-weight: 300; line-height: 1.6;
+    color: var(--soft-ink); margin-bottom: 0.5rem;
+  }
+  .done-list li:last-child { margin-bottom: 0; }
 
   .step-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
   .btn-quiet {

@@ -193,24 +193,50 @@ captured separately, on the first call, via the `call_analyzed` webhook
 future consents. Per [AUNT-MABEL.md](AUNT-MABEL.md), these layers are never
 conflated.
 
-### Step 7 — Payment — **NAVIGATION BOUNDARY**
+### Step 7 — Payment — **NAVIGATION BOUNDARY** ✅ BUILT
 
-Stripe Checkout.
+Stripe Checkout, with a **3-day free trial** so nobody is charged before the
+recipient has welcomed the calls on Mabel's first call.
 
-- **$39/month** standard
-- **$29/month** founding rate, via **promo code**
-- `client_reference_id` carries the **recipient id** (or account id) so the
-  webhook can tie the payment back to the right row
+- **$39/month** standard, **$29/month** founding rate
+- `client_reference_id` carries the **recipient id**
 - Webhook flips `recipients.status` from `pending_payment` → `active`
 
-> **Open questions:** (1) `client_reference_id` — recipient id and account id
-> behave differently once an account has more than one recipient; pick recipient
-> id unless there's a reason not to, and write the choice down here. (2) Which
-> service owns the Stripe webhook. The engine already has `/api/stripe-webhook`,
-> but per AUNT-MABEL.md payments belong to the future web-backend repo. Decide
-> before building this chunk.
+**✅ Both open questions resolved (2026-08-06), by chunk 7a:**
 
-### Step 8 — Done
+1. **`client_reference_id` = the recipient id.** One subscription per recipient,
+   so the recipient id is what ties a payment to a single row. The account id
+   would be ambiguous the moment an account has two recipients.
+2. **The engine owns the Stripe webhook** (`/api/stripe-webhook`), not the
+   future web-backend repo. It is built, deployed and proven end to end on a
+   real Stripe event. Revisit only if the web-backend repo ever materializes.
+
+**The trial leads the page, above the price** (settled 2026-08-06). The first
+thing a payer reads is that they are not being charged for something their
+parent hasn't agreed to yet. Don't reorder this to put the price first.
+
+**The founding code is a soft gate, not an entitlement check** (settled
+2026-08-06). It lives in `PUBLIC_FOUNDING_CODE`, which is **inlined into the
+browser bundle at build time and readable by anyone** — it filters honest
+mistakes, nothing more. If the founding rate ever needs to be genuinely
+restricted, either validate it server-side in the engine or use a **Stripe promo
+code** (already enabled on the session via `allow_promotion_codes`), which is
+what this document originally specified and remains the cleanest option.
+
+**Returning from Stripe re-reads the recipient from Supabase** (settled
+2026-08-06) rather than persisting flow state or putting a recipient id in the
+URL. The return is a fresh page load, so in-memory state is gone by design; the
+payer is signed in, so the flow reads *their own* most recent recipient back
+through RLS. That respects the no-persistence rule rather than bending it.
+
+**A success return never shows the confirmation unless a recipient is
+confirmed** (settled 2026-08-06). `/enroll?checkout=success` is a guessable URL;
+showing "all set" unconditionally would tell someone their parent is enrolled on
+no evidence. Without a session it says so, and — unlike the cancelled path — it
+does **not** claim nothing was charged, because on that branch something may
+have been.
+
+### Step 8 — Done ✅ BUILT (basic)
 
 Confirmation, plus a link to the dashboard. Say plainly what happens next and
 when the first call goes out.
