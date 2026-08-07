@@ -1,0 +1,496 @@
+---
+import '../styles/site.css';
+import '../styles/dashboard.css';
+---
+
+{/*
+  ⚠️ THIS FILE IS PUBLIC AND THAT IS FINE.
+  aunt-mabel-web builds with output:'static', so there is no server here — this
+  page is a file on a CDN and anyone can fetch it. It therefore contains NO
+  customer data, not one byte. Everything on screen arrives from the engine's
+  /api/admin/* endpoints, which verify the caller's Supabase token against an
+  allowlist before returning anything. Hiding this page would not be security;
+  the engine is the boundary.
+*/}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Operator · Aunt Mabel</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+  </head>
+
+  <body class="dash-body">
+    <header class="dash-header">
+      <div class="dash-header-inner">
+        <a class="dash-wordmark" href="/dashboard">
+          <span class="dash-mark" aria-hidden="true">M</span>
+          <span class="dash-wordmark-text">Aunt Mabel</span>
+        </a>
+        <span class="dash-user-name" id="who"></span>
+      </div>
+    </header>
+
+    <main class="dash-main">
+      <div id="checking" class="dash-lede">Checking your access…</div>
+
+      <div id="refused" class="refused" hidden>
+        <h1>Not authorised</h1>
+        <p>
+          This is the operator view. It shows every family on the service, so it is
+          restricted to Aunt Mabel staff.
+        </p>
+        <p>
+          If you were looking for your own account,
+          <a href="/dashboard">your dashboard is here</a>.
+        </p>
+      </div>
+
+      <div id="admin" hidden>
+        <div class="dash-title-row">
+          <h1 class="dash-h1">Operator<span class="admin-badge">All customers</span></h1>
+        </div>
+        <p class="dash-lede" id="scope-note"></p>
+
+        <div class="stat-row" id="stats"></div>
+
+        <section class="panel">
+          <h2>Concerns to follow up</h2>
+          <p class="panel-sub">Every flagged call across every family, most recent first.</p>
+          <div id="flagged"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Trials ending soon</h2>
+          <p class="panel-sub">
+            A trial running out with no verbal yes must never become a charge — that pairing
+            is why this list exists.
+          </p>
+          <div id="trials"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Find someone</h2>
+          <p class="panel-sub">Search by recipient name or phone, or by payer email or name.</p>
+          <div class="admin-search">
+            <input id="q" type="search" placeholder="e.g. Eleanor, 504…, sarah@…" />
+            <button class="dash-btn" id="search" type="button">Search</button>
+          </div>
+          <p class="dash-note" id="search-note" hidden></p>
+          <div id="results"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Accounts</h2>
+          <p class="panel-sub" id="accounts-sub"></p>
+          <div class="admin-table-wrap"><div id="accounts"></div></div>
+        </section>
+
+        <section class="panel">
+          <h2>Recipients</h2>
+          <p class="panel-sub" id="recipients-sub"></p>
+          <div class="admin-table-wrap"><div id="recipients"></div></div>
+        </section>
+
+        <section class="panel">
+          <h2>Recent calls</h2>
+          <p class="panel-sub">The last 200 calls across every family.</p>
+          <div class="admin-table-wrap"><div id="calls"></div></div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      import { getSupabase } from '../scripts/supabase.js';
+      import { requireSession } from '../scripts/auth.js';
+      import { engineFetch, friendlyTime } from '../scripts/dashboard.js';
+
+      const el = (id) => document.getElementById(id);
+      const txt = (s) => document.createTextNode(String(s ?? ''));
+
+      const money = (cents) =>
+        new Intl.NumberFormat(undefined, {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 0,
+        }).format((cents || 0) / 100);
+
+      const shortDate = (iso) =>
+        iso ? new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '—';
+
+      const dateTime = (iso) =>
+        iso
+          ? new Date(iso).toLocaleString(undefined, {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+            })
+          : '—';
+
+      /** Build a table without ever interpolating data into markup. */
+      function table(columns, rows, rowClass) {
+        const wrap = document.createElement('table');
+        wrap.className = 'admin';
+        const thead = document.createElement('thead');
+        const htr = document.createElement('tr');
+        for (const c of columns) {
+          const th = document.createElement('th');
+          th.appendChild(txt(c.label));
+          htr.appendChild(th);
+        }
+        thead.appendChild(htr);
+        wrap.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        for (const r of rows) {
+          const tr = document.createElement('tr');
+          if (rowClass) {
+            const cls = rowClass(r);
+            if (cls) tr.className = cls;
+          }
+          for (const c of columns) {
+            const td = document.createElement('td');
+            if (c.mono) td.className = 'mono';
+            const v = c.render(r);
+            if (v instanceof Node) td.appendChild(v);
+            else td.appendChild(txt(v));
+            tr.appendChild(td);
+          }
+          tbody.appendChild(tr);
+        }
+        wrap.appendChild(tbody);
+        return wrap;
+      }
+
+      function pill(text, kind) {
+        const s = document.createElement('span');
+        s.className = `pill ${kind || ''}`.trim();
+        s.appendChild(txt(text));
+        return s;
+      }
+
+      function statusPill(status) {
+        if (status === 'active') return pill('active', 'ok');
+        if (status === 'paused') return pill('paused', 'warn');
+        if (status === 'pending_payment') return pill('unpaid', 'bad');
+        return pill(status || '—');
+      }
+
+      function empty(message) {
+        const p = document.createElement('p');
+        p.className = 'sub-body';
+        p.appendChild(txt(message));
+        return p;
+      }
+
+      function replace(id, node) {
+        const host = el(id);
+        host.innerHTML = '';
+        host.appendChild(node);
+      }
+
+      (async () => {
+        const session = await requireSession();
+        if (!session) return; // redirected to /login
+
+        el('who').textContent = session.user.email || '';
+
+        let overview;
+        try {
+          overview = await engineFetch('/api/admin/overview', {}, session);
+        } catch (err) {
+          // 403 is the expected answer for a signed-in NON-admin, and it is the
+          // engine's answer, not this page's opinion.
+          el('checking').hidden = true;
+          el('refused').hidden = false;
+          if (err.status !== 403) {
+            console.error('[admin] overview failed', err);
+            el('refused').querySelector('p').textContent =
+              'We could not check your access just now: ' + (err.message || 'unknown error');
+          }
+          return;
+        }
+
+        el('checking').hidden = true;
+        el('admin').hidden = false;
+
+        const { stats, accounts, recipients, trials_ending_soon: trials } = overview;
+        const accountById = new Map(accounts.map((a) => [a.id, a]));
+
+        el('scope-note').textContent =
+          `Every family on the service. ${accounts.length} accounts, ${recipients.length} recipients.`;
+
+        // ------------------------------------------------------------ stats
+        const cards = [
+          { n: stats.accounts_total, l: 'Accounts' },
+          { n: stats.recipients_total, l: 'Recipients' },
+          { n: stats.recipients_active, l: 'Active' },
+          { n: stats.signups_today, l: 'Signups today' },
+          { n: stats.signups_week, l: 'Signups this week' },
+          {
+            n: money(stats.mrr_estimate_cents),
+            l: 'MRR estimate',
+            note: `at list price (${money(stats.price_estimate_cents)}) — promo codes and trials live in Stripe`,
+          },
+        ];
+        const statHost = el('stats');
+        for (const c of cards) {
+          const d = document.createElement('div');
+          d.className = 'stat';
+          const n = document.createElement('div');
+          n.className = 'stat-num';
+          n.appendChild(txt(c.n));
+          const l = document.createElement('div');
+          l.className = 'stat-label';
+          l.appendChild(txt(c.l));
+          d.appendChild(n);
+          d.appendChild(l);
+          if (c.note) {
+            const note = document.createElement('div');
+            note.className = 'stat-note';
+            note.appendChild(txt(c.note));
+            d.appendChild(note);
+          }
+          statHost.appendChild(d);
+        }
+
+        // ----------------------------------------------------------- trials
+        replace(
+          'trials',
+          trials.length
+            ? table(
+                [
+                  { label: 'Recipient', render: (t) => t.name || '—' },
+                  { label: 'Trial ends', render: (t) => dateTime(t.trial_ends_at) },
+                  {
+                    label: 'Verbal consent',
+                    render: (t) =>
+                      t.verbal_consent ? pill('confirmed', 'ok') : pill('NOT confirmed', 'bad'),
+                  },
+                  { label: 'Status', render: (t) => statusPill(t.status) },
+                  {
+                    label: 'Payer',
+                    render: (t) => accountById.get(t.account_id)?.email || '—',
+                  },
+                ],
+                trials,
+                (t) => (t.verbal_consent ? '' : 'flagged')
+              )
+            : empty('No trials ending in the next three days.')
+        );
+
+        // --------------------------------------------------------- accounts
+        el('accounts-sub').textContent = `${accounts.length} in total, newest first.`;
+        replace(
+          'accounts',
+          accounts.length
+            ? table(
+                [
+                  { label: 'Email', render: (a) => a.email || '—' },
+                  { label: 'Name', render: (a) => a.holder_name || '—' },
+                  { label: 'Joined', render: (a) => shortDate(a.created_at) },
+                  { label: 'Status', render: (a) => statusPill(a.status) },
+                  {
+                    label: 'Recipients',
+                    render: (a) => String(recipients.filter((r) => r.account_id === a.id).length),
+                  },
+                  {
+                    label: 'Stripe',
+                    mono: true,
+                    render: (a) => a.stripe_customer_id || '—',
+                  },
+                ],
+                accounts
+              )
+            : empty('No accounts yet.')
+        );
+
+        // ------------------------------------------------------- recipients
+        el('recipients-sub').textContent = `${recipients.length} across all accounts, newest first.`;
+        replace(
+          'recipients',
+          recipients.length
+            ? table(
+                [
+                  { label: 'Name', render: (r) => r.name || '—' },
+                  { label: 'Phone', mono: true, render: (r) => r.phone || '—' },
+                  { label: 'Status', render: (r) => statusPill(r.status) },
+                  {
+                    label: 'Call time',
+                    render: (r) => `${friendlyTime(r.call_time) || '—'} ${r.timezone || ''}`.trim(),
+                  },
+                  {
+                    label: 'Verbal consent',
+                    render: (r) => (r.verbal_consent ? pill('yes', 'ok') : pill('no', 'warn')),
+                  },
+                  { label: 'Trial ends', render: (r) => dateTime(r.trial_ends_at) },
+                  {
+                    label: 'Payer',
+                    render: (r) => accountById.get(r.account_id)?.email || '—',
+                  },
+                ],
+                recipients
+              )
+            : empty('No recipients yet.')
+        );
+
+        // ------------------------------------------------------------ calls
+        let callData;
+        try {
+          callData = await engineFetch('/api/admin/calls', {}, session);
+        } catch (err) {
+          console.error('[admin] calls failed', err);
+          replace('calls', empty('Could not load calls: ' + (err.message || 'unknown error')));
+          replace('flagged', empty('Could not load flagged calls.'));
+          return;
+        }
+
+        const nameOf = (c) => c.recipients?.name || '—';
+        const callCols = [
+          { label: 'When', render: (c) => dateTime(c.created_at) },
+          { label: 'Recipient', render: nameOf },
+          {
+            label: 'Outcome',
+            render: (c) =>
+              c.escalate
+                ? pill('flagged', 'bad')
+                : c.status === 'completed'
+                  ? pill('completed', 'ok')
+                  : pill(c.status || '—', 'warn'),
+          },
+          { label: 'Sentiment', render: (c) => c.sentiment || '—' },
+          {
+            label: 'Note',
+            render: (c) => (c.escalate ? c.escalate_reason || c.summary || '—' : c.summary || '—'),
+          },
+        ];
+
+        replace(
+          'flagged',
+          callData.flagged.length
+            ? table(callCols, callData.flagged, () => 'flagged')
+            : empty('Nothing flagged. Every call so far has been an ordinary morning.')
+        );
+
+        replace(
+          'calls',
+          callData.calls.length ? table(callCols, callData.calls, (c) => (c.escalate ? 'flagged' : '')) : empty('No calls recorded yet.')
+        );
+
+        // ----------------------------------------------------------- lookup
+        const note = el('search-note');
+        const runSearch = async () => {
+          const q = el('q').value.trim();
+          note.hidden = true;
+          if (q.length < 2) {
+            note.textContent = 'Type at least two characters.';
+            note.className = 'dash-note error';
+            note.hidden = false;
+            return;
+          }
+          try {
+            const res = await engineFetch('/api/admin/lookup', { q }, session);
+            const host = el('results');
+            host.innerHTML = '';
+
+            if (!res.recipients.length && !res.accounts.length) {
+              host.appendChild(empty(`Nothing matched “${q}”.`));
+              return;
+            }
+
+            if (res.accounts.length) {
+              const h = document.createElement('div');
+              h.className = 'dash-eyebrow';
+              h.style.marginTop = '16px';
+              h.appendChild(txt('Accounts'));
+              host.appendChild(h);
+              host.appendChild(
+                table(
+                  [
+                    { label: 'Email', render: (a) => a.email || '—' },
+                    { label: 'Name', render: (a) => a.holder_name || '—' },
+                    { label: 'Joined', render: (a) => shortDate(a.created_at) },
+                    { label: 'Status', render: (a) => statusPill(a.status) },
+                  ],
+                  res.accounts
+                )
+              );
+            }
+
+            if (res.recipients.length) {
+              const h = document.createElement('div');
+              h.className = 'dash-eyebrow';
+              h.style.marginTop = '20px';
+              h.appendChild(txt('Recipients'));
+              host.appendChild(h);
+              host.appendChild(
+                table(
+                  [
+                    { label: 'Name', render: (r) => r.name || '—' },
+                    { label: 'Phone', mono: true, render: (r) => r.phone || '—' },
+                    { label: 'Status', render: (r) => statusPill(r.status) },
+                    {
+                      label: 'Call time',
+                      render: (r) => `${friendlyTime(r.call_time) || '—'} ${r.timezone || ''}`.trim(),
+                    },
+                    {
+                      label: 'Verbal consent',
+                      render: (r) => (r.verbal_consent ? pill('yes', 'ok') : pill('no', 'warn')),
+                    },
+                  ],
+                  res.recipients
+                )
+              );
+            }
+
+            if (res.calls.length) {
+              const h = document.createElement('div');
+              h.className = 'dash-eyebrow';
+              h.style.marginTop = '20px';
+              h.appendChild(txt(`Call history (${res.calls.length})`));
+              host.appendChild(h);
+              const byId = new Map(res.recipients.map((r) => [r.id, r.name]));
+              host.appendChild(
+                table(
+                  [
+                    { label: 'When', render: (c) => dateTime(c.created_at) },
+                    { label: 'Recipient', render: (c) => byId.get(c.recipient_id) || '—' },
+                    {
+                      label: 'Outcome',
+                      render: (c) =>
+                        c.escalate
+                          ? pill('flagged', 'bad')
+                          : c.status === 'completed'
+                            ? pill('completed', 'ok')
+                            : pill(c.status || '—', 'warn'),
+                    },
+                    {
+                      label: 'Note',
+                      render: (c) =>
+                        c.escalate ? c.escalate_reason || c.summary || '—' : c.summary || '—',
+                    },
+                  ],
+                  res.calls,
+                  (c) => (c.escalate ? 'flagged' : '')
+                )
+              );
+            }
+          } catch (err) {
+            console.error('[admin] lookup failed', err);
+            note.textContent = err.message || 'Search failed.';
+            note.className = 'dash-note error';
+            note.hidden = false;
+          }
+        };
+
+        el('search').addEventListener('click', runSearch);
+        el('q').addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') runSearch();
+        });
+      })();
+    </script>
+  </body>
+</html>
