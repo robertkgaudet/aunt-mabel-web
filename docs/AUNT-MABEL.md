@@ -13,7 +13,7 @@ the engine, update that copy too.
 ## What Aunt Mabel is
 
 A paid daily wellness-call service for elderly people living alone, operated as
-a **for-profit enterprise by TrustLight**, in partnership with Cajun Navy Ground
+a **for-profit enterprise by Trustlight LLC**, in partnership with Cajun Navy Ground
 Force. An AI voice agent (Aunt Mabel) calls each recipient daily, holds a warm
 conversation, flags health/safety concerns, and escalates to human contacts. The
 same daily call doubles as a disaster tripwire: when disaster hits a recipient's
@@ -60,10 +60,16 @@ friction — never preemptively.
 
 **Two organizations, and the distinction is the whole point:**
 
-- **TrustLight** — Rob's consulting company. Aunt Mabel is a **for-profit
-  enterprise operated by TrustLight**. TrustLight is the operator, the
-  contracting party, the Stripe/payment entity, and the party named in the ToS
-  and Privacy Policy.
+- **Trustlight LLC** — Rob's consulting company, and the operating entity:
+
+  > **Trustlight LLC**
+  > 1023 Jena Street
+  > New Orleans, LA 70115 (Orleans Parish)
+
+  Aunt Mabel is a **for-profit enterprise operated by Trustlight LLC**. It is the
+  operator, the contracting party, the Stripe/payment entity, and the party named
+  in the ToS and Privacy Policy. Its registered parish sets the venue for
+  disputes — **Orleans Parish**, Louisiana governing law.
 - **Cajun Navy Ground Force** — a DBA of Cajun Relief Foundation (a registered
   nonprofit), and a **PARTNER, not the owner or operator**. Its role is the
   in-person disaster-response wellness checks. Aunt Mabel uses the CNGF name **by
@@ -75,7 +81,7 @@ friction — never preemptively.
 | Context | Use |
 |---|---|
 | Brand-facing copy — marketing pages, UI, email, the voice agent | **Cajun Navy Ground Force** — the trusted name Mabel says |
-| Legal documents — ToS, Privacy Policy, contracting-party language | **TrustLight** — never Cajun Relief Foundation |
+| Legal documents — ToS, Privacy Policy, contracting-party language | **Trustlight LLC** — never Cajun Relief Foundation |
 | Describing the disaster-response check | Cajun Navy Ground Force, **as the named partner** performing it |
 
 So the customer-facing name and the contracting entity are deliberately
@@ -84,9 +90,11 @@ for-profit that runs the service. **Never write copy implying the nonprofit
 operates Aunt Mabel or takes the payment** — that is the specific error this
 correction exists to prevent.
 
-> **Open — needs Rob:** the exact registered legal entity name for TrustLight
-> (the docs so far only reference "TrustLight Advisory" / trustlight.ai). Legal
-> pages currently say "TrustLight" pending that answer.
+Three items remain open for the attorney, none of them naming questions: the
+Trustlight LLC ↔ CNGF partnership agreement, the effort-not-guaranteed-arrival
+wording on the disaster check, and how prominently the for-profit operator must
+be identified behind a nonprofit-branded front. See
+[legal-source.md](legal-source.md) § 4 item 8.
 
 "Ground Force Humanitarian Aid" is another DBA of the same nonprofit but is
 **not** the brand we lead with — brand-facing copy was standardized away from it

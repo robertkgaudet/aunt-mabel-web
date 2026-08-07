@@ -8,12 +8,12 @@ Two usable sources were found:
 
 | Source | Files | Character |
 |---|---|---|
-| **TrustLight Advisory** (`trustlight.ai`) | `C:\source\trustlight\terms.html`, `privacy.html` | Consulting/agency site. Terms of **Use** (website terms), not Terms of Service for a paid product. Last updated April 8, 2026. Louisiana governing law. |
+| **Trustlight LLC** (`trustlight.ai`, listed here earlier as "TrustLight Advisory") | `C:\source\trustlight\terms.html`, `privacy.html` | Consulting/agency site. Terms of **Use** (website terms), not Terms of Service for a paid product. Last updated April 8, 2026. Louisiana governing law. |
 | **Victora / TextOS** (`app.victora.ai`) | `C:\code\textos-web\src\pages\terms.astro`, `privacy.astro` | SaaS product. Terms of **Service** for a paid subscription with Stripe billing and third-party data processors. Last updated May 4, 2026. Self-labelled "alpha version." |
 
 **Victora is the closer structural fit** — it's a paid product with accounts,
 subscriptions, passwordless auth, and a list of data processors, which is what
-Aunt Mabel is. TrustLight contributes the Louisiana governing-law clause and
+Aunt Mabel is. Trustlight LLC contributes the Louisiana governing-law clause and
 some website-use boilerplate Victora lacks.
 
 ⚠️ **Neither source contemplates anything Aunt Mabel actually does**: recorded
@@ -58,33 +58,38 @@ Six sections.
 | 5 | Your rights | ✅ **Generic** — access/correct/delete, 30-day response window. |
 | 6 | Contact | ✅ **Generic.** |
 
-## 3. TrustLight — what it adds
+## 3. Trustlight LLC — what it adds
 
 Its Terms of Use is website-terms, not product-terms, so most of it is the wrong
 document. Four things are worth lifting:
 
-- 🔴 **Governing law / venue — RE-OPENED (2026-08-06).** This was resolved to
-  **Lafayette Parish**, but that answer was derived entirely from Cajun Navy
-  Ground Force's registered address, on the understanding that the nonprofit was
-  the contracting party. **It isn't** — see item 8 in §4. Venue follows the
-  contracting entity, and that is now **TrustLight**.
+- ✅ **Governing law / venue — RESOLVED to Orleans Parish (2026-08-06).**
+  Venue follows the contracting entity, which is **Trustlight LLC**:
 
-  The earlier note dismissed TrustLight's own Orleans Parish boilerplate as
-  "its own venue, not ours." That reasoning is now inverted: TrustLight *is*
-  ours, so its clause may well have been right all along.
+  > **Trustlight LLC**
+  > 1023 Jena Street
+  > New Orleans, LA 70115 — **Orleans Parish**
 
-  CNGF's address is still on file and still correct **for CNGF** — it is the
-  partner's address, not the contracting party's:
+  So the clause should read: *"These terms are governed by the laws of the State
+  of Louisiana. Any disputes shall be resolved in the courts of **Orleans
+  Parish**, Louisiana."*
+
+  **This reverses the earlier Lafayette Parish answer**, which was derived from
+  Cajun Navy Ground Force's address back when we believed the nonprofit
+  contracted with the customer. It doesn't — see item 8 in §4. Trustlight LLC's
+  own Orleans Parish boilerplate, which an earlier note here dismissed as "its
+  own venue, not ours," was right all along: Trustlight LLC *is* ours. Take the
+  clause as written.
+
+  CNGF's address stays on file and stays correct **for CNGF** — it is the
+  partner's address, and it has no bearing on venue:
 
   > Cajun Navy Ground Force (DBA of Cajun Relief Foundation)
   > 4400-A Ambassador Caffery Pkwy #342
   > Lafayette, LA 70508
 
-  **Needs from Rob:** TrustLight's registered address, which decides the parish.
-  Louisiana governing law is unaffected either way.
-
-  Worth settling because Victora's terms have **no** governing-law clause at all —
-  this fills a real gap.
+  Governing law is Louisiana either way. Worth having settled because Victora's
+  terms have **no** governing-law clause at all — this fills a real gap.
 - ✅ **AI-generated content disclosure** — *"Some content on this site may be
   drafted or assisted by AI tools. We review all published content for accuracy
   and tone, but we do not guarantee that AI-assisted content is free from errors
@@ -93,7 +98,7 @@ document. Four things are worth lifting:
 - ✅ **Disclaimer of warranties** — standard "as is," no warranty of
   error-free/uninterrupted service.
 - ✅ **Site-use restrictions** — no scraping/harvesting, no unauthorized access,
-  no commercial redistribution. Victora's §4 covers most of this; TrustLight's
+  no commercial redistribution. Victora's §4 covers most of this; Trustlight LLC's
   wording is tighter on scraping.
 
 Its Privacy Policy adds three clauses Victora lacks:
@@ -106,7 +111,7 @@ Its Privacy Policy adds three clauses Victora lacks:
 - ✅ **Third-party links** and **Data security** ("no method of transmission over
   the internet is 100% secure") — routine but standard-to-include.
 
-Ignore entirely: TrustLight's Consulting Services and Events sections, its
+Ignore entirely: Trustlight LLC's Consulting Services and Events sections, its
 entire nav/footer chrome, and its green `#4ADE80` / Libre Baskerville styling.
 
 ---
@@ -158,7 +163,7 @@ Mabel breaks both assumptions.
    > ⚠️ **CORRECTION.** This item previously recorded Cajun Relief Foundation as
    > the contracting party. **That was wrong and is superseded.**
 
-   Aunt Mabel is a **for-profit enterprise operated by TrustLight**. TrustLight
+   Aunt Mabel is a **for-profit enterprise operated by Trustlight LLC**. Trustlight LLC
    is the contracting party, the Stripe/payment entity, and the party named in
    the ToS and Privacy Policy. **Cajun Navy Ground Force** (a DBA of Cajun Relief
    Foundation) is a **partner**, not the operator: it performs the in-person
@@ -166,11 +171,16 @@ Mabel breaks both assumptions.
    Brand-facing copy still says "Cajun Navy Ground Force". See
    `docs/AUNT-MABEL.md` § Entity & naming.
 
-   🔴 **Open — needs Rob:** the exact registered legal entity name for
-   TrustLight, for use in the contracting-party clause.
+   ✅ **Entity and address — RESOLVED (2026-08-06).** The contracting party is:
 
-   🔴 **Open — for the attorney (a):** the **TrustLight ↔ CNGF partnership
-   agreement**. It needs to cover, at minimum, TrustLight's right to use the
+   > **Trustlight LLC**
+   > 1023 Jena Street
+   > New Orleans, LA 70115
+
+   That address also settles venue — see §3, governing law / venue.
+
+   🔴 **Open — for the attorney (a):** the **Trustlight LLC ↔ CNGF partnership
+   agreement**. It needs to cover, at minimum, Trustlight LLC's right to use the
    Cajun Navy Ground Force name in marketing and in the voice agent's own words,
    and CNGF's commitment to perform the disaster-response checks the terms
    describe. Aunt Mabel currently promises a service performed by someone else;
@@ -180,7 +190,7 @@ Mabel breaks both assumptions.
    language on the disaster check. The in-person check is a promise of *effort*,
    not of guaranteed arrival, and that distinction must be explicit in the terms.
    Now sharper than before: the effort is a **partner's** to make, so the terms
-   have to be honest that TrustLight is promising something it does not itself
+   have to be honest that Trustlight LLC is promising something it does not itself
    perform.
 
    🔴 **Open — for the attorney (c), newly raised by this correction:** how
@@ -200,9 +210,9 @@ Mabel breaks both assumptions.
 ## 5. Recommended approach when we do adapt
 
 1. Start from **Victora's ToS skeleton** (10 sections — it's the right document
-   type), graft in TrustLight's **governing law**, **AI-content**, and
+   type), graft in Trustlight LLC's **governing law**, **AI-content**, and
    **no-scraping** clauses.
-2. Start from **Victora's Privacy skeleton** (6 sections), graft in TrustLight's
+2. Start from **Victora's Privacy skeleton** (6 sections), graft in Trustlight LLC's
    **no-sale-of-data**, **cookies**, and **data-security** clauses.
 3. Add the nine items in §4 as new sections. They are the majority of the real
    work and none of them can be copied from anywhere.
