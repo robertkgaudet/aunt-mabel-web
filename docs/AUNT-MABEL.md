@@ -122,6 +122,15 @@ on 2026-08-06. Don't reintroduce it into user-visible text.
    exists elsewhere → look at how the working one does it early, don't reinvent.
 9. Long-running work goes to a Queue. Keep request handlers fast; flag anything
    that risks a CPU/time limit.
+
+   > **Known exception, deliberate:** the engine's scheduler places calls
+   > **inline** in its 15-minute cron run rather than through a Queue. Fine while
+   > few recipients share a call window; the trigger to change it is a single
+   > window trying to place roughly a few dozen calls or more. Call times cluster
+   > hard on "9:00 AM", so that arrives sooner than subscriber counts suggest.
+   > Provider concurrency (Retell/Twilio) will bind before the Worker's own
+   > limits do, because the loop is I/O-bound. See
+   > `aunt-mabel-engine/docs/ROADMAP.md` § Scaling.
 10. Log external calls — every outbound API call and inbound webhook, with
     enough detail to diagnose failures (status, headers, body), sensitive fields
     redacted. Keep real error logging in failure branches; remove only true
