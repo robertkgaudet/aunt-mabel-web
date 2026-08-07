@@ -2,12 +2,12 @@
 // The Family Guide — the page someone lands on after enrolling, and the one
 // they come back to later.
 //
-// ⚠️ PLACEHOLDER COPY. Every section below is holding wording pending Rob's
-// approved family-guide draft. It is deliberately conservative: the safety
-// section mirrors language already approved on /terms rather than making new
-// claims, and the disaster paragraph is phrased as EFFORT, never as a
-// guaranteed arrival — see docs/legal-source.md §4 item 8, open attorney items
-// (b) and (c). `noindex` stays on until the real copy lands.
+// Copy is Rob's APPROVED family-guide draft (2026-08-06), so this page is
+// indexable. Two parts were kept from the earlier conservative draft at his
+// direction: the safety wording mirrors language already approved on /terms,
+// and the disaster paragraph is phrased as EFFORT, never as guaranteed arrival.
+// Both remain open for attorney review — docs/legal-source.md §4 item 8,
+// items (b) and (c). If either changes, change it here in the same pass.
 //
 // DELIBERATELY NOT PERSONALIZED. This page is permanent and bookmarkable, so it
 // is written to work for someone arriving cold months later. Passing a
@@ -22,7 +22,6 @@ const SUPPORT_EMAIL = 'Mabel@AuntMabel.app';
 <BaseLayout
   title="Your family guide · Aunt Mabel"
   description="Everything you'll want to know about your loved one's daily call from Aunt Mabel."
-  noindex={true}
 >
   <div class="wrap guide">
     <header class="guide-head">
@@ -48,20 +47,38 @@ const SUPPORT_EMAIL = 'Mabel@AuntMabel.app';
       <p class="section-num">One</p>
       <h2>How to talk to them about Aunt Mabel</h2>
       <p>
-        This conversation goes better when it's framed as company rather than
-        supervision. Most people don't want to be checked up on — but almost
-        everyone likes being thought of.
-      </p>
-      <p>
-        It helps to be straightforward that Mabel is an automated caller. People
-        work it out quickly, and being told upfront lands far better than
-        discovering it. Mabel will say so herself, gently, if she's ever asked.
+        A friendly heads-up makes the first call land as a warm surprise instead
+        of a strange one. A few gentle suggestions:
       </p>
       <ul class="guide-list">
-        <li><strong>Lead with the company, not the safety.</strong> "Someone friendly to talk to each day" sits better than "so we know you're okay."</li>
-        <li><strong>Say it's automated.</strong> Plainly and early. It isn't a thing to work around.</li>
-        <li><strong>Let it be theirs to end.</strong> Knowing they can stop it any time makes saying yes much easier.</li>
-        <li><strong>Give it a couple of weeks.</strong> The first call is the strangest one. It gets comfortable quickly.</li>
+        <li>
+          <strong>Tell them ahead of time.</strong> Let them know a nice call is
+          coming so an unknown number isn't a worry. Something simple like:
+          <span class="say-this">
+            "I signed us up for a friendly check-in call each morning — her
+            name's Aunt Mabel. She just wants to say hello and make sure you're
+            doing alright."
+          </span>
+        </li>
+        <li>
+          <strong>Keep it warm, not clinical.</strong> This isn't monitoring —
+          it's a daily visit from someone who's glad to hear their voice. Framing
+          it as company, not surveillance, helps.
+        </li>
+        <li>
+          <strong>Be honest if they ask.</strong> Mabel is a friendly automated
+          helper, and she'll say so kindly if they ask. You can too — most folks
+          warm right up once they've talked to her.
+        </li>
+        <li>
+          <strong>There's no wrong way to talk to her.</strong> They can just
+          chat like they would with a neighbor. She loves a good story.
+        </li>
+        <li>
+          <strong>It's okay to say no.</strong> On the very first call, Mabel
+          will ask if the daily calls are welcome. If they'd rather not, that's
+          completely fine — the calls stop, and you won't be charged.
+        </li>
       </ul>
     </section>
 
@@ -69,24 +86,30 @@ const SUPPORT_EMAIL = 'Mabel@AuntMabel.app';
     <section class="guide-section" id="expect">
       <p class="section-num">Two</p>
       <h2>What to expect</h2>
-      <p>
-        Mabel calls at the same time each day. She's warm and unhurried — she
-        asks how they slept, how they're feeling, what they've got on. It's a
-        real conversation, not a checklist.
-      </p>
-      <p>
-        <strong>The first call is a little different.</strong> On it, Mabel will
-        gently confirm they're happy to keep hearing from her. If they'd rather
-        not, we stop right there and you aren't charged.
-      </p>
-      <p>
-        If someone doesn't pick up, Mabel tries again later the same day. If she
-        still can't reach them, we'll let you know.
-      </p>
-      <p>
-        If anything in a conversation sounds concerning, we contact the people
-        you named as emergency contacts — the same day, with what she heard.
-      </p>
+      <ul class="guide-list">
+        <li>
+          {/* (281) is Houston, matching the engine's FROM_NUMBER
+              (+12816999063 in wrangler.toml). If that number ever changes,
+              this sentence has to change with it. */}
+          <strong>The first call</strong> comes at their chosen time, from a
+          Houston <strong>(281)</strong> number. A heads-up — see above — helps
+          most.
+        </li>
+        <li>
+          <strong>The first call is a little special.</strong> Mabel introduces
+          herself, mentions the family set this up, and confirms the calls are
+          welcome.
+        </li>
+        <li>
+          <strong>After that:</strong> a warm, short daily visit — she asks how
+          they slept, whether they've eaten, how they're feeling, and follows
+          wherever the conversation goes.
+        </li>
+        <li>
+          <strong>The free trial:</strong> your first 3 days are free. We don't
+          charge until your loved one has welcomed the calls.
+        </li>
+      </ul>
     </section>
 
     {/* ── 3 ─────────────────────────────────────────────────────────── */}
@@ -98,20 +121,28 @@ const SUPPORT_EMAIL = 'Mabel@AuntMabel.app';
         <p>
           <strong>Aunt Mabel is a friendly daily check-in — not an emergency,
           medical, or monitoring service.</strong> She is not a substitute for
-          calling 911, and not a substitute for professional care.
+          911, for a medical alert device, or for professional care.
         </p>
         <p class="safety-emergency">
-          In an emergency, call <strong>911</strong>.
+          In an urgent situation, always call <strong>911</strong> or their
+          doctor directly.
         </p>
       </div>
 
       <p>Being plain about where the edges are:</p>
       <ul class="guide-list">
-        <li><strong>Mabel calls once a day.</strong> She isn't listening between calls, and she can't detect a fall or a medical event.</li>
+        <li><strong>No one is monitored between calls.</strong> Mabel speaks to them once a day. She isn't listening the rest of the time, and she can't detect a fall or a medical event.</li>
         <li><strong>She won't call a doctor.</strong> If you gave us a doctor's details, we pass them along when we alert your contacts. We never call them ourselves.</li>
         <li><strong>She isn't medical advice.</strong> Mabel doesn't diagnose anything or weigh in on medication.</li>
-        <li><strong>Alerts go to the people you named.</strong> If nobody is reachable, we can't escalate further on our own.</li>
       </ul>
+
+      <h3>What Mabel does do</h3>
+      <p>
+        If something concerning comes up in a call, we email <strong>you</strong>
+        and <strong>the emergency contact you listed</strong>, so a real person
+        can follow up. You decide what to do from there — we surface it, you make
+        the call.
+      </p>
 
       <h3>When disaster strikes</h3>
       <p>
@@ -133,18 +164,26 @@ const SUPPORT_EMAIL = 'Mabel@AuntMabel.app';
     <section class="guide-section" id="account">
       <p class="section-num">Four</p>
       <h2>Your account, and how to cancel</h2>
+      <ul class="guide-list">
+        <li>
+          <strong>You're in control.</strong> Pause or cancel anytime — no
+          contract, no cancellation fee.
+        </li>
+        <li>
+          <strong>To cancel or get help:</strong> email us at
+          <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+        </li>
+        <li>
+          <strong>Alerts come to you</strong> (your email) and to the emergency
+          contact you listed.
+        </li>
+        <li>
+          <strong>Adding another loved one:</strong> you can enroll a second
+          parent or grandparent anytime — same account, their own daily call.
+        </li>
+      </ul>
       <p>
-        Your first three days are free. After that it's $39 a month, and you can
-        stop any time.
-      </p>
-      <p>
-        <strong>Cancelling is meant to be easy.</strong> Email us and we'll take
-        care of it — no phone call, no retention conversation, no being passed
-        around. If you cancel during the free trial, you're never charged at all.
-      </p>
-      <p>
-        Changing the call time, updating a phone number, adding or swapping an
-        emergency contact — email us for any of it and we'll sort it out.
+        If you cancel during the free trial, you're never charged at all.
       </p>
 
       <div class="contact-card-guide">
@@ -233,7 +272,24 @@ const SUPPORT_EMAIL = 'Mabel@AuntMabel.app';
     font-size: 1.02rem;
     line-height: 1.7;
     font-weight: 300;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+  .guide-list a { color: var(--rose-deep); }
+
+  /* The suggested line to actually say out loud — set apart so it reads as
+     something to borrow rather than more prose to wade through. */
+  .say-this {
+    display: block;
+    margin-top: 0.6rem;
+    padding: 12px 16px;
+    background: var(--paper);
+    border-left: 3px solid var(--rose);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-family: var(--font-head);
+    font-size: 1rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--ink);
   }
 
   /* Rose, not gold: this is the one part of the page that must read as a
