@@ -63,21 +63,27 @@ Six sections.
 Its Terms of Use is website-terms, not product-terms, so most of it is the wrong
 document. Four things are worth lifting:
 
-- ✅ **Governing law / venue — RESOLVED (2026-08-06).** Take TrustLight's clause
-  but **change the parish**. TrustLight's boilerplate says Orleans Parish, which
-  is its own venue, not ours. Ours is **Lafayette Parish**.
+- 🔴 **Governing law / venue — RE-OPENED (2026-08-06).** This was resolved to
+  **Lafayette Parish**, but that answer was derived entirely from Cajun Navy
+  Ground Force's registered address, on the understanding that the nonprofit was
+  the contracting party. **It isn't** — see item 8 in §4. Venue follows the
+  contracting entity, and that is now **TrustLight**.
 
-  Confirmed registered address:
+  The earlier note dismissed TrustLight's own Orleans Parish boilerplate as
+  "its own venue, not ours." That reasoning is now inverted: TrustLight *is*
+  ours, so its clause may well have been right all along.
+
+  CNGF's address is still on file and still correct **for CNGF** — it is the
+  partner's address, not the contracting party's:
 
   > Cajun Navy Ground Force (DBA of Cajun Relief Foundation)
   > 4400-A Ambassador Caffery Pkwy #342
   > Lafayette, LA 70508
 
-  So the clause should read: *"These terms are governed by the laws of the State
-  of Louisiana. Any disputes shall be resolved in the courts of **Lafayette
-  Parish**, Louisiana."*
+  **Needs from Rob:** TrustLight's registered address, which decides the parish.
+  Louisiana governing law is unaffected either way.
 
-  Worth keeping because Victora's terms have **no** governing-law clause at all —
+  Worth settling because Victora's terms have **no** governing-law clause at all —
   this fills a real gap.
 - ✅ **AI-generated content disclosure** — *"Some content on this site may be
   drafted or assisted by AI tools. We review all published content for accuracy
@@ -146,18 +152,44 @@ Mabel breaks both assumptions.
    cognitive impairment. Consent, cancellation, and data-subject rights all
    behave differently in that case, and neither source has a word about it.
 
-8. **Nonprofit entity relationship.** ✅ **Contracting party: RESOLVED
-   (2026-08-06).** The legal entity is **Cajun Relief Foundation**, a registered
-   nonprofit. "Cajun Navy Ground Force" and "Ground Force Humanitarian Aid" are
-   both DBAs of it, not separate organizations — so **Cajun Relief Foundation is
-   the party that contracts with the customer**, and legal documents should name
-   it as **"Cajun Relief Foundation, d/b/a Cajun Navy Ground Force"**. Brand-facing
-   copy stays "Cajun Navy Ground Force". See `docs/AUNT-MABEL.md` § Entity & naming.
+8. **Operator / partner relationship.** ✅ **Contracting party: RESOLVED
+   (2026-08-06, corrected).**
 
-   **Still open in this item:** what the disaster-response in-person check does
-   and does not promise. The in-person check is a promise of *effort*, not of
-   guaranteed arrival — that distinction needs to be explicit in the terms, and
-   it is not a naming question.
+   > ⚠️ **CORRECTION.** This item previously recorded Cajun Relief Foundation as
+   > the contracting party. **That was wrong and is superseded.**
+
+   Aunt Mabel is a **for-profit enterprise operated by TrustLight**. TrustLight
+   is the contracting party, the Stripe/payment entity, and the party named in
+   the ToS and Privacy Policy. **Cajun Navy Ground Force** (a DBA of Cajun Relief
+   Foundation) is a **partner**, not the operator: it performs the in-person
+   disaster-response checks, and Aunt Mabel uses its name by permission.
+   Brand-facing copy still says "Cajun Navy Ground Force". See
+   `docs/AUNT-MABEL.md` § Entity & naming.
+
+   🔴 **Open — needs Rob:** the exact registered legal entity name for
+   TrustLight, for use in the contracting-party clause.
+
+   🔴 **Open — for the attorney (a):** the **TrustLight ↔ CNGF partnership
+   agreement**. It needs to cover, at minimum, TrustLight's right to use the
+   Cajun Navy Ground Force name in marketing and in the voice agent's own words,
+   and CNGF's commitment to perform the disaster-response checks the terms
+   describe. Aunt Mabel currently promises a service performed by someone else;
+   that promise needs a contract behind it.
+
+   🔴 **Open — for the attorney (b):** the **effort-not-guaranteed-arrival**
+   language on the disaster check. The in-person check is a promise of *effort*,
+   not of guaranteed arrival, and that distinction must be explicit in the terms.
+   Now sharper than before: the effort is a **partner's** to make, so the terms
+   have to be honest that TrustLight is promising something it does not itself
+   perform.
+
+   🔴 **Open — for the attorney (c), newly raised by this correction:** how
+   prominently the for-profit operator must be identified to customers. The
+   customer-facing brand is a nonprofit's name, the voice agent says she is
+   "with the Cajun Navy Ground Force", the live site says Aunt Mabel is "a
+   project of" the nonprofit — and the payment goes to a for-profit. That gap is
+   a consumer-perception question, and it is worth an explicit answer rather
+   than an assumption. Flagged as fact, not as a judgment on the arrangement.
 
 9. **Service-level honesty.** Calls can fail: no answer, dead phone, carrier
    outage, our own downtime. What we commit to (retry, notify) and explicitly do

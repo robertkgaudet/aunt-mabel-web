@@ -235,8 +235,10 @@ recipient attached. That's a recoverable state worth reporting on later, not an
 error.
 
 **Entity, naming, address, palette, type** — per [AUNT-MABEL.md](AUNT-MABEL.md).
-Brand-facing copy says "Cajun Navy Ground Force"; legal text says "Cajun Relief
-Foundation, d/b/a Cajun Navy Ground Force."
+Brand-facing copy says "Cajun Navy Ground Force"; legal text names **TrustLight**,
+the for-profit operator and contracting party. CNGF is the disaster-response
+partner, not the operator. (Corrected 2026-08-06 — an earlier version of this
+line named Cajun Relief Foundation as the contracting party.)
 
 ---
 

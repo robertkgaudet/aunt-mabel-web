@@ -12,12 +12,13 @@ the engine, update that copy too.
 
 ## What Aunt Mabel is
 
-A paid daily wellness-call service for elderly people living alone, operated
-under Cajun Navy Ground Force. An AI voice agent (Aunt Mabel) calls each
-recipient daily, holds a warm conversation, flags health/safety concerns, and
-escalates to human contacts. The same daily call doubles as a disaster
-tripwire: when disaster hits a recipient's area, it triggers an in-person
-Cajun Navy Ground Force check.
+A paid daily wellness-call service for elderly people living alone, operated as
+a **for-profit enterprise by TrustLight**, in partnership with Cajun Navy Ground
+Force. An AI voice agent (Aunt Mabel) calls each recipient daily, holds a warm
+conversation, flags health/safety concerns, and escalates to human contacts. The
+same daily call doubles as a disaster tripwire: when disaster hits a recipient's
+area, it triggers an in-person Cajun Navy Ground Force check — the partner's
+side of the arrangement.
 
 Promise: "A friendly call every day — and a knock on the door when disaster strikes."
 
@@ -49,27 +50,47 @@ handler on D1 — not Hono, not Supabase. It's proven and it calls real phones.
 Only realign it as a later, deliberate refactor if the split causes real
 friction — never preemptively.
 
-## Entity & naming (settled — do not re-argue)
+## Entity & naming (corrected 2026-08-06 — supersedes the earlier version)
 
-- **Legal entity: Cajun Relief Foundation** — the registered nonprofit.
-- **"Cajun Navy Ground Force"** and **"Ground Force Humanitarian Aid"** are both
-  **DBAs of Cajun Relief Foundation**. They are brand names, not separate
-  organizations.
+> ⚠️ **This section replaces an earlier recording that made Cajun Relief
+> Foundation the contracting party. That was wrong.** Anything written before
+> this correction — in these docs, in code comments, or in the draft legal
+> pages — that names the nonprofit as the operator or contracting party is
+> superseded by what follows.
+
+**Two organizations, and the distinction is the whole point:**
+
+- **TrustLight** — Rob's consulting company. Aunt Mabel is a **for-profit
+  enterprise operated by TrustLight**. TrustLight is the operator, the
+  contracting party, the Stripe/payment entity, and the party named in the ToS
+  and Privacy Policy.
+- **Cajun Navy Ground Force** — a DBA of Cajun Relief Foundation (a registered
+  nonprofit), and a **PARTNER, not the owner or operator**. Its role is the
+  in-person disaster-response wellness checks. Aunt Mabel uses the CNGF name **by
+  partnership and permission**; the service is not operated by, or under, the
+  nonprofit.
 
 **The rule:**
 
 | Context | Use |
 |---|---|
-| Brand-facing copy — marketing pages, UI, email, the voice agent | **Cajun Navy Ground Force** |
-| Legal documents — ToS, Privacy Policy, contracting-party language | **Cajun Relief Foundation, d/b/a Cajun Navy Ground Force** |
+| Brand-facing copy — marketing pages, UI, email, the voice agent | **Cajun Navy Ground Force** — the trusted name Mabel says |
+| Legal documents — ToS, Privacy Policy, contracting-party language | **TrustLight** — never Cajun Relief Foundation |
+| Describing the disaster-response check | Cajun Navy Ground Force, **as the named partner** performing it |
 
-This settles the open contracting-party question: **Cajun Relief Foundation is
-the party that contracts with the customer.** The DBAs never contract in their
-own name.
+So the customer-facing name and the contracting entity are deliberately
+different: people hear the trusted local name, and they contract with the
+for-profit that runs the service. **Never write copy implying the nonprofit
+operates Aunt Mabel or takes the payment** — that is the specific error this
+correction exists to prevent.
 
-"Ground Force Humanitarian Aid" is a valid DBA but is **not** the brand we lead
-with — brand-facing copy was standardized away from it on 2026-08-06. Don't
-reintroduce it into user-visible text.
+> **Open — needs Rob:** the exact registered legal entity name for TrustLight
+> (the docs so far only reference "TrustLight Advisory" / trustlight.ai). Legal
+> pages currently say "TrustLight" pending that answer.
+
+"Ground Force Humanitarian Aid" is another DBA of the same nonprofit but is
+**not** the brand we lead with — brand-facing copy was standardized away from it
+on 2026-08-06. Don't reintroduce it into user-visible text.
 
 ## Architecture principles (non-negotiable, every repo)
 
