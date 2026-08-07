@@ -144,6 +144,31 @@ Consent is layered and the layers are never conflated:
 - recording/Legacy and voice-cloning — separate future consents, not implied by
   either of the above
 
+## Admin / operator dashboard (planned — after the family dashboard)
+
+Rob's internal view of every customer: all accounts and recipients, subscription
+status and MRR, system-wide call monitoring, and support lookup with manual
+intervene. **Not customer-facing.** Planned after the family dashboard (3a/3b),
+whose call queries and display patterns it reuses. At pilot scale Rob manages
+via Supabase queries in the interim.
+
+**The security model is inverted, and that is the point to remember.** The
+family dashboard is safe because RLS lets a signed-in user see only their own
+account. The admin dashboard exists to see everyone, so RLS cannot be what
+protects it:
+
+> A bug that widens a family query leaks one family's data.
+> A bug in the admin gate leaks everybody's.
+
+So it lives on a **separate route** (`/admin`), behind an **explicit admin gate
+checked server-side**, and must never be reachable by a regular customer. Access
+model is decided at build time — an allowlist of admin emails is the simplest, a
+`role` column on `accounts` the fuller version once staff exist.
+
+Full detail, including the RLS-vs-service-role fork this choice implies, is in
+[`aunt-mabel-engine/docs/ROADMAP.md`](../../aunt-mabel-engine/docs/ROADMAP.md)
+§ Admin / Operator dashboard.
+
 ## Working conventions (every repo)
 
 - **Recon before build.** Read current state (the actual file, the actual DB
