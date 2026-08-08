@@ -5,15 +5,13 @@
 // paraphrase it, do not tighten it, do not "improve" the rhythm. If it needs to
 // change, it changes because he changed it.
 //
-// PHOTOS ARE NOT IN THE REPO YET. public/images/family/ does not exist. Every
-// <figure> below carries a placeholder frame in its place, sized to hold the
-// picture named in its label. The captions are already final — only the images
-// and their alt text are outstanding, and alt text has to be written by someone
-// who can actually see them.
+// PHOTOGRAPHS are the real family scans in public/images/family/, resized by
+// scripts/optimize-family-photos.mjs. Every alt text was written from actually
+// looking at the picture — not from the filename — because this page is about
+// real people and describing them wrongly would be its own small insult.
 //
-// Deliberately NOT filled with the Homer template's stock gallery images that
-// happen to sit in public/assets/images/. Dressing stock photography as
-// somebody's dead mother is not a placeholder, it is a lie.
+// Where a person's position is named ("Aunt Mabel stands at the top left"), that
+// comes from Rob's own filenames, not from a guess about which face is hers.
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -22,6 +20,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Aunt Mabel was a real person. The true family story behind the daily calls — Lake Charles, Treasure Island 1942, Hurricane Laura, and a promise to show up."
   ogTitle="The real Aunt Mabel"
   ogDescription="She was my great-aunt. She remembered everyone's name. Her photo is our logo, and her spirit is the whole idea."
+  ogImage="/images/family/aunt-mabel.jpg"
 >
   <div class="wrap story">
     <header class="story-head">
@@ -36,9 +35,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </p>
 
     <figure class="plate portrait">
-      <div class="photo-slot tall" data-slot="Aunt Mabel — sepia portrait, the one used as the logo">
-        <span>Photograph</span>
-      </div>
+      <img
+        src="/images/family/aunt-mabel.jpg"
+        width="708"
+        height="1011"
+        alt="Aunt Mabel in a sepia studio portrait from the 1940s — dark waved hair, a wide open smile, and a sparkling floral brooch at the collar of her dark jacket."
+        decoding="async"
+      />
       <figcaption>Aunt Mabel — the real one. Her smile is our logo.</figcaption>
     </figure>
 
@@ -54,12 +57,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <figure class="plate">
       <div class="photo-pair">
-        <div class="photo-slot wide" data-slot="1950s living room, full of children">
-          <span>Photograph</span>
-        </div>
-        <div class="photo-slot wide" data-slot="Generations portrait">
-          <span>Photograph</span>
-        </div>
+        <img
+          src="/images/family/miller-cousins.jpg"
+          width="1392"
+          height="998"
+          alt="More than twenty cousins of every age crowded into a panelled living room around their seated grandparents, the smallest children sitting on a braided rug at the front."
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          src="/images/family/miller-children-aunt-mable-top-left.jpg"
+          width="1600"
+          height="1163"
+          alt="A formal sepia family portrait in front of a studio curtain — three generations in suits and patterned dresses, the grandparents seated at the centre with the youngest children in front. Aunt Mabel stands at the top left."
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <figcaption>
         The family reunions. Aunt Mabel knew every name in every one of these rooms.
@@ -77,9 +90,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </p>
 
     <figure class="plate">
-      <div class="photo-slot tall" data-slot="Treasure Island wedding, 1942 — dress blues and lace">
-        <span>Photograph</span>
-      </div>
+      <img
+        src="/images/family/grandparents-wedding-1942-navy.jpg"
+        width="695"
+        height="992"
+        alt="Robert L. Miller and his bride in a 1942 studio portrait — he in Navy dress blues with a petty officer's rating badge on the sleeve, she in a pale gown with a lace collar and pearls."
+        loading="lazy"
+        decoding="async"
+      />
       <figcaption>
         Married at nineteen on Treasure Island, 1942, just before he shipped off to war.
       </figcaption>
@@ -93,9 +111,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </p>
 
     <figure class="plate">
-      <div class="photo-slot wide" data-slot="1993 — the women of the family gathered">
-        <span>Photograph</span>
-      </div>
+      <img
+        src="/images/family/miller-women-aunt-mable-blue-dress-grandmother-in-red.jpg"
+        width="1080"
+        height="690"
+        alt="Seven women of the family gathered in a wood-panelled living room in 1993 — Aunt Mabel standing in a pale blue dress, Rob's grandmother seated at the right in red."
+        loading="lazy"
+        decoding="async"
+      />
       <figcaption>Decades later — still gathered, still laughing.</figcaption>
     </figure>
 
@@ -165,11 +188,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       things up about real people. Drop the files in and this becomes a lazy-
       loaded grid in one pass.
     */}
-    <section class="gallery-pending" aria-label="Family gallery, coming">
+    <section class="gallery" aria-label="Family photographs through the years">
       <h2>The family, through the years.</h2>
-      <p>
-        The remaining photographs go here, once they're in the repository.
-      </p>
+      <div class="gallery-grid">
+        <figure>
+          <img src="/images/family/miller-family-christmas.jpg" width="590" height="598" loading="lazy" decoding="async"
+            alt="A crowded living room at Christmas in the 1950s — three rows of family, the men standing at the back, a toddler on his mother's lap at the front." />
+        </figure>
+        <figure>
+          <img src="/images/family/miller-christmas-60s.jpg" width="1600" height="1117" loading="lazy" decoding="async"
+            alt="A Christmas gathering in the 1960s — the family laughing together against a white brick wall, the women in evening dresses, the men in dark suits." />
+        </figure>
+        <figure>
+          <img src="/images/family/miller-cousins-dancing.jpg" width="1600" height="1117" loading="lazy" decoding="async"
+            alt="Cousins dancing at a Christmas party, Christmas cards and stockings pinned along the shelves behind them." />
+        </figure>
+        <figure>
+          <img src="/images/family/miller-brides-find-aunt-mabel.jpg" width="1080" height="810" loading="lazy" decoding="async"
+            alt="A wedding day in the 1950s — the bride in her veil flanked by three attendants in matching gowns, an older woman in a wide-brimmed hat at one end and a man in a pale suit at the other. Aunt Mabel is among them." />
+        </figure>
+        <figure>
+          <img src="/images/family/mom-uncle-bob-grandmother-mary-jean.jpg" width="644" height="514" loading="lazy" decoding="async"
+            alt="Rob's mother Kathy, his Uncle Bob and his grandmother Mary Jean around a table together, mid-laugh, clapping." />
+        </figure>
+      </div>
     </section>
 
     <div class="story-cta">
@@ -306,25 +348,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: var(--soft-ink);
   }
 
-  .gallery-pending {
-    margin: 3.4rem 0 0;
-    padding: 2rem;
-    border: 1px dashed #cfc0a2;
+  /* Photographs: full-bleed within the measure, softly framed so a scan's
+     uneven edges read as an old print rather than a cropping mistake. */
+  .plate img,
+  .gallery img {
+    display: block;
+    width: 100%;
+    height: auto;
     border-radius: var(--radius-sm);
-    text-align: center;
+    border: 1px solid var(--line);
     background: var(--paper);
   }
-  .gallery-pending h2 {
+
+  .gallery { margin: 3.6rem 0 0; }
+  .gallery h2 {
     font-family: var(--font-head);
     font-weight: 400;
-    font-size: 1.35rem;
-    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    margin: 0 0 1.4rem;
+    text-align: center;
   }
-  .gallery-pending p {
-    font-size: 0.9rem !important;
-    color: var(--soft-ink);
-    margin: 0 !important;
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
   }
+  .gallery figure { margin: 0; }
 
   .story-cta {
     margin-top: 3.4rem;

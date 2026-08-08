@@ -23,6 +23,14 @@ interface Props {
    */
   ogTitle?: string;
   ogDescription?: string;
+  /** Per-page share image (site-relative). Defaults to the brand card. */
+  ogImage?: string;
+  /**
+   * Drop the shared header AND footer, for a page that ships its own chrome
+   * (the homepage). The <head> — meta, Open Graph, JSON-LD, fonts — still comes
+   * from here, so there is exactly one place that defines it.
+   */
+  chrome?: boolean;
 }
 
 const {
@@ -32,13 +40,15 @@ const {
   bare = false,
   ogTitle,
   ogDescription,
+  ogImage: ogImagePath,
+  chrome = true,
 } = Astro.props;
 
 const socialTitle = ogTitle ?? title;
 const socialDescription = ogDescription ?? description;
 
 // Absolute, because Facebook and X will not resolve a relative one.
-const ogImage = new URL('/og-image.jpg', Astro.site).href;
+const ogImage = new URL(ogImagePath ?? '/og-image.jpg', Astro.site).href;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
@@ -104,6 +114,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <slot name="head" />
   </head>
   <body>
+    {chrome && (
     <header class="site-header">
       <div class="inner">
         <a class="brand-lockup" href="/">
@@ -141,11 +152,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         </div>
       </div>
     </header>
+    )}
 
     <main>
       <slot />
     </main>
 
+    {chrome && (
     <footer class="site-footer">
       <div class="inner">
         <p>
@@ -163,6 +176,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         <p class="fine">© 2026 · A call every day, and a knock on the door when it matters most.</p>
       </div>
     </footer>
+    )}
 
     <script>
       // Resolve the header nav to signed-in or signed-out.

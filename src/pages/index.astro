@@ -1,17 +1,23 @@
 ---
-// Home page — a faithful Astro rebuild of the live auntmabel.app landing page.
+// Home page — rebuilt from the Claude Design mockup.
 //
-// Copy, section order, palette, and type all come from docs/brand-capture.md.
-// Anything that differs from the capture is marked CHANGED below and nowhere
-// else — if you find yourself "improving" the copy, update the capture first.
+// The mockup ships inline styles plus Claude Design's own sc-if / style-hover
+// syntax, none of which is our stack. Rebuilt as semantic markup with a scoped
+// stylesheet: every colour, size and string is the mockup's, each sc-if wrapper
+// renders unconditionally (they were conditional chrome, not content), and each
+// style-hover became a real CSS :hover rule.
 //
-// CHANGED from the live page (the funnel, per brief 2026-08-06):
-//   - hero eyebrow  "Coming soon · join the waitlist"  →  "Now enrolling — $39/month"
-//   - the email-only Formspree waitlist form is GONE; the CTA band now sends
-//     people to /enroll via a "Set up a daily call" button.
-//   - the CTA band's waitlist-specific copy (h2/sub/fine print) is rewritten
-//     to match, since the captured wording described collecting an email.
-// Everything else is verbatim from the capture.
+// chrome={false} — this page carries the mockup's own sticky header and footer.
+// The <head> still comes from BaseLayout, so meta, Open Graph and the three
+// JSON-LD blocks stay defined in exactly one place.
+//
+// The hero photograph is a styled placeholder deliberately. The mockup calls for
+// "Mom smiling on the phone, morning light in her kitchen"; no such photograph
+// exists yet, and a stock face would be a stranger standing in for the promise
+// this page makes.
+//
+// The mockup's own footer markup was truncated mid-attribute in the extract, so
+// the footer below is reconstructed from the brief's specified contents.
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -20,6 +26,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="A warm daily phone call for your elderly parent or grandparent living alone — and family reached instantly the moment something's wrong. 3 days free. In partnership with the Cajun Navy Ground Force."
   ogTitle="A friendly call every day — and someone there when it matters most."
   ogDescription="Aunt Mabel calls your elderly loved one every morning for a warm check-in — and reaches you live, in seconds, if something's ever wrong. 3 days free."
+  chrome={false}
 >
   <Fragment slot="head">
     {/*
@@ -130,463 +137,616 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     */}
   </Fragment>
 
-  {/* ── hero ────────────────────────────────────────────────────────── */}
-  <div class="wrap">
-    <div class="hero">
-      <div>
-        {/* CHANGED: was "Coming soon · join the waitlist" */}
-        <p class="eyebrow">Now enrolling — $39/month</p>
-        <h1>A friendly call every day — <em>and a knock on the door when disaster strikes.</em></h1>
-        <p class="lede">
-          List your elderly parent and Aunt Mabel checks in on the schedule you
-          choose. When a disaster hits their area, that same call becomes an
-          in-person wellness check from Ground Force.
-        </p>
-      </div>
-
-      {/* demo-call card */}
-      <div class="phone-card">
-        <div class="caller">
-          <span class="av"></span>
-          <div>
-            <div class="nm">Aunt Mabel</div>
-            <div class="st"><span class="ring"></span>calling Eleanor…</div>
-          </div>
-        </div>
-        <p class="bubble">"Morning, Eleanor. It's Mabel, just checking in on you. How'd you sleep, hon?"</p>
-        <p class="bubble">"You have your breakfast yet this morning?"</p>
-        <p class="bubble">"Alright, sweetheart. I'll ring you again tomorrow. You take care now."</p>
-        {/* AI disclosure #1 of 2 — never remove; the live page discloses twice. */}
-        <p class="ai-note">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <circle cx="7" cy="7" r="6.3" stroke="#6b5d48" stroke-width="1.2" />
-            <path d="M7 6.2v3.4M7 4.3v.1" stroke="#6b5d48" stroke-width="1.3" stroke-linecap="round" />
-          </svg>
-          Aunt Mabel is a friendly AI voice that places the calls automatically, on your schedule.
-        </p>
-      </div>
+  <div class="hp">
+    <div class="hp-banner">
+      Founding families: <span>3 days free</span> — not charged until your loved one welcomes the calls.
     </div>
-  </div>
 
-  <div class="wrap sections">
-    {/* ── CTA band (replaces the waitlist form) ─────────────────────── */}
-    <section>
-      <div class="band-dark cta-band" id="enroll-cta">
-        <p class="kicker">Be among the first families</p>
-        <h2>Set up her first call.</h2>
-        {/* CHANGED: was the waitlist's "leave your email" copy. */}
-        <p class="sub">
-          Tell Mabel who to call and when. She starts the next morning — and you
-          can stop the calls at any time.
-        </p>
-        <p class="cta-actions">
-          <a class="btn btn-primary" href="/enroll">Set up a daily call</a>
-        </p>
-        <p class="tiny">$39 a month · cancel anytime · no long-term contract.</p>
+    <header class="hp-header">
+      <div class="hp-header-inner">
+        <a class="hp-brand" href="/">
+          <span class="hp-mark" aria-hidden="true">M</span>
+          <span class="hp-wordmark">Aunt Mabel</span>
+        </a>
+        <nav class="hp-nav" aria-label="Main">
+          <a href="#how">How it works</a>
+          <a href="#family-connect">Family Connect</a>
+          <a class="hp-btn hp-btn-sm" href="/enroll">Start their daily calls</a>
+        </nav>
       </div>
-    </section>
+    </header>
 
-    {/* ── story ─────────────────────────────────────────────────────── */}
-    <section>
-      <div class="story">
-        <p class="kicker">A true story from the field</p>
-        <h2>The house on Verret Street.</h2>
-        <p>
-          The water came up in the night. By the time Ground Force teams reached
-          the neighborhood the next morning — boats first, then boots — most of
-          the able-bodied had already gotten themselves to the shelter. They'd
-          packed a bag, called a cousin, climbed into a truck bed. The young and
-          the connected move fast.
+    <section class="hp-hero">
+      <div class="hp-hero-copy">
+        <div class="hp-badge">
+          <span class="dot" aria-hidden="true"></span>
+          In partnership with the Cajun Navy Ground Force
+        </div>
+        <h1>A friendly call every day — and someone there when it matters most.</h1>
+        <p class="hp-lede">
+          Aunt Mabel calls your elderly loved one every morning for a warm, friendly
+          check-in. And if something's ever wrong, she reaches you right away — so
+          they're never alone when it counts.
         </p>
-        <p>But in the small brick house on Verret Street, the door was still shut.</p>
-        <p>
-          Inside, Miss Eleanor was sitting in her chair in two feet of water,
-          exactly where she'd been when the power died eighteen hours earlier.
-          Eighty-one years old. Her phone was dead. Her daughter lived four
-          states away and had been calling and calling, getting nothing,
-          assuming the lines were just down like everyone else's. Eleanor wasn't
-          hurt. She was something quieter and worse than hurt — she was
-          <em>alone</em>, with no way to tell anyone, and no one whose job it
-          was to come find her specifically.
-        </p>
-        <p>
-          The team got her out. She was fine. But across twenty disaster
-          responses, the same door keeps showing up. Different street, different
-          name, same shut door. The elderly are the last to be reached and the
-          first to be forgotten — not because anyone is cruel, but because no
-          system is pointed at them <em>by name</em> until it's already too late.
-        </p>
-        <p class="story-close">
-          That's the gap. Not a lack of compassion — a lack of a tripwire. Nobody
-          knew Eleanor was there until someone physically opened the door.
-          <strong>Aunt Mabel is that tripwire.</strong>
-        </p>
+        <div class="hp-cta-row">
+          <a class="hp-btn hp-btn-lg" href="/enroll">Start their daily calls →</a>
+          <span class="hp-fine">3 days free · Cancel anytime</span>
+        </div>
       </div>
-    </section>
 
-    {/* ── why we built her ──────────────────────────────────────────── */}
-    <section>
-      <div class="band-dark why">
-        <p class="kicker">Why we built her</p>
-        <h2>We've seen what happens when no one checks in.</h2>
-        <p>
-          Ground Force has responded to <strong>20 disasters</strong>, and in
-          community after community we found the same thing: elderly neighbors
-          completely alone. Many disabled. Many physically unable to clear
-          debris or repair their own homes — and with no one coming to help.
-        </p>
-        <p>
-          When we're in trouble, help usually comes from our friends. But the
-          elderly often have <strong>few close friends left</strong>. Spouses
-          and friends pass on, families live far away, mobility fades, and the
-          world gets quiet. <strong>Social isolation is the single most
-          troubling factor</strong> standing between an older person and a safe
-          recovery — and it doesn't only happen after a storm. For too many,
-          it's every day.
-        </p>
-        <p>
-          Aunt Mabel grew out of that mission: to be a safety net for the
-          elderly and vulnerable. A simple, warm daily call so someone is always
-          checking in — and so a family member always knows their loved one is
-          okay.
-        </p>
-        <div class="stat-row">
-          <div class="stat">
-            <div class="n">184%</div>
-            <div class="l">growth in Americans over 65 since 1980</div>
-          </div>
-          <div class="stat">
-            <div class="n">72M</div>
-            <div class="l">elderly Americans today, and climbing</div>
-          </div>
-          <div class="stat">
-            <div class="n">1 call</div>
-            <div class="l">a day can be the difference between alone and looked after</div>
+      <div class="hp-hero-media">
+        <div class="hp-photo-frame">
+          <div class="hp-photo-slot">
+            <div class="hp-photo-note">photo — Mom smiling on the phone, morning light in her kitchen</div>
           </div>
         </div>
-      </div>
-    </section>
-
-    {/* ── how it works ──────────────────────────────────────────────── */}
-    <section>
-      <p class="kicker">How it works</p>
-      <h2>Peace of mind, without the hovering.</h2>
-      <div class="steps">
-        <div class="step">
-          <div class="n">1</div>
-          <h3>Tell Mabel who to call</h3>
-          <p>Add your loved one's name, number, and the time of day that suits them best.</p>
-        </div>
-        <div class="step">
-          <div class="n">2</div>
-          <h3>She calls, on schedule</h3>
-          {/* AI disclosure #2 of 2 — never remove. */}
-          <p>
-            A warm, natural conversation — not a checklist. She asks how they
-            slept, if they've eaten, how they're feeling. It's an AI voice,
-            calling automatically so it never gets missed.
-          </p>
-        </div>
-        <div class="step">
-          <div class="n">3</div>
-          <h3>You get the all-clear</h3>
-          <p>A simple daily note that they're okay. And if something sounds off, you're the first to know.</p>
+        <div class="hp-call-card">
+          <div class="hp-call-head">
+            <span class="dot" aria-hidden="true"></span>Today's call · 9:02 am
+          </div>
+          <p>"She had her oatmeal, took her pills, and the roses are blooming."</p>
         </div>
       </div>
     </section>
 
-    {/* ── two ways she shows up ─────────────────────────────────────── */}
-    <section>
-      <p class="kicker">Two ways she shows up</p>
-      <h2>The same enrollment. Two levels of care.</h2>
-      <div class="modes">
-        <div class="mode mode-day">
-          <span class="mode-tag">Every day</span>
-          <h3>The everyday call</h3>
-          <p>
-            On the schedule you choose — daily, weekdays, mornings or evenings —
-            Aunt Mabel calls to ask how they slept, if they've eaten, and how
-            they're feeling. A warm voice, a steady rhythm, and a quiet note to
-            you that all is well.
-          </p>
-        </div>
-        <div class="mode mode-storm">
-          <span class="mode-tag">When disaster strikes</span>
-          <h3>The in-person check</h3>
-          <p>
-            When a storm or disaster hits their area, the call escalates. Ground
-            Force's trained teams — already on the ground in impacted
-            communities — go knock on the door for a real wellness check, so
-            your loved one is never left alone in the chaos.
-          </p>
+    <section class="hp-problem">
+      <div class="hp-problem-inner">
+        <div class="hp-rule" aria-hidden="true"></div>
+        <h2>When did you last hear her voice?</h2>
+        <p>
+          You meant to call Sunday. Then the week happened. You know she's alone in
+          that house — that most days, the phone doesn't ring at all, and she'd never
+          tell you how quiet it gets. She doesn't want to be a burden. So she says
+          she's fine.
+        </p>
+        <p>
+          Meanwhile you're left wondering. Did she eat today? Did he take his pills?
+          And underneath it, the worry you don't say out loud:
+          <em>if something happened, would I even know?</em>
+        </p>
+        <p>
+          You can't call every morning. But someone can — someone who listens,
+          remembers, and tells you how she's really doing.
+        </p>
+        <p class="hp-turn">
+          Aunt Mabel is there on the days you can't be. Loneliness ends tomorrow
+          morning at nine.
+        </p>
+      </div>
+    </section>
+
+    <section id="how" class="hp-how">
+      <div class="hp-inner">
+        <h2 class="hp-centred">How it works</h2>
+        <p class="hp-sub">Three small steps, and then it simply happens every morning.</p>
+        <div class="hp-steps">
+          <div>
+            <div class="hp-num" aria-hidden="true">1</div>
+            <h3>Sign up your loved one</h3>
+            <p>
+              Their name, their phone number, and the time of day they'd most like to
+              hear from someone. That's it — nothing for them to set up, download, or
+              learn.
+            </p>
+          </div>
+          <div>
+            <div class="hp-num" aria-hidden="true">2</div>
+            <h3>Mabel calls them every day</h3>
+            <p>
+              A real conversation, never a robotic script. She asks about their
+              morning, remembers what they told her yesterday, and lets them talk as
+              long as they'd like.
+            </p>
+          </div>
+          <div>
+            <div class="hp-num" aria-hidden="true">3</div>
+            <h3>You stay in the loop</h3>
+            <p>
+              A warm summary of every call lands in your family dashboard. Good days
+              are good days — and if something's wrong, you hear about it right away.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    {/* ── trust strip ───────────────────────────────────────────────── */}
-    <section>
-      <div class="strip">
-        <div class="item">
-          <h4>Warm, not clinical</h4>
-          <p>Mabel sounds like family, not a service. The call is the point — never a task to rush through.</p>
+    <section class="hp-features">
+      <div class="hp-inner hp-stack">
+        <div class="hp-panel hp-split">
+          <div>
+            <div class="hp-eyebrow">Every morning</div>
+            <h3 class="hp-panel-h">A warm daily check-in</h3>
+            <p>
+              It feels like a visit from a friend, not a questionnaire. Mabel gently
+              makes sure they've eaten, taken their medicine, and slept alright — and
+              then she stays for the part that matters just as much: the company.
+            </p>
+          </div>
+          <div class="hp-quote-card">
+            <p class="hp-quote">"Morning, Ruth. Did you get to your coffee before the crossword this time?"</p>
+            <div class="hp-hair" aria-hidden="true"></div>
+            <div class="hp-tags">
+              <span>Meals</span><span>Medication</span><span>Mood</span><span>Company</span>
+            </div>
+          </div>
         </div>
-        <div class="item">
-          <h4>You set the rhythm</h4>
-          <p>Daily, weekdays, mornings or evenings — whatever fits their routine and yours.</p>
+
+        <div id="family-connect" class="hp-connect">
+          <div>
+            <div class="hp-badge hp-badge-on-rose">
+              <span class="dot gold" aria-hidden="true"></span>Family Connect
+            </div>
+            <h3>She reaches you the moment it matters.</h3>
+            <p>
+              If your loved one is ever in distress — a fall, chest pain, confusion, a
+              scare — Mabel doesn't wait until tomorrow. She urges them to call 911,
+              and in the same breath she reaches you, right then, bringing you onto the
+              call live.
+            </p>
+            <p class="hp-connect-turn">
+              So a frightened parent is never alone — and you're there in seconds.
+            </p>
+            <p class="hp-connect-fine">For real emergencies, 911 always comes first.</p>
+          </div>
+
+          <div class="hp-live-card">
+            <div class="hp-live-head">
+              <span class="dot rose" aria-hidden="true"></span>Live now · 7:41 am
+            </div>
+            <div class="hp-live-lines">
+              <div class="hp-live-msg">
+                Mabel: "Ruth, I want you to hang up and call 911 for me, alright? I'm
+                getting your daughter on the line right now."
+              </div>
+              <div class="hp-live-call">
+                <div class="hp-live-label">Calling Sarah — daughter</div>
+                <span class="hp-live-join">Joining the call…</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="item">
-          <h4>Backed by boots on the ground</h4>
-          <p>If a call is missed or a disaster strikes, Ground Force is ready to step in — in person when it counts.</p>
+
+        <div class="hp-cards">
+          <div class="hp-panel">
+            <div class="hp-icon"><span class="sq sage" aria-hidden="true"></span></div>
+            <h3 class="hp-card-h">A dashboard that gives you peace of mind</h3>
+            <p>
+              Every call, in plain language. A warm summary of how they're doing, a
+              calendar of good days you can see at a glance, and anything that concerns
+              her waiting right at the top.
+            </p>
+          </div>
+          <div class="hp-panel">
+            <div class="hp-icon"><span class="circ gold" aria-hidden="true"></span></div>
+            <h3 class="hp-card-h">Flags when something needs attention</h3>
+            <p>
+              Meals skipped, a missed call, a sadness that lingers, a fall she mentions
+              in passing. You and the emergency contact you choose are told — not next
+              week, that day.
+            </p>
+          </div>
+          <div class="hp-panel">
+            <div class="hp-icon"><span class="dia rose" aria-hidden="true"></span></div>
+            <h3 class="hp-card-h">A knock on the door when disaster strikes</h3>
+            <p>
+              Built with the Cajun Navy Ground Force. When a storm or disaster hits
+              their area, the daily call becomes an in-person check — a commitment to
+              try, from people who have spent years showing up.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    {/* ── who she was ───────────────────────────────────────────────────
-        Teaser to /story. The thumbnail is a placeholder frame until her
-        portrait is in public/images/family/ — see src/pages/story.astro. */}
-    <section class="story-teaser">
-      <a class="story-teaser-inner" href="/story">
-        <div class="teaser-portrait" aria-hidden="true"><span>Photo</span></div>
+    <section class="hp-story">
+      <a class="hp-story-inner" href="/story">
+        <img
+          src="/images/family/aunt-mabel.jpg"
+          width="708"
+          height="1011"
+          loading="lazy"
+          decoding="async"
+          alt="Aunt Mabel — a sepia studio portrait of a smiling woman with dark waved hair and a sparkling brooch."
+        />
         <div>
           <p>
             Aunt Mabel was a real person — the founder's great-aunt, a woman who
-            remembered every family member's name. Her photo is our logo. Her spirit
-            is the whole idea.
+            remembered every family member's name. Her photo is our logo. Her spirit is
+            the whole idea.
           </p>
-          <span class="teaser-link">Read our story →</span>
+          <span class="hp-story-link">Read our story →</span>
         </div>
       </a>
     </section>
+
+    <section class="hp-honest">
+      <div class="hp-honest-inner">
+        <h2>What Aunt Mabel is — and what she isn't.</h2>
+        <p>
+          Aunt Mabel is a friendly daily check-in and a fast way to reach family. She
+          is <strong>not</strong> an emergency service, a medical device, or a
+          monitoring system, and she is not a substitute for care or for calling for
+          help.
+        </p>
+        <p>For any real emergency, always call 911 first.</p>
+        <p class="hp-honest-turn">
+          We'll always be honest with you about what we can and can't promise. That's
+          the only way this works.
+        </p>
+      </div>
+    </section>
+
+    <section id="start" class="hp-start">
+      <div class="hp-start-inner">
+        <div>
+          <h2>Be one of our founding families.</h2>
+          <p>
+            You already know us for showing up when disaster strikes. This is how we
+            show up every single day.
+          </p>
+          <a class="hp-btn hp-btn-lg" href="/enroll">Start their daily calls →</a>
+        </div>
+        <div class="hp-start-list">
+          <div>
+            <span class="dot green" aria-hidden="true"></span>
+            <p><strong>3 days free.</strong> You're not charged until their loved one welcomes the calls.</p>
+          </div>
+          <div>
+            <span class="dot gold" aria-hidden="true"></span>
+            <p><strong>Founding family rate</strong> with code <code>FOUNDING</code> — yours for as long as you stay.</p>
+          </div>
+          <div class="last">
+            <span class="dot rose" aria-hidden="true"></span>
+            <p><strong>Cancel anytime.</strong> No contracts, no phone calls to get out of it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="hp-footer">
+      <div class="hp-footer-inner">
+        <div class="hp-footer-brand">
+          <div class="hp-brand">
+            <span class="hp-mark sm" aria-hidden="true">M</span>
+            <span class="hp-wordmark sm">Aunt Mabel</span>
+          </div>
+          <p>
+            Aunt Mabel is operated by Trustlight LLC, in partnership with the Cajun
+            Navy Ground Force — protecting and stabilizing the elderly and vulnerable.
+          </p>
+        </div>
+        <nav class="hp-footer-links" aria-label="Footer">
+          <a href="#how">How it works</a>
+          <a href="/story">Our story</a>
+          <a href="/welcome">Family guide</a>
+          <a href="/terms">Terms</a>
+          <a href="/privacy">Privacy</a>
+          <a href="mailto:Mabel@AuntMabel.app">Mabel@AuntMabel.app</a>
+        </nav>
+      </div>
+      <div class="hp-footer-fine">
+        © 2026 Trustlight LLC · A friendly call every day, and someone there when it matters most.
+      </div>
+    </footer>
   </div>
 </BaseLayout>
 
-<script>
-  // ── auth-return rescue ────────────────────────────────────────────────
-  // Supabase validates redirectTo against its Redirect URLs allowlist. When the
-  // URL we ask for is NOT allowlisted it does not error — it silently falls back
-  // to the project's Site URL, dropping the browser on "/" with the auth code
-  // still in the query string. The sign-in actually succeeded; the code just
-  // landed on a page that ignores it.
-  //
-  // This forwards such a landing to /auth/callback, which knows how to finish
-  // the exchange and honour ?redirect=. It fires only when auth-shaped params
-  // are present, so an ordinary visit is untouched.
-  //
-  // This is a safety net, NOT the fix. The fix is allowlisting the callback URL
-  // in Supabase. The net only helps when Site URL points at a domain this app
-  // serves — it cannot rescue a fallback to some other site.
-  (() => {
-    const q = new URLSearchParams(window.location.search);
-    if (!(q.has('code') || q.has('error_description') || q.has('error_code'))) return;
-    console.warn('[auth] Auth params landed on "/" — Supabase likely fell back to Site URL. Forwarding to /auth/callback.');
-    window.location.replace('/auth/callback' + window.location.search + window.location.hash);
-  })();
-</script>
-
 <style>
-  /* Home-page layout only. Tokens, buttons, .band-dark, .kicker and the type
-     scale all live in src/styles/site.css — nothing is redefined here. */
+  /* Homepage — values transcribed from the Claude Design mockup. Colours are
+     the mockup's literal hex codes, which are the same brand palette site.css
+     defines as custom properties; kept literal here so this file can be diffed
+     against the mockup line for line. */
 
-  .sections > section { padding: 8px 0 64px; }
+  .hp { background: #f6efe2; color: #2d2417; font-weight: 300; }
+  .hp p { text-wrap: pretty; }
+
+  .hp-banner {
+    background: #2d2417;
+    color: #f6efe2;
+    font-size: 13.5px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    padding: 10px 20px;
+  }
+  .hp-banner span { color: #d9a441; }
+
+  .hp-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(246, 239, 226, 0.93);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #e3d8c3;
+  }
+  .hp-header-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 15px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .hp-brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: #2d2417; }
+  .hp-mark {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: #c25b50; color: #fbf7ee;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Fraunces, Georgia, serif; font-size: 17px; font-weight: 600; line-height: 1;
+    flex: none;
+  }
+  .hp-mark.sm { width: 30px; height: 30px; font-size: 15px; }
+  .hp-wordmark { font-family: Fraunces, Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .hp-wordmark.sm { font-size: 20px; }
+
+  .hp-nav { display: flex; align-items: center; gap: 28px; font-size: 14.5px; }
+  .hp-nav a { color: #6b5d48; text-decoration: none; }
+  .hp-nav a:hover { color: #2d2417; }
+
+  .hp-btn {
+    display: inline-block;
+    background: #c25b50;
+    color: #fbf7ee !important;
+    border-radius: 999px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .hp-btn:hover { background: #a3463d; color: #fbf7ee !important; }
+  .hp-btn-sm { padding: 10px 18px; font-size: 14px; letter-spacing: 0.01em; }
+  .hp-btn-lg { padding: 17px 30px; font-size: 17px; box-shadow: 0 10px 26px -14px rgba(194, 91, 80, 0.9); }
 
   /* ── hero ─────────────────────────────────────────────────────────── */
-  .hero {
-    padding: 64px 0 50px;
+  .hp-hero {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: clamp(48px, 7vw, 88px) 28px clamp(40px, 6vw, 72px);
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: 54px;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: clamp(36px, 5vw, 64px);
     align-items: center;
   }
+  .hp-hero-copy { max-width: 600px; }
 
-  /* ── demo-call card ───────────────────────────────────────────────── */
-  .phone-card {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 26px;
-    padding: 28px 26px;
-    box-shadow: 0 30px 60px -28px rgba(45, 36, 23, 0.35), 0 2px 0 #fff inset;
-    transform: rotate(1.3deg);
-    position: relative;
+  .hp-badge {
+    display: inline-flex; align-items: center; gap: 9px;
+    border: 1px solid #e3d8c3; background: #fbf7ee; border-radius: 999px;
+    padding: 7px 14px 7px 10px;
+    font-size: 12.5px; letter-spacing: 0.03em; text-transform: uppercase;
+    color: #6f7d5e; margin-bottom: 26px;
   }
-  .phone-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 26px;
-    box-shadow: 0 0 0 8px var(--cream);
-    pointer-events: none;
-  }
-  .caller { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
-  .caller .av {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, var(--gold), var(--rose));
-    flex: none;
-    box-shadow: 0 6px 16px rgba(194, 91, 80, 0.4);
-  }
-  .caller .nm { font-family: var(--font-head); font-weight: 600; font-size: 1.18rem; line-height: 1; }
-  .caller .st { font-size: 0.8rem; color: var(--sage); font-weight: 500; margin-top: 4px; }
-  .bubble {
-    background: var(--cream);
-    border-radius: 16px 16px 16px 4px;
-    padding: 13px 16px;
-    font-size: 1rem;
-    color: var(--ink);
-    margin: 0 0 9px;
-    font-family: var(--font-head);
-    font-weight: 400;
-    line-height: 1.45;
-  }
-  .ring {
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--sage);
-    margin-right: 6px;
-    animation: pulse 1.6s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 0.35; transform: scale(0.85); }
-    50% { opacity: 1; transform: scale(1.1); }
-  }
-  .ai-note {
-    font-size: 0.78rem;
-    color: var(--soft-ink);
-    margin: 14px 0 0;
-    font-weight: 400;
-    display: flex;
-    gap: 7px;
-    align-items: flex-start;
-  }
-  .ai-note svg { flex: none; margin-top: 2px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #7ab648; display: block; flex: none; }
+  .dot.gold { background: #d9a441; }
+  .dot.rose { background: #c25b50; width: 8px; height: 8px; }
+  .dot.green { background: #7ab648; }
 
-  /* ── CTA band ─────────────────────────────────────────────────────── */
-  .cta-band { text-align: center; }
-  .cta-band::before {
-    content: '';
-    position: absolute;
-    left: -50px;
-    bottom: -50px;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(217, 164, 65, 0.18), transparent 70%);
+  .hp-hero h1 {
+    font-family: Fraunces, Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(38px, 5.1vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    margin: 0 0 22px;
   }
-  .cta-band h2 { margin: 0 auto 14px; }
-  .cta-band .sub { font-size: 1.08rem; max-width: 44ch; margin: 0 auto 30px; }
-  .cta-actions { position: relative; z-index: 2; margin: 0; }
-  .cta-band .tiny { margin-top: 18px; position: relative; z-index: 2; }
+  .hp-lede {
+    font-size: clamp(17px, 1.5vw, 19.5px);
+    line-height: 1.65;
+    color: #6b5d48;
+    margin: 0 0 32px;
+    max-width: 520px;
+  }
+  .hp-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+  .hp-fine { font-size: 14px; color: #6b5d48; }
 
-  /* ── story ────────────────────────────────────────────────────────── */
-  .story {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--gold);
-    border-radius: 22px;
-    padding: 50px 52px;
+  .hp-hero-media { position: relative; }
+  .hp-photo-frame {
+    border-radius: 20px; overflow: hidden;
+    border: 1px solid #e3d8c3; background: #fbf7ee;
+    box-shadow: 0 30px 60px -40px rgba(45, 36, 23, 0.5);
   }
-  .story h2 { max-width: 24ch; }
-  .story p {
-    font-family: var(--font-head);
-    font-size: 1.12rem;
-    line-height: 1.7;
-    color: var(--ink);
-    font-weight: 400;
-    max-width: 60ch;
-    margin: 0 0 18px;
+  .hp-photo-slot {
+    aspect-ratio: 4 / 5; min-height: 340px;
+    display: flex; align-items: center; justify-content: center; padding: 22px;
+    background-image: repeating-linear-gradient(135deg, #f1e7d3 0 12px, #fbf7ee 12px 24px);
   }
-  .story p em { font-style: italic; color: var(--rose-deep); }
-  .story .story-close {
-    font-family: var(--font-body);
-    font-size: 1.18rem;
-    font-weight: 300;
-    color: var(--soft-ink);
-    border-top: 1px solid var(--line);
-    padding-top: 22px;
-    margin-top: 28px;
+  .hp-photo-note {
+    background: rgba(251, 247, 238, 0.94);
+    border: 1px solid #e3d8c3; border-radius: 10px;
+    padding: 9px 13px;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11.5px; letter-spacing: 0.02em; color: #6b5d48; text-align: center;
   }
-  .story .story-close strong { color: var(--rose); font-weight: 600; }
+  .hp-call-card {
+    position: absolute; left: -14px; bottom: -26px;
+    background: #fbf7ee; border: 1px solid #e3d8c3; border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 20px 40px -26px rgba(45, 36, 23, 0.55);
+    max-width: 270px;
+  }
+  .hp-call-head {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #6f7d5e; margin-bottom: 8px;
+  }
+  .hp-call-card p { margin: 0; font-family: Fraunces, Georgia, serif; font-size: 17px; line-height: 1.35; }
 
-  /* ── why band ─────────────────────────────────────────────────────── */
-  .why::after {
-    content: '';
-    position: absolute;
-    right: -60px;
-    top: -60px;
-    width: 240px;
-    height: 240px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(122, 182, 72, 0.22), transparent 70%);
+  /* ── problem ──────────────────────────────────────────────────────── */
+  .hp-problem { border-top: 1px solid #e3d8c3; background: #fbf7ee; }
+  .hp-problem-inner { max-width: 760px; margin: 0 auto; padding: clamp(64px, 8vw, 104px) 28px; text-align: center; }
+  .hp-rule { width: 42px; height: 2px; background: #d9a441; margin: 0 auto 28px; }
+  .hp-problem h2 {
+    font-family: Fraunces, Georgia, serif; font-weight: 600;
+    font-size: clamp(29px, 3.6vw, 44px); line-height: 1.14; letter-spacing: -0.02em;
+    margin: 0 0 24px;
   }
-  .why h2 { max-width: 24ch; }
-  .why p { font-size: 1.08rem; max-width: 60ch; margin-bottom: 16px; position: relative; z-index: 2; }
-  .why p strong { color: var(--paper); font-weight: 500; }
-  .stat-row { display: flex; gap: 40px; margin-top: 34px; flex-wrap: wrap; position: relative; z-index: 2; }
-  .stat .n { font-family: var(--font-head); font-weight: 900; font-size: 2.6rem; color: var(--gf-green); line-height: 1; }
-  .stat .l { font-size: 0.92rem; color: var(--on-dark); font-weight: 300; max-width: 22ch; margin-top: 6px; }
+  .hp-problem p { font-size: clamp(16.5px, 1.4vw, 18.5px); line-height: 1.75; color: #6b5d48; margin: 0 0 18px; }
+  .hp-problem em { font-family: Fraunces, Georgia, serif; font-style: italic; color: #2d2417; }
+  .hp-turn {
+    font-family: Fraunces, Georgia, serif;
+    font-size: clamp(19px, 1.8vw, 23px) !important;
+    line-height: 1.55 !important;
+    color: #2d2417 !important;
+    margin: 8px 0 0 !important;
+  }
 
   /* ── how it works ─────────────────────────────────────────────────── */
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-  .step .n { font-family: var(--font-head); font-weight: 900; font-size: 2.3rem; color: var(--line); line-height: 1; margin-bottom: 8px; }
-  .step h3 { margin-bottom: 8px; }
-  .step p { color: var(--soft-ink); font-size: 1rem; font-weight: 300; margin: 0; }
-
-  /* ── modes ────────────────────────────────────────────────────────── */
-  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  .mode { border-radius: 20px; padding: 34px 32px; border: 1px solid var(--line); }
-  .mode-day { background: var(--paper); }
-  .mode-storm { background: var(--ink); border-color: var(--ink); }
-  .mode-tag {
-    display: inline-block;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-weight: 600;
-    padding: 5px 12px;
-    border-radius: 30px;
-    margin-bottom: 16px;
+  .hp-how { border-top: 1px solid #e3d8c3; }
+  .hp-inner { max-width: 1140px; margin: 0 auto; padding: clamp(64px, 8vw, 104px) 28px; }
+  .hp-centred {
+    font-family: Fraunces, Georgia, serif; font-weight: 600;
+    font-size: clamp(28px, 3.2vw, 40px); letter-spacing: -0.02em;
+    margin: 0 0 12px; text-align: center;
   }
-  .mode-day .mode-tag { background: var(--cream); color: var(--sage); }
-  .mode-storm .mode-tag { background: rgba(122, 182, 72, 0.16); color: var(--gf-green); }
-  .mode h3 { font-size: 1.4rem; margin-bottom: 10px; }
-  .mode-storm h3 { color: var(--paper); }
-  .mode p { font-size: 1rem; font-weight: 300; color: var(--soft-ink); margin: 0; }
-  .mode-storm p { color: var(--on-dark); }
+  .hp-sub { text-align: center; color: #6b5d48; font-size: 17px; margin: 0 auto clamp(44px, 5vw, 64px); max-width: 520px; }
+  .hp-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(28px, 4vw, 52px); }
+  .hp-num { font-family: Fraunces, Georgia, serif; font-size: 54px; font-weight: 500; line-height: 1; color: #d9a441; margin-bottom: 16px; }
+  .hp-steps h3 { font-family: Fraunces, Georgia, serif; font-size: 24px; font-weight: 600; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .hp-steps p { font-size: 16.5px; line-height: 1.7; color: #6b5d48; margin: 0; }
 
-  /* ── trust strip ──────────────────────────────────────────────────── */
-  .strip {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    padding: 42px 40px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 34px;
-  }
-  .strip .item h4 {
-    font-family: var(--font-head);
-    font-weight: 600;
-    font-size: 1.08rem;
-    margin: 0 0 6px;
-    color: var(--rose-deep);
-  }
-  .strip .item p { font-size: 0.96rem; color: var(--soft-ink); font-weight: 300; margin: 0; }
+  /* ── features ─────────────────────────────────────────────────────── */
+  .hp-features { border-top: 1px solid #e3d8c3; background: #fbf7ee; }
+  .hp-stack { display: flex; flex-direction: column; gap: clamp(20px, 2.4vw, 28px); }
 
-  /* ── responsive — one breakpoint, matching the live page ──────────── */
-  @media (max-width: 820px) {
-    .hero { grid-template-columns: 1fr; gap: 38px; padding: 44px 0; }
-    .phone-card { transform: rotate(0); max-width: 380px; }
-    .steps { grid-template-columns: 1fr; gap: 24px; }
-    .strip { grid-template-columns: 1fr; padding: 34px 28px; }
-    .modes { grid-template-columns: 1fr; gap: 16px; }
-    .mode { padding: 28px 24px; }
-    .story { padding: 36px 26px; }
-    .stat-row { gap: 28px; }
+  .hp-panel { border: 1px solid #e3d8c3; border-radius: 18px; background: #f6efe2; padding: clamp(26px, 2.8vw, 34px); }
+  .hp-panel p { font-size: 16px; line-height: 1.7; color: #6b5d48; margin: 0; }
+  .hp-split {
+    padding: clamp(28px, 3.4vw, 44px);
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(24px, 3vw, 44px); align-items: center;
+  }
+  .hp-eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #6f7d5e; margin-bottom: 14px; }
+  .hp-panel-h { font-family: Fraunces, Georgia, serif; font-size: clamp(26px, 2.6vw, 34px); font-weight: 600; letter-spacing: -0.02em; margin: 0 0 14px; }
+  .hp-split p { font-size: 17px; }
+
+  .hp-quote-card {
+    border: 1px solid #e3d8c3; border-radius: 14px; background: #fbf7ee;
+    padding: 20px 22px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .hp-quote { font-family: Fraunces, Georgia, serif; font-size: 18px !important; line-height: 1.5 !important; color: #2d2417 !important; margin: 0 !important; }
+  .hp-hair { height: 1px; background: #e3d8c3; }
+  .hp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hp-tags span { border: 1px solid #e3d8c3; border-radius: 999px; padding: 6px 12px; font-size: 13px; color: #6b5d48; }
+
+  .hp-connect {
+    border-radius: 22px; background: #c25b50; color: #fbf7ee;
+    padding: clamp(32px, 4.2vw, 60px);
+    box-shadow: 0 34px 70px -46px rgba(194, 91, 80, 0.95);
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: clamp(28px, 3.6vw, 52px); align-items: center;
+  }
+  .hp-badge-on-rose {
+    background: rgba(251, 247, 238, 0.16);
+    border: 1px solid rgba(251, 247, 238, 0.35);
+    color: #fbf7ee; padding: 6px 14px; font-size: 12px; letter-spacing: 0.12em; margin-bottom: 20px;
+  }
+  .hp-connect h3 {
+    font-family: Fraunces, Georgia, serif; font-size: clamp(30px, 4vw, 50px); font-weight: 600;
+    line-height: 1.06; letter-spacing: -0.025em; margin: 0 0 20px;
+  }
+  .hp-connect p { font-size: clamp(17px, 1.5vw, 19px); line-height: 1.7; color: rgba(251, 247, 238, 0.94); margin: 0 0 16px; }
+  .hp-connect-turn { font-family: Fraunces, Georgia, serif; font-size: clamp(19px, 1.8vw, 24px) !important; line-height: 1.5 !important; color: #fbf7ee !important; margin: 0 0 22px !important; }
+  .hp-connect-fine { font-size: 13.5px !important; line-height: 1.6 !important; color: rgba(251, 247, 238, 0.72) !important; margin: 0 !important; }
+
+  .hp-live-card { background: #fbf7ee; border-radius: 16px; padding: 22px; color: #2d2417; box-shadow: 0 24px 46px -30px rgba(45, 36, 23, 0.7); }
+  .hp-live-head { display: flex; align-items: center; gap: 9px; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #c25b50; margin-bottom: 16px; }
+  .hp-live-lines { display: flex; flex-direction: column; gap: 12px; }
+  .hp-live-msg { border: 1px solid #e3d8c3; border-radius: 12px; padding: 13px 15px; font-size: 15px; line-height: 1.55; color: #6b5d48; }
+  .hp-live-call { border: 1px solid #c25b50; background: rgba(194, 91, 80, 0.07); border-radius: 12px; padding: 13px 15px; }
+  .hp-live-label { font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #c25b50; margin-bottom: 6px; }
+  .hp-live-join { font-family: Fraunces, Georgia, serif; font-size: 17px; }
+
+  .hp-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: clamp(20px, 2.4vw, 28px); }
+  .hp-icon {
+    width: 34px; height: 34px; border-radius: 9px; border: 1px solid #e3d8c3; background: #fbf7ee;
+    margin-bottom: 18px; display: flex; align-items: center; justify-content: center;
+  }
+  .hp-icon .sq { width: 12px; height: 12px; border-radius: 3px; background: #6f7d5e; display: block; }
+  .hp-icon .circ { width: 12px; height: 12px; border-radius: 50%; background: #d9a441; display: block; }
+  .hp-icon .dia { width: 12px; height: 12px; background: #c25b50; display: block; transform: rotate(45deg); }
+  .hp-card-h { font-family: Fraunces, Georgia, serif; font-size: 23px; font-weight: 600; margin: 0 0 12px; letter-spacing: -0.01em; }
+
+  /* ── story teaser ─────────────────────────────────────────────────── */
+  .hp-story { border-top: 1px solid #e3d8c3; }
+  .hp-story-inner {
+    max-width: 1140px; margin: 0 auto;
+    padding: clamp(44px, 5vw, 64px) 28px;
+    display: flex; align-items: center; gap: 26px;
+    text-decoration: none; color: #2d2417;
+  }
+  .hp-story-inner img {
+    width: 96px; height: 96px; border-radius: 50%; object-fit: cover; object-position: center top;
+    border: 1px solid #e3d8c3; flex: none;
+  }
+  .hp-story-inner p { margin: 0 0 8px; font-size: 16.5px; line-height: 1.7; color: #6b5d48; max-width: 62ch; }
+  .hp-story-link { font-size: 15px; color: #c25b50; }
+  .hp-story-inner:hover .hp-story-link { color: #a3463d; }
+
+  /* ── honest ───────────────────────────────────────────────────────── */
+  .hp-honest { border-top: 1px solid #e3d8c3; }
+  .hp-honest-inner { max-width: 880px; margin: 0 auto; padding: clamp(60px, 7vw, 92px) 28px; }
+  .hp-honest-inner > * { }
+  .hp-honest h2 {
+    font-family: Fraunces, Georgia, serif; font-size: clamp(24px, 2.6vw, 32px); font-weight: 600;
+    letter-spacing: -0.015em; margin: 0 0 18px;
+  }
+  .hp-honest p { font-size: 17px; line-height: 1.75; color: #6b5d48; margin: 0 0 14px; }
+  .hp-honest strong { font-weight: 500; color: #2d2417; }
+  .hp-honest-turn { font-family: Fraunces, Georgia, serif; font-size: 19px !important; line-height: 1.6 !important; color: #2d2417 !important; margin: 0 !important; }
+  .hp-honest-inner {
+    border: 1px solid #e3d8c3; border-radius: 18px; background: rgba(111, 125, 94, 0.07);
+    padding: clamp(28px, 3.4vw, 48px); margin: clamp(60px, 7vw, 92px) auto;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .ring { animation: none; opacity: 0.8; }
+  /* ── founding CTA ─────────────────────────────────────────────────── */
+  .hp-start { background: #2d2417; color: #f6efe2; }
+  .hp-start-inner {
+    max-width: 1000px; margin: 0 auto; padding: clamp(64px, 8vw, 110px) 28px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: clamp(32px, 4vw, 64px); align-items: center;
+  }
+  .hp-start h2 {
+    font-family: Fraunces, Georgia, serif; font-size: clamp(32px, 4vw, 50px); font-weight: 600;
+    line-height: 1.08; letter-spacing: -0.025em; margin: 0 0 20px;
+  }
+  .hp-start > .hp-start-inner > div > p { font-size: clamp(17px, 1.5vw, 19px); line-height: 1.7; color: rgba(246, 239, 226, 0.78); margin: 0 0 30px; }
+  .hp-start-list { display: flex; flex-direction: column; gap: 18px; }
+  .hp-start-list > div { display: flex; gap: 14px; align-items: flex-start; border-bottom: 1px solid rgba(227, 216, 195, 0.18); padding-bottom: 18px; }
+  .hp-start-list > div.last { border-bottom: 0; padding-bottom: 0; }
+  .hp-start-list .dot { margin-top: 7px; width: 9px; height: 9px; }
+  .hp-start-list p { margin: 0; font-size: 16.5px; line-height: 1.65; color: rgba(246, 239, 226, 0.88); }
+  .hp-start-list strong { font-family: Fraunces, Georgia, serif; font-weight: 600; color: #f6efe2; }
+  .hp-start-list code {
+    font-family: ui-monospace, Menlo, monospace; font-size: 14.5px;
+    border: 1px solid rgba(217, 164, 65, 0.5); border-radius: 6px; padding: 3px 8px; color: #d9a441;
+  }
+
+  /* ── footer ───────────────────────────────────────────────────────── */
+  .hp-footer { background: #f6efe2; border-top: 1px solid #e3d8c3; }
+  .hp-footer-inner {
+    max-width: 1140px; margin: 0 auto;
+    padding: clamp(48px, 6vw, 72px) 28px clamp(20px, 2vw, 28px);
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(28px, 4vw, 56px); align-items: start;
+  }
+  .hp-footer-brand { max-width: 440px; }
+  .hp-footer-brand .hp-brand { margin-bottom: 16px; }
+  .hp-footer-brand p { font-size: 15px; line-height: 1.7; color: #6b5d48; margin: 0; }
+  .hp-footer-links { display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+  .hp-footer-links a { color: #6b5d48; text-decoration: none; }
+  .hp-footer-links a:hover { color: #c25b50; }
+  .hp-footer-fine {
+    max-width: 1140px; margin: 0 auto;
+    padding: 0 28px clamp(36px, 4vw, 48px);
+    font-size: 13.5px; color: #a2937c;
+  }
+
+  @media (max-width: 720px) {
+    .hp-nav { gap: 16px; font-size: 13.5px; }
+    .hp-call-card { position: static; margin-top: 16px; max-width: none; }
+    .hp-story-inner { flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 520px) {
+    .hp-nav a:not(.hp-btn) { display: none; }
   }
 </style>
