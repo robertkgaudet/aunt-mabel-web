@@ -1,0 +1,184 @@
+---
+// THE header. One component, every page — public and signed-in.
+//
+// Styling is the homepage mockup's: sticky, translucent cream, blurred, with
+// the founding banner above it. It used to exist twice (BaseLayout's own markup
+// and the homepage's baked-in copy) and the two had already drifted — different
+// marks, different nav, different footers. One component is the fix.
+//
+// The mark is Aunt Mabel's actual photograph, circular. Not the "M" letter the
+// mockup used, and not /logo.png, which is an illustration OF her rather than
+// the photograph itself. The "M" survives as the favicon and inside the share
+// card, where a face at 32px would be unreadable.
+
+interface Props {
+  /** Hide the founding-offer banner (signed-in areas don't need selling to). */
+  banner?: boolean;
+  /** Drop the nav entirely, for focused pages (login, callback, signout). */
+  bare?: boolean;
+}
+const { banner = true, bare = false } = Astro.props;
+
+// Section links are absolute so they work from /story, /terms, anywhere — a
+// bare "#how" on a page with no #how just does nothing, silently.
+const NAV = [
+  { href: '/#how', label: 'How it works' },
+  { href: '/#family-connect', label: 'Family Connect' },
+  { href: '/story', label: 'Our story' },
+];
+---
+
+{banner && (
+  <div class="sh-banner">
+    Founding families: <span>3 days free</span> — not charged until your loved one welcomes the calls.
+  </div>
+)}
+
+<header class="sh">
+  <div class="sh-inner">
+    <a class="sh-brand" href="/">
+      <img
+        class="sh-mark"
+        src="/images/family/aunt-mabel.jpg"
+        width="38"
+        height="38"
+        alt=""
+        decoding="async"
+      />
+      <span class="sh-wordmark">Aunt Mabel</span>
+    </a>
+
+    {!bare && (
+      <div class="sh-right">
+        <span class="sh-gf"><span class="sh-dot" aria-hidden="true"></span> In partnership with Cajun Navy Ground Force</span>
+
+        <nav class="sh-nav" id="site-nav" data-auth="unknown" aria-label="Main">
+          {NAV.map((l) => <a href={l.href}>{l.label}</a>)}
+          <a class="auth-in" href="/dashboard">Your dashboard</a>
+          <a class="auth-in" href="/signout">Sign out</a>
+          <a class="auth-out" href="/login">Sign in</a>
+          <a class="sh-btn" href="/enroll">Start their daily calls</a>
+        </nav>
+      </div>
+    )}
+  </div>
+</header>
+
+<style>
+  .sh-banner {
+    background: #2d2417;
+    color: #f6efe2;
+    font-size: 13.5px;
+    letter-spacing: 0.02em;
+    text-align: center;
+    padding: 10px 20px;
+  }
+  .sh-banner span { color: #d9a441; }
+
+  .sh {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(246, 239, 226, 0.93);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #e3d8c3;
+  }
+  .sh-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .sh-brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: #2d2417; }
+  .sh-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    /* Her face sits high in the frame; centring the crop would cut her chin. */
+    object-position: center 18%;
+    border: 1px solid #e3d8c3;
+    background: #fbf7ee;
+    flex: none;
+  }
+  .sh-wordmark { font-family: Fraunces, Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+
+  .sh-right { display: flex; align-items: center; gap: 20px; }
+  .sh-gf {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #6f7d5e;
+    white-space: nowrap;
+  }
+  .sh-dot { width: 7px; height: 7px; border-radius: 50%; background: #7ab648; display: block; }
+
+  .sh-nav { display: flex; align-items: center; gap: 26px; font-size: 14.5px; }
+  .sh-nav a { color: #6b5d48; text-decoration: none; white-space: nowrap; }
+  .sh-nav a:hover { color: #2d2417; }
+
+  /* Starts "unknown" and resolves client-side. Rendering "Sign in" by default
+     tells a signed-in person something untrue for a beat; blank-then-correct
+     beats wrong-then-correct. */
+  .sh-nav[data-auth='unknown'] .auth-in,
+  .sh-nav[data-auth='unknown'] .auth-out { visibility: hidden; }
+  .sh-nav[data-auth='out'] .auth-in { display: none; }
+  .sh-nav[data-auth='in'] .auth-out { display: none; }
+
+  .sh-btn {
+    display: inline-block;
+    background: #c25b50;
+    color: #fbf7ee !important;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: background 0.15s ease;
+  }
+  .sh-btn:hover { background: #a3463d; color: #fbf7ee !important; }
+
+  @media (min-width: 1080px) { .sh-gf { display: flex; } }
+  @media (max-width: 860px) { .sh-nav { gap: 16px; font-size: 13.5px; } }
+  @media (max-width: 660px) {
+    .sh-inner { padding: 10px 18px; }
+    .sh-nav a:not(.sh-btn) { display: none; }
+  }
+</style>
+
+<script>
+  // Resolve the nav to signed-in or signed-out.
+  //
+  // The Supabase SDK is imported DYNAMICALLY, and only when localStorage
+  // already looks like it holds a session. Most visitors to a public page have
+  // never signed in, and making every one of them download the auth SDK to
+  // render one link is a real cost on first paint. The localStorage check is
+  // only a cheap pre-filter — the SDK still decides.
+  const nav = document.getElementById('site-nav');
+  if (nav) {
+    /** @type {(s: 'in' | 'out') => void} */
+    const resolve = (s) => nav.setAttribute('data-auth', s);
+    let looksSignedIn = false;
+    try {
+      looksSignedIn = Object.keys(localStorage).some((k) => /^sb-.*-auth-token$/.test(k));
+    } catch {
+      // Storage blocked (private mode). Treat as signed out — "Sign in" still works.
+      resolve('out');
+    }
+    if (!looksSignedIn) {
+      resolve('out');
+    } else {
+      import('../scripts/supabase.js')
+        .then(({ getSupabase }) => getSupabase().auth.getSession())
+        .then(({ data }) => resolve(data?.session ? 'in' : 'out'))
+        .catch(() => resolve('out'));
+    }
+  }
+</script>

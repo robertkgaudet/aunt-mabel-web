@@ -1,0 +1,94 @@
+---
+// THE footer. One component, every page.
+//
+// Layout and copy from the homepage mockup. The mockup's own footer markup was
+// truncated mid-attribute in the extract, so the link list comes from the brief
+// rather than from transcription — see docs/homepage-design-extracted.html.
+//
+// The entity line is load-bearing, not boilerplate: Trustlight LLC operates the
+// service and Cajun Navy Ground Force is the partner performing disaster
+// checks. Nothing here may imply the nonprofit runs it or takes the payment.
+// See docs/AUNT-MABEL.md § Entity & naming.
+
+const LINKS = [
+  { href: '/#how', label: 'How it works' },
+  { href: '/story', label: 'Our story' },
+  { href: '/welcome', label: 'Family guide' },
+  { href: '/terms', label: 'Terms' },
+  { href: '/privacy', label: 'Privacy' },
+  { href: 'mailto:Mabel@AuntMabel.app', label: 'Mabel@AuntMabel.app' },
+];
+---
+
+<footer class="sf">
+  <div class="sf-inner">
+    <div class="sf-brand">
+      <div class="sf-lockup">
+        <img
+          class="sf-mark"
+          src="/images/family/aunt-mabel.jpg"
+          width="34"
+          height="34"
+          alt=""
+          decoding="async"
+          loading="lazy"
+        />
+        <span class="sf-wordmark">Aunt Mabel</span>
+      </div>
+      <p>
+        Aunt Mabel is operated by Trustlight LLC, in partnership with the Cajun Navy
+        Ground Force — protecting and stabilizing the elderly and vulnerable.
+      </p>
+    </div>
+
+    <nav class="sf-links" aria-label="Footer">
+      {LINKS.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+  </div>
+
+  <p class="sf-fine">
+    © 2026 Trustlight LLC · A friendly call every day, and someone there when it matters most.
+  </p>
+</footer>
+
+<style>
+  .sf { background: #f6efe2; border-top: 1px solid #e3d8c3; }
+  .sf-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: clamp(48px, 6vw, 72px) 28px clamp(20px, 2vw, 28px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+  }
+
+  .sf-brand { max-width: 440px; }
+  .sf-lockup { display: flex; align-items: center; gap: 11px; margin-bottom: 16px; }
+  .sf-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 18%;
+    border: 1px solid #e3d8c3;
+    background: #fbf7ee;
+    flex: none;
+  }
+  .sf-wordmark { font-family: Fraunces, Georgia, serif; font-size: 20px; font-weight: 600; }
+  .sf-brand p { font-size: 15px; line-height: 1.7; color: #6b5d48; margin: 0; }
+
+  .sf-links { display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
+  .sf-links a { color: #6b5d48; text-decoration: none; }
+  .sf-links a:hover { color: #c25b50; }
+
+  .sf-fine {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 28px clamp(36px, 4vw, 48px);
+    font-size: 13.5px;
+    /* --soft-ink rather than the lighter tan the first draft used: at 13.5px
+       that was 2.6:1 against cream, which the contrast audit flagged. */
+    color: #6b5d48;
+  }
+</style>

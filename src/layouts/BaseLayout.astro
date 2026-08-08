@@ -6,6 +6,8 @@
 // Header and footer reproduce the real auntmabel.app chrome (logo lockup +
 // Ground Force tag; two-line footer). See docs/brand-capture.md.
 import '../styles/site.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title: string;
@@ -114,112 +116,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <slot name="head" />
   </head>
   <body>
-    {chrome && (
-    <header class="site-header">
-      <div class="inner">
-        <a class="brand-lockup" href="/">
-          <img
-            class="mark"
-            src="/logo.png"
-            width="46"
-            height="46"
-            alt="Aunt Mabel"
-            decoding="async"
-          />
-          <span class="brand-text">
-            <span class="nm">Aunt Mabel</span>
-            <span class="sub">Everyday calls · disaster check-ins</span>
-          </span>
-        </a>
-
-        <div class="header-right">
-          {/* PARTNERSHIP, not operation. Aunt Mabel is operated by Trustlight
-              LLC; Cajun Navy Ground Force is the disaster-response partner whose
-              name we use by permission. Per docs/AUNT-MABEL.md § Entity &
-              naming, brand-facing copy keeps the CNGF name — but nothing may
-              imply the nonprofit runs this service or takes the payment. */}
-          <span class="gf-tag"><span class="dot"></span> In partnership with Cajun Navy Ground Force</span>
-          {!bare && (
-            /* Starts in the "unknown" state and resolves client-side. Rendering
-               "Sign in" by default would tell a signed-in person something
-               untrue for a beat; blank-then-correct beats wrong-then-correct. */
-            <nav class="site-nav" id="site-nav" data-auth="unknown">
-              <a class="auth-out" href="/login">Sign in</a>
-              <a class="auth-in" href="/dashboard">Your dashboard</a>
-              <a class="auth-in auth-signout" href="/signout">Sign out</a>
-            </nav>
-          )}
-        </div>
-      </div>
-    </header>
-    )}
+    {chrome && <SiteHeader bare={bare} banner={!noindex} />}
 
     <main>
       <slot />
     </main>
 
-    {chrome && (
-    <footer class="site-footer">
-      <div class="inner">
-        <p>
-          Aunt Mabel is operated by Trustlight LLC, in partnership with
-          <span class="gf">Cajun Navy Ground Force</span> — protecting and
-          stabilizing the elderly and vulnerable.
-        </p>
-        <p class="fine footer-links">
-          <a href="/story">Our story</a> ·
-          <a href="/welcome">Family guide</a> ·
-          <a href="/terms">Terms</a> ·
-          <a href="/privacy">Privacy</a> ·
-          <a href="mailto:Mabel@AuntMabel.app">Mabel@AuntMabel.app</a>
-        </p>
-        <p class="fine">© 2026 · A call every day, and a knock on the door when it matters most.</p>
-      </div>
-    </footer>
-    )}
+    {chrome && <SiteFooter />}
 
-    <script>
-      // Resolve the header nav to signed-in or signed-out.
-      //
-      // The Supabase SDK is imported DYNAMICALLY, and only when localStorage
-      // already looks like it holds a session. Public pages — home, /welcome,
-      // /terms — are mostly read by people who have never signed in, and making
-      // every one of them download the auth SDK to render one link is a real
-      // cost on first paint. The localStorage check is only a cheap pre-filter;
-      // the SDK remains the source of truth for whether the session is valid.
-      (async () => {
-        const nav = document.getElementById('site-nav');
-        if (!nav) return; // bare pages have no nav
-
-        /** @type {(state: 'in' | 'out') => void} */
-        const resolve = (state) => nav.setAttribute('data-auth', state);
-
-        let looksSignedIn = false;
-        try {
-          looksSignedIn = Object.keys(localStorage).some((k) => /^sb-.*-auth-token$/.test(k));
-        } catch {
-          // Storage blocked (private mode, strict settings). Treat as signed
-          // out rather than failing — "Sign in" still works from there.
-          resolve('out');
-          return;
-        }
-
-        if (!looksSignedIn) {
-          resolve('out');
-          return;
-        }
-
-        try {
-          const { getSupabase } = await import('../scripts/supabase.js');
-          const { data } = await getSupabase().auth.getSession();
-          resolve(data?.session ? 'in' : 'out');
-        } catch (err) {
-          // Missing config or a failed load must not leave the nav stuck in
-          // "unknown" with nothing visible at all.
-          console.error('[nav] could not resolve session state:', err);
-          resolve('out');
-        }
-      })();
-    </script>
+    {/* The nav-resolving script moved into SiteHeader, so it travels with the markup it controls. */}
   </body>
 </html>

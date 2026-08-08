@@ -50,17 +50,16 @@
 .dash-wordmark:hover { color: var(--ink); }
 
 .dash-mark {
+  /* Aunt Mabel's photograph, circular — the same mark the public header uses.
+     Her face sits high in the frame, so the crop is offset upward. */
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--rose);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--paper);
-  font-family: var(--font-head);
-  font-size: 15px;
-  line-height: 1;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  flex: none;
 }
 
 .dash-wordmark-text {
