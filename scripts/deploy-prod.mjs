@@ -92,9 +92,14 @@ if (build.status !== 0) abort(`astro build failed (exit ${build.status}).`);
 
 // ── 8. Deploy ──────────────────────────────────────────────────────────────
 console.log(`\n> Deploying to prod (${PROD_PROJECT})...`);
+// NO --config. `wrangler pages deploy` rejects a custom config path outright:
+// "Pages does not support custom paths for the Wrangler configuration file".
+// The project is selected by --project-name, which is all this needs; the
+// compatibility settings in wrangler.prod.toml live on the Pages project
+// itself, set once via the dashboard or `pages project` commands.
 const deploy = spawnSync(
   'npx',
-  ['wrangler', 'pages', 'deploy', 'dist', '--project-name', PROD_PROJECT, '--config', 'wrangler.prod.toml'],
+  ['wrangler', 'pages', 'deploy', 'dist', '--project-name', PROD_PROJECT],
   { shell: true, encoding: 'utf8', stdio: 'inherit' }
 );
 if (deploy.status !== 0) abort(`wrangler pages deploy failed (exit ${deploy.status}).`);
