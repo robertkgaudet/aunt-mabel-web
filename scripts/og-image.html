@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      Source for public/og-image.jpg — the card every Facebook and X share
+      shows. Rendered to a 1200x630 JPEG by scripts/build-og-image.mjs.
+
+      Kept as HTML rather than a binary-only asset so the wording and the brand
+      can be corrected later without redrawing anything by hand.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Libre+Franklin:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1200px; height: 630px; }
+      body {
+        background: #f6efe2;
+        font-family: 'Libre Franklin', system-ui, sans-serif;
+        font-weight: 300;
+        color: #2d2417;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 68px 76px;
+        position: relative;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* A soft rose bloom, bottom-right — warmth without competing with the
+         headline. Same clay the site uses for every accent. */
+      .bloom {
+        position: absolute;
+        right: -180px;
+        bottom: -240px;
+        width: 620px;
+        height: 620px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(194,91,80,0.16) 0%, rgba(194,91,80,0) 70%);
+      }
+
+      .top { display: flex; align-items: center; gap: 16px; position: relative; }
+      .mark {
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        background: #c25b50;
+        color: #fbf7ee;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 34px;
+        line-height: 1;
+        padding-bottom: 4px;
+      }
+      .wordmark {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 34px;
+        letter-spacing: -0.01em;
+      }
+
+      .headline {
+        position: relative;
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 400;
+        font-size: 66px;
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        max-width: 20ch;
+      }
+      .headline em { font-style: italic; color: #c25b50; }
+
+      .bottom {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 30px;
+      }
+      .url {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 30px;
+        color: #2d2417;
+      }
+      .partner {
+        font-size: 18px;
+        color: #6b5d48;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: right;
+      }
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #7ab648;
+        display: block;
+        flex: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bloom"></div>
+
+    <div class="top">
+      <div class="mark">M</div>
+      <div class="wordmark">Aunt Mabel</div>
+    </div>
+
+    <h1 class="headline">
+      A friendly call every day — and <em>someone there</em> when it matters most.
+    </h1>
+
+    <div class="bottom">
+      <div class="url">AuntMabel.app</div>
+      <div class="partner">
+        <span class="dot"></span>
+        In partnership with the Cajun Navy Ground Force
+      </div>
+    </div>
+  </body>
+</html>

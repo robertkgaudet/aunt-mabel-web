@@ -14,6 +14,15 @@ interface Props {
   noindex?: boolean;
   /** Drop the nav on focused pages (login, callback, signout). */
   bare?: boolean;
+  /**
+   * Social copy, when it should differ from the page title/description.
+   *
+   * A <title> earns its place in a search result and carries the product name;
+   * a share card is read at a glance in a feed and wants the human sentence.
+   * Optional — omit and the page title/description are used.
+   */
+  ogTitle?: string;
+  ogDescription?: string;
 }
 
 const {
@@ -21,7 +30,15 @@ const {
   description = 'A friendly call every day — and a knock on the door when disaster strikes.',
   noindex = false,
   bare = false,
+  ogTitle,
+  ogDescription,
 } = Astro.props;
+
+const socialTitle = ogTitle ?? title;
+const socialDescription = ogDescription ?? description;
+
+// Absolute, because Facebook and X will not resolve a relative one.
+const ogImage = new URL('/og-image.jpg', Astro.site).href;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 ---
@@ -33,9 +50,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {noindex
+      ? <meta name="robots" content="noindex, nofollow" />
+      : <meta name="robots" content="index, follow, max-image-preview:large" />}
     <meta name="theme-color" content="#c25b50" />
-    <meta name="author" content="Cajun Navy Ground Force" />
+    {/* The OPERATOR, per docs/AUNT-MABEL.md § Entity & naming. Cajun Navy
+        Ground Force is the partner performing disaster checks; naming it as
+        author here would imply the nonprofit runs the service. */}
+    <meta name="author" content="Trustlight LLC" />
+
+    {/* Service is US-wide; Louisiana is where it is operated from. Kept light
+        on purpose — over-localising would suppress us outside the state. */}
+    <meta name="geo.region" content="US-LA" />
+    <meta name="geo.placename" content="Louisiana" />
 
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -54,17 +81,25 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     />
 
     <meta property="og:site_name" content="Aunt Mabel" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={socialTitle} />
+    <meta property="og:description" content={socialDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="en_US" />
+    {/* The card is real now — built from scripts/og-image.html by
+        scripts/build-og-image.mjs and committed as public/og-image.jpg. The
+        note that used to sit here said there was deliberately no og:image
+        because the file 404'd; shipping the tag without the file would have
+        meant a knowingly-broken preview. */}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Aunt Mabel — a friendly call every day, and someone there when it matters most." />
+
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    {/* NOTE: no og:image. The live site points at /og-image.jpg, which 404s
-         there — so there is nothing to copy. Adding the tag without the file
-         would ship a knowingly-broken share preview. See docs/brand-capture.md. */}
+    <meta name="twitter:title" content={socialTitle} />
+    <meta name="twitter:description" content={socialDescription} />
+    <meta name="twitter:image" content={ogImage} />
 
     <slot name="head" />
   </head>

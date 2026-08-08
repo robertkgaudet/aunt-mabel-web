@@ -20,6 +20,7 @@
     "astro": "^5.7.0"
   },
   "devDependencies": {
+    "playwright": "^1.62.1",
     "wrangler": "^4.0.0"
   }
 }

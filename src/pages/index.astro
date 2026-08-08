@@ -16,43 +16,118 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Aunt Mabel — A call every day, and a check-in when disaster strikes"
-  description="List your elderly parent and Aunt Mabel checks in on the schedule you choose. When a disaster hits their area, that same call becomes an in-person wellness check from Ground Force."
+  title="Aunt Mabel — Daily Check-In Calls for Elderly Loved Ones Living Alone"
+  description="A warm daily phone call for your elderly parent or grandparent living alone — and family reached instantly the moment something's wrong. 3 days free. In partnership with the Cajun Navy Ground Force."
+  ogTitle="A friendly call every day — and someone there when it matters most."
+  ogDescription="Aunt Mabel calls your elderly loved one every morning for a warm check-in — and reaches you live, in seconds, if something's ever wrong. 3 days free."
 >
   <Fragment slot="head">
-    <meta
-      name="keywords"
-      content="elderly wellness check, senior check-in call, daily call for seniors, elderly parent care, automated senior check-in, disaster wellness check, check on elderly parents, senior safety service, aging parent monitoring, elderly disaster relief, AI check-in call, daily wellness call, senior isolation, care for aging parents, in-person wellness check, Cajun Navy Ground Force, elderly disaster preparedness, remote elderly care, peace of mind for families, scheduled check-in calls"
+    {/*
+      Three JSON-LD blocks. These are read by Google for rich results AND by AI
+      answer engines deciding how to describe this service — which is why the
+      FAQ answers below repeat the 911-first posture rather than only selling.
+      An assistant that summarises us as an emergency service would be doing
+      real harm, so the correction is written where the machines read.
+
+      set:html with JSON.stringify, never a raw template string: a stray
+      apostrophe in the copy would otherwise produce invalid JSON that fails
+      silently — the block simply stops counting, with nothing on screen to show
+      for it.
+    */}
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Aunt Mabel',
+        legalName: 'Trustlight LLC',
+        url: 'https://auntmabel.app',
+        logo: 'https://auntmabel.app/og-image.jpg',
+        email: 'Mabel@AuntMabel.app',
+        description:
+          'Aunt Mabel is a daily wellness check-in call service for elderly people living alone, operated by Trustlight LLC in partnership with the Cajun Navy Ground Force.',
+        address: { '@type': 'PostalAddress', addressRegion: 'LA', addressCountry: 'US' },
+        sameAs: [],
+      })}
     />
-    <meta name="geo.region" content="US-LA" />
-    <meta name="geo.placename" content="Lafayette, Louisiana" />
-    <meta name="geo.position" content="30.2241;-92.0198" />
-    <meta name="ICBM" content="30.2241, -92.0198" />
+
     <script
       type="application/ld+json"
       set:html={JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Service',
-        name: 'Aunt Mabel',
-        description:
-          'List your elderly parent and Aunt Mabel checks in on the schedule you choose. When a disaster hits their area, that same call becomes an in-person wellness check from Ground Force.',
-        url: 'https://auntmabel.app/',
+        name: 'Aunt Mabel Daily Check-In Calls',
+        serviceType: 'Daily wellness check-in calls for elderly people living alone',
+        provider: { '@type': 'Organization', name: 'Trustlight LLC' },
         areaServed: 'US',
-        provider: {
-          '@type': 'Organization',
-          name: 'Cajun Navy Ground Force',
-          url: 'https://groundforce.ngo',
-          email: 'programs@groundforce.ngo',
-          telephone: '+1-318-572-3161',
-          address: {
-            '@type': 'PostalAddress',
-            addressLocality: 'Lafayette',
-            addressRegion: 'LA',
-            addressCountry: 'US',
-          },
+        description:
+          'A warm daily phone call that checks on an elderly loved one’s meals, medications, and wellbeing — with live family escalation (Family Connect) the moment something is wrong, and in-person disaster checks in partnership with the Cajun Navy Ground Force.',
+        offers: {
+          '@type': 'Offer',
+          price: '39.00',
+          priceCurrency: 'USD',
+          description: 'Monthly subscription with a 3-day free trial.',
         },
       })}
     />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+          [
+            'What is Aunt Mabel?',
+            'Aunt Mabel is a service that places a warm, friendly phone call to an elderly person living alone every day, checks on their meals, medications, and wellbeing, and reaches their family immediately if something is wrong. It is operated by Trustlight LLC in partnership with the Cajun Navy Ground Force.',
+          ],
+          [
+            'How does the daily check-in call work?',
+            'Every day at a time the family chooses, Aunt Mabel calls the elderly person for a warm conversation — how they slept, whether they’ve eaten, how they’re feeling. The family sees a summary of every call in their dashboard.',
+          ],
+          [
+            'What happens if something is wrong during a call?',
+            'Mabel urges the person to call 911 for any emergency, and at the same time reaches their family — bringing a family member onto the call live, so they’re never alone. Aunt Mabel is not an emergency service, and 911 always comes first.',
+          ],
+          [
+            'Is Aunt Mabel a medical or emergency service?',
+            'No. Aunt Mabel is a friendly daily check-in and a fast way to reach family — not an emergency service, medical device, or monitoring system. For any real emergency, always call 911.',
+          ],
+          [
+            'How much does Aunt Mabel cost?',
+            'Aunt Mabel is $39 per month with a 3-day free trial — you’re not charged until your loved one has welcomed the calls. Cancel anytime, no contracts.',
+          ],
+          [
+            'What happens during a disaster?',
+            'Aunt Mabel is built in partnership with the Cajun Navy Ground Force. When a disaster strikes a recipient’s area, the daily call becomes an in-person wellness check — a commitment to try, from people who have spent years showing up after storms.',
+          ],
+        ].map(([q, a]) => ({
+          '@type': 'Question',
+          name: q,
+          acceptedAnswer: { '@type': 'Answer', text: a },
+        })),
+      })}
+    />
+    <meta
+      name="keywords"
+      content="elderly wellness check, senior check-in call, daily call for seniors, elderly parent care, automated senior check-in, disaster wellness check, check on elderly parents, senior safety service, aging parent monitoring, elderly disaster relief, AI check-in call, daily wellness call, senior isolation, care for aging parents, in-person wellness check, Cajun Navy Ground Force, elderly disaster preparedness, remote elderly care, peace of mind for families, scheduled check-in calls"
+    />
+    {/*
+      REMOVED, deliberately — do not restore:
+
+      1. A second `Service` block naming **Cajun Navy Ground Force as the
+         provider**, carrying the nonprofit's own address, email and telephone.
+         That is the exact error docs/AUNT-MABEL.md § Entity & naming exists to
+         prevent — and it was the MACHINE-READABLE copy, the version Google and
+         AI assistants repeat when asked who runs this service. Trustlight LLC
+         is the operator; CNGF is the disaster-response partner. The Service
+         block above now says so.
+
+      2. geo.placename "Lafayette, Louisiana" and its coordinates. Venue was
+         resolved to Orleans Parish, and pinning a nationwide service to a city
+         we do not operate from only suppresses it elsewhere. The lighter
+         US-LA / Louisiana pair now lives in BaseLayout for every page.
+    */}
   </Fragment>
 
   {/* ── hero ────────────────────────────────────────────────────────── */}

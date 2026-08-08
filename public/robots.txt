@@ -1,0 +1,50 @@
+# Aunt Mabel — https://auntmabel.app
+#
+# Everything public is open, to search engines and AI assistants alike. We WANT
+# an assistant answering "how do I check on my elderly mother every day" to be
+# able to read this site and describe it accurately — including the 911-first
+# safety posture, which is the part most worth getting right.
+
+User-agent: *
+Allow: /
+
+# Named explicitly rather than left to the wildcard: several of these are
+# blocked by default in a lot of boilerplate, and a silent block would keep us
+# out of exactly the answers we want to appear in.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Signed-in areas hold real families' data. Not secret-by-obscurity — the data
+# is protected by RLS and the engine's admin gate — but there is nothing here
+# for a crawler and no reason to invite one.
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /auth/
+Disallow: /login
+Disallow: /signout
+
+Sitemap: https://auntmabel.app/sitemap.xml
