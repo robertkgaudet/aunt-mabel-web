@@ -16,8 +16,14 @@ interface Props {
   banner?: boolean;
   /** Drop the nav entirely, for focused pages (login, callback, signout). */
   bare?: boolean;
+  /**
+   * Show the partnership tag. The homepage passes false: its hero carries the
+   * same badge, and having both put "in partnership with the Cajun Navy Ground
+   * Force" on screen twice, two lines apart, which reads as a mistake.
+   */
+  gfTag?: boolean;
 }
-const { banner = true, bare = false } = Astro.props;
+const { banner = true, bare = false, gfTag = true } = Astro.props;
 
 // Section links are absolute so they work from /story, /terms, anywhere — a
 // bare "#how" on a page with no #how just does nothing, silently.
@@ -50,7 +56,7 @@ const NAV = [
 
     {!bare && (
       <div class="sh-right">
-        <span class="sh-gf"><span class="sh-dot" aria-hidden="true"></span> In partnership with Cajun Navy Ground Force</span>
+        {gfTag && <span class="sh-gf"><span class="sh-dot" aria-hidden="true"></span> In partnership with Cajun Navy Ground Force</span>}
 
         <nav class="sh-nav" id="site-nav" data-auth="unknown" aria-label="Main">
           {NAV.map((l) => <a href={l.href}>{l.label}</a>)}
@@ -105,7 +111,9 @@ const NAV = [
     background: #fbf7ee;
     flex: none;
   }
-  .sh-wordmark { font-family: Fraunces, Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  /* nowrap: with the nav and tag competing for the row, "Aunt Mabel" broke
+     onto two lines and the lockup lost its shape. */
+  .sh-wordmark { font-family: Fraunces, Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
 
   .sh-right { display: flex; align-items: center; gap: 20px; }
   .sh-gf {

@@ -33,6 +33,8 @@ interface Props {
    * from here, so there is exactly one place that defines it.
    */
   chrome?: boolean;
+  /** Hide the header's partnership tag (the homepage hero already has one). */
+  gfTag?: boolean;
 }
 
 const {
@@ -44,6 +46,7 @@ const {
   ogDescription,
   ogImage: ogImagePath,
   chrome = true,
+  gfTag = true,
 } = Astro.props;
 
 const socialTitle = ogTitle ?? title;
@@ -116,7 +119,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <slot name="head" />
   </head>
   <body>
-    {chrome && <SiteHeader bare={bare} banner={!noindex} />}
+    {chrome && <SiteHeader bare={bare} banner={!noindex} gfTag={gfTag} />}
 
     <main>
       <slot />

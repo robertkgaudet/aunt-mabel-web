@@ -13,10 +13,11 @@
 // styling now lives in src/components/SiteHeader.astro, so there is exactly one
 // place to change it.
 //
-// The hero photograph is a styled placeholder deliberately. The mockup calls for
-// "Mom smiling on the phone, morning light in her kitchen"; no such photograph
-// exists yet, and a stock face would be a stranger standing in for the promise
-// this page makes.
+// The hero photograph is real: a son kissing his mother's forehead. It is
+// pre-cropped from 3:2 to the frame's 4:5 by scripts/build-hero.mjs, framed
+// around the two faces rather than the centre of the picture — a centred crop
+// clipped his face at the left edge. Re-run that script after any change to
+// the source, which is kept alongside it as hero-family-source.jpg.
 //
 // The mockup's own footer markup was truncated mid-attribute in the extract, so
 // the footer below is reconstructed from the brief's specified contents.
@@ -28,6 +29,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="A warm daily phone call for your elderly parent or grandparent living alone — and family reached instantly the moment something's wrong. 3 days free. In partnership with the Cajun Navy Ground Force."
   ogTitle="A friendly call every day — and someone there when it matters most."
   ogDescription="Aunt Mabel calls your elderly loved one every morning for a warm check-in — and reaches you live, in seconds, if something's ever wrong. 3 days free."
+  gfTag={false}
 >
   <Fragment slot="head">
     {/*
@@ -159,9 +161,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <div class="hp-hero-media">
         <div class="hp-photo-frame">
-          <div class="hp-photo-slot">
-            <div class="hp-photo-note">photo — Mom smiling on the phone, morning light in her kitchen</div>
-          </div>
+          <img
+            class="hp-photo"
+            src="/images/hero-family.jpg"
+            width="1100"
+            height="1375"
+            alt="A son kisses his mother's forehead — she smiles, eyes closed, wrapped in a crocheted blanket."
+            fetchpriority="high"
+            decoding="async"
+          />
         </div>
         <div class="hp-call-card">
           <div class="hp-call-head">
@@ -459,18 +467,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border: 1px solid #e3d8c3; background: #fbf7ee;
     box-shadow: 0 30px 60px -40px rgba(45, 36, 23, 0.5);
   }
-  .hp-photo-slot {
-    aspect-ratio: 4 / 5; min-height: 340px;
-    display: flex; align-items: center; justify-content: center; padding: 22px;
-    background-image: repeating-linear-gradient(135deg, #f1e7d3 0 12px, #fbf7ee 12px 24px);
+  /* Pre-cropped to 4:5 by scripts/build-hero.mjs, so this is a plain block
+     image rather than an object-fit crop — the framing is decided once, in the
+     file, instead of drifting with the viewport. */
+  .hp-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
   }
-  .hp-photo-note {
-    background: rgba(251, 247, 238, 0.94);
-    border: 1px solid #e3d8c3; border-radius: 10px;
-    padding: 9px 13px;
-    font-family: ui-monospace, Menlo, monospace;
-    font-size: 11.5px; letter-spacing: 0.02em; color: #6b5d48; text-align: center;
-  }
+  /* Bottom-left, as the mockup has it — over his sleeve and the blanket, well
+     clear of both faces. It carries its own opaque cream panel, so legibility
+     does not depend on what is behind it. */
   .hp-call-card {
     position: absolute; left: -14px; bottom: -26px;
     background: #fbf7ee; border: 1px solid #e3d8c3; border-radius: 14px;
