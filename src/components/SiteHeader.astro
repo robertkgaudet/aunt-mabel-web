@@ -8,8 +8,13 @@
 //
 // The mark is Aunt Mabel's actual photograph, circular. Not the "M" letter the
 // mockup used, and not /logo.png, which is an illustration OF her rather than
-// the photograph itself. The "M" survives as the favicon and inside the share
-// card, where a face at 32px would be unreadable.
+// the photograph itself. The "M" survives as the favicon.
+//
+// MOBILE: the nav collapses into a hamburger, NOT into nothing. It used to hide
+// every link below 660px, which left a returning visitor on a phone with no way
+// to reach Sign in at all — the CTA was the only thing left, and it points at
+// signup. Touch targets in the panel are deliberately large: the people buying
+// this are largely 45-65 and reading it on a phone.
 
 interface Props {
   /** Hide the founding-offer banner (signed-in areas don't need selling to). */
@@ -19,7 +24,7 @@ interface Props {
   /**
    * Show the partnership tag. The homepage passes false: its hero carries the
    * same badge, and having both put "in partnership with the Cajun Navy Ground
-   * Force" on screen twice, two lines apart, which reads as a mistake.
+   * Force" on screen twice, two lines apart, reads as a mistake.
    */
   gfTag?: boolean;
 }
@@ -45,7 +50,7 @@ const NAV = [
     <a class="sh-brand" href="/">
       <img
         class="sh-mark"
-        src="/images/family/aunt-mabel.jpg"
+        src="/images/family/aunt-mabel-face.jpg"
         width="38"
         height="38"
         alt=""
@@ -63,11 +68,39 @@ const NAV = [
           <a class="auth-in" href="/dashboard">Your dashboard</a>
           <a class="auth-in" href="/signout">Sign out</a>
           <a class="auth-out" href="/login">Sign in</a>
-          <a class="sh-btn" href="/enroll">Start their daily calls</a>
         </nav>
+
+        <a class="sh-btn" href="/enroll">
+          <span class="sh-btn-long">Start their daily calls</span>
+          <span class="sh-btn-short">Start calls</span>
+        </a>
+
+        <button
+          class="sh-burger"
+          id="sh-burger"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="sh-menu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
       </div>
     )}
   </div>
+
+  {!bare && (
+    <div class="sh-menu" id="sh-menu" data-auth="unknown" hidden>
+      <nav aria-label="Mobile">
+        {NAV.map((l) => <a href={l.href}>{l.label}</a>)}
+        <a class="auth-in" href="/dashboard">Your dashboard</a>
+        <a class="auth-in" href="/signout">Sign out</a>
+        <a class="auth-out" href="/login">Sign in</a>
+      </nav>
+    </div>
+  )}
 </header>
 
 <style>
@@ -105,15 +138,22 @@ const NAV = [
     height: 38px;
     border-radius: 50%;
     object-fit: cover;
-    /* Her face sits high in the frame; centring the crop would cut her chin. */
-    object-position: center 18%;
+    /* aunt-mabel-face.jpg is already a square crop around her face, so this
+       needs no object-position nudge. The full portrait carries wide margins;
+       at 38px she came out tiny inside them. */
     border: 1px solid #e3d8c3;
     background: #fbf7ee;
     flex: none;
   }
   /* nowrap: with the nav and tag competing for the row, "Aunt Mabel" broke
      onto two lines and the lockup lost its shape. */
-  .sh-wordmark { font-family: Fraunces, Georgia, serif; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+  .sh-wordmark {
+    font-family: Fraunces, Georgia, serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
 
   .sh-right { display: flex; align-items: center; gap: 20px; }
   .sh-gf {
@@ -134,35 +174,101 @@ const NAV = [
 
   /* Starts "unknown" and resolves client-side. Rendering "Sign in" by default
      tells a signed-in person something untrue for a beat; blank-then-correct
-     beats wrong-then-correct. */
+     beats wrong-then-correct. Applies to both the desktop nav and the panel. */
   .sh-nav[data-auth='unknown'] .auth-in,
-  .sh-nav[data-auth='unknown'] .auth-out { visibility: hidden; }
-  .sh-nav[data-auth='out'] .auth-in { display: none; }
-  .sh-nav[data-auth='in'] .auth-out { display: none; }
+  .sh-nav[data-auth='unknown'] .auth-out,
+  .sh-menu[data-auth='unknown'] .auth-in,
+  .sh-menu[data-auth='unknown'] .auth-out { visibility: hidden; }
+  .sh-nav[data-auth='out'] .auth-in,
+  .sh-menu[data-auth='out'] .auth-in { display: none; }
+  .sh-nav[data-auth='in'] .auth-out,
+  .sh-menu[data-auth='in'] .auth-out { display: none; }
 
   .sh-btn {
     display: inline-block;
     background: #c25b50;
     color: #fbf7ee !important;
+    /* Every other anchor in this component resets this; the button was the one
+       that did not, so the browser default underlined the label inside the
+       pill. site.css has no global anchor reset to fall back on. */
+    text-decoration: none;
     padding: 10px 18px;
     border-radius: 999px;
     font-size: 14px;
     font-weight: 500;
     letter-spacing: 0.01em;
+    white-space: nowrap;
     transition: background 0.15s ease;
   }
   .sh-btn:hover { background: #a3463d; color: #fbf7ee !important; }
+  .sh-btn-short { display: none; }
+
+  /* ── hamburger ────────────────────────────────────────────────────── */
+  .sh-burger {
+    display: none;
+    width: 44px;               /* 44px is the minimum comfortable touch target */
+    height: 44px;
+    border: 1px solid #e3d8c3;
+    background: #fbf7ee;
+    border-radius: 12px;
+    padding: 0;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .sh-burger span {
+    display: block;
+    width: 19px;
+    height: 2px;
+    background: #2d2417;
+    border-radius: 2px;
+    transition: transform 0.18s ease, opacity 0.15s ease;
+  }
+  /* Becomes an X while open, so the same control closes it. */
+  .sh-burger[aria-expanded='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .sh-burger[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+  .sh-burger[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .sh-menu {
+    border-top: 1px solid #e3d8c3;
+    background: #fbf7ee;
+    box-shadow: 0 18px 30px -22px rgba(45, 36, 23, 0.45);
+  }
+  .sh-menu nav { display: flex; flex-direction: column; padding: 8px 18px 16px; }
+  .sh-menu a {
+    font-family: Fraunces, Georgia, serif;
+    font-size: 19px;
+    color: #2d2417;
+    text-decoration: none;
+    padding: 16px 6px;          /* generous targets — this audience is on phones */
+    border-bottom: 1px solid #e3d8c3;
+  }
+  .sh-menu a:last-child { border-bottom: 0; }
+  .sh-menu a:active { color: #c25b50; }
 
   @media (min-width: 1080px) { .sh-gf { display: flex; } }
   @media (max-width: 860px) { .sh-nav { gap: 16px; font-size: 13.5px; } }
-  @media (max-width: 660px) {
-    .sh-inner { padding: 10px 18px; }
-    .sh-nav a:not(.sh-btn) { display: none; }
+
+  @media (max-width: 760px) {
+    .sh-inner { padding: 10px 18px; gap: 12px; }
+    .sh-right { gap: 10px; }
+    .sh-nav { display: none; }        /* the panel takes over */
+    .sh-burger { display: flex; }
+    .sh-btn { padding: 10px 15px; }
+    .sh-btn-long { display: none; }
+    .sh-btn-short { display: inline; }
+    .sh-wordmark { font-size: 19px; }
+  }
+  @media (min-width: 761px) {
+    /* Never leave the panel open behind a resize to desktop. */
+    .sh-menu { display: none !important; }
   }
 </style>
 
 <script>
-  // Resolve the nav to signed-in or signed-out.
+  // Auth-aware nav + the mobile panel. No framework; this is two toggles.
   //
   // The Supabase SDK is imported DYNAMICALLY, and only when localStorage
   // already looks like it holds a session. Most visitors to a public page have
@@ -170,23 +276,57 @@ const NAV = [
   // render one link is a real cost on first paint. The localStorage check is
   // only a cheap pre-filter — the SDK still decides.
   const nav = document.getElementById('site-nav');
-  if (nav) {
-    /** @type {(s: 'in' | 'out') => void} */
-    const resolve = (s) => nav.setAttribute('data-auth', s);
-    let looksSignedIn = false;
-    try {
-      looksSignedIn = Object.keys(localStorage).some((k) => /^sb-.*-auth-token$/.test(k));
-    } catch {
-      // Storage blocked (private mode). Treat as signed out — "Sign in" still works.
-      resolve('out');
-    }
-    if (!looksSignedIn) {
-      resolve('out');
-    } else {
-      import('../scripts/supabase.js')
-        .then(({ getSupabase }) => getSupabase().auth.getSession())
-        .then(({ data }) => resolve(data?.session ? 'in' : 'out'))
-        .catch(() => resolve('out'));
-    }
+  const menu = document.getElementById('sh-menu');
+  const burger = document.getElementById('sh-burger');
+
+  /** @type {(s: 'in' | 'out') => void} */
+  const resolve = (s) => {
+    nav?.setAttribute('data-auth', s);
+    menu?.setAttribute('data-auth', s);
+  };
+
+  let looksSignedIn = false;
+  try {
+    looksSignedIn = Object.keys(localStorage).some((k) => /^sb-.*-auth-token$/.test(k));
+  } catch {
+    // Storage blocked (private mode). Treat as signed out — "Sign in" still works.
+    resolve('out');
+  }
+  if (!looksSignedIn) {
+    resolve('out');
+  } else {
+    import('../scripts/supabase.js')
+      .then(({ getSupabase }) => getSupabase().auth.getSession())
+      .then(({ data }) => resolve(data?.session ? 'in' : 'out'))
+      .catch(() => resolve('out'));
+  }
+
+  if (burger && menu) {
+    const setOpen = (open) => {
+      menu.hidden = !open;
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+
+    burger.addEventListener('click', () => setOpen(menu.hidden));
+
+    // Close on selection. Without this, tapping "How it works" scrolls the page
+    // behind a panel that is still covering it.
+    menu.addEventListener('click', (e) => {
+      if (e.target instanceof Element && e.target.closest('a')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) {
+        setOpen(false);
+        burger.focus();
+      }
+    });
+
+    // A panel left open while the layout switches to desktop would be stranded
+    // with no visible control to close it.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 760 && !menu.hidden) setOpen(false);
+    });
   }
 </script>

@@ -56,7 +56,6 @@
   height: 30px;
   border-radius: 50%;
   object-fit: cover;
-  object-position: center 18%;
   border: 1px solid var(--line);
   background: var(--paper);
   flex: none;
