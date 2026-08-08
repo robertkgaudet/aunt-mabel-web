@@ -1,0 +1,345 @@
+---
+// The founding story — the most personal page on the site.
+//
+// COPY IS ROB'S, VERBATIM. First person, his family, his mother. Do not
+// paraphrase it, do not tighten it, do not "improve" the rhythm. If it needs to
+// change, it changes because he changed it.
+//
+// PHOTOS ARE NOT IN THE REPO YET. public/images/family/ does not exist. Every
+// <figure> below carries a placeholder frame in its place, sized to hold the
+// picture named in its label. The captions are already final — only the images
+// and their alt text are outstanding, and alt text has to be written by someone
+// who can actually see them.
+//
+// Deliberately NOT filled with the Homer template's stock gallery images that
+// happen to sit in public/assets/images/. Dressing stock photography as
+// somebody's dead mother is not a placeholder, it is a lie.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="The real Aunt Mabel — our founding story"
+  description="Aunt Mabel was a real person. The true family story behind the daily calls — Lake Charles, Treasure Island 1942, Hurricane Laura, and a promise to show up."
+  ogTitle="The real Aunt Mabel"
+  ogDescription="She was my great-aunt. She remembered everyone's name. Her photo is our logo, and her spirit is the whole idea."
+>
+  <div class="wrap story">
+    <header class="story-head">
+      <p class="kicker">Our story</p>
+      <h1>The real Aunt Mabel</h1>
+    </header>
+
+    <p class="opening">
+      That photo you see everywhere on this site — the woman with the warm smile and
+      the butterfly brooch? That's not a stock photo, and it's not a design choice.
+      That's my Aunt Mabel.
+    </p>
+
+    <figure class="plate portrait">
+      <div class="photo-slot tall" data-slot="Aunt Mabel — sepia portrait, the one used as the logo">
+        <span>Photograph</span>
+      </div>
+      <figcaption>Aunt Mabel — the real one. Her smile is our logo.</figcaption>
+    </figure>
+
+    <p>
+      She was my great-aunt — my grandfather's sister. I only saw her a handful of
+      times a year, at holidays and at the family reunion. But she left a tremendous
+      mark on me, the way certain people do. She remembered everyone's name. Every
+      child, every cousin, every new baby in a family that never stopped growing —
+      Aunt Mabel knew your name, asked about your life, and meant it. She and all of
+      my grandfather's siblings were like that: an infectious, kind smile. Laughter.
+      Kindness. Never drama. Always there for you.
+    </p>
+
+    <figure class="plate">
+      <div class="photo-pair">
+        <div class="photo-slot wide" data-slot="1950s living room, full of children">
+          <span>Photograph</span>
+        </div>
+        <div class="photo-slot wide" data-slot="Generations portrait">
+          <span>Photograph</span>
+        </div>
+      </div>
+      <figcaption>
+        The family reunions. Aunt Mabel knew every name in every one of these rooms.
+      </figcaption>
+    </figure>
+
+    <p>
+      My grandfather, Robert L. Miller, died before I was born, so I never knew him —
+      but I know who he was. An architect, graduated from Tulane. A Navy man who
+      served in World War II. A Mason, and a contributing member of Lake Charles,
+      Louisiana — my hometown, a city he spent his life helping build. He and my
+      grandmother married at nineteen on Treasure Island in 1942, at the Navy base
+      near San Francisco, just before he shipped off to war. That's them in the
+      photograph — him in his dress blues, her in lace.
+    </p>
+
+    <figure class="plate">
+      <div class="photo-slot tall" data-slot="Treasure Island wedding, 1942 — dress blues and lace">
+        <span>Photograph</span>
+      </div>
+      <figcaption>
+        Married at nineteen on Treasure Island, 1942, just before he shipped off to war.
+      </figcaption>
+    </figure>
+
+    <p>
+      When he came home, he went to college, raised five children — my mother Kathy
+      among them — and all the while, he and my grandmother were caring at home for a
+      child who needed constant care. They didn't talk about it as a burden. They just
+      showed up, every day, for the people they loved. That's what that whole family did.
+    </p>
+
+    <figure class="plate">
+      <div class="photo-slot wide" data-slot="1993 — the women of the family gathered">
+        <span>Photograph</span>
+      </div>
+      <figcaption>Decades later — still gathered, still laughing.</figcaption>
+    </figure>
+
+    {/* The hinge of the whole page. Given its own air deliberately: no photo, no
+        ornament, nothing to look at but the sentences. */}
+    <section class="quiet" aria-label="Rob's mother">
+      <p class="line">My mother died when I was thirteen.</p>
+
+      <p>
+        I want to be honest about what that means here, because it's the truest part
+        of this story. I never got to do the thing this service exists to do. I never
+        got to be the grown son who calls to check on his mother. Never got to worry
+        about whether she'd eaten, whether she'd taken her medicine, whether she was
+        lonely in a quiet house. Never got to care for her the way she cared for me.
+        That chance was simply gone before I was old enough to take it.
+      </p>
+
+      <p class="line-em">
+        Most people build something like Aunt Mabel because they're worried about
+        their mom. I built it because I never got the chance to be.
+      </p>
+    </section>
+
+    <p>
+      Years later, Hurricane Laura tore through Lake Charles — my hometown, my
+      grandfather's town, the place his buildings stand. It's also where my family
+      rests. My mother, Aunt Mabel, my grandparents — they're all buried there, in the
+      same ground the storm crossed. I've spent years doing disaster response with the
+      Cajun Navy Ground Force, and I can tell you what we found there and what we find
+      after every storm: elderly people, alone. Unreached. Days going by before anyone
+      thought to check. Somebody's mother, in a dark house with no power and no phone
+      call coming. Every one of them was someone's Aunt Mabel. Every one of them
+      deserved what my family gave so freely at every reunion — someone who knew their
+      name and showed up.
+    </p>
+
+    <p>
+      So when we built a service whose whole job is to show up every day — to call, to
+      remember your name, to ask how you slept and whether you've eaten, to genuinely
+      care how you're doing, and to reach your family the moment something's wrong —
+      there was only one name it could carry.
+    </p>
+
+    <p>
+      Aunt Mabel is what her spirit sounds like: warm, unhurried, glad to hear your
+      voice. The kind of call that leaves you a little lighter than it found you.
+    </p>
+
+    <p>
+      If you still have your mother — your father, your grandmother, your Aunt Mabel —
+      you have something I'd give anything for: the chance to care for them. Let us
+      help you take it.
+    </p>
+
+    <p class="line-em">We are a family. And we welcome you into it.</p>
+
+    <p class="signoff">
+      — Rob Gaudet, Founder<br />
+      <span>Lake Charles born · Cajun Navy Ground Force</span>
+    </p>
+
+    {/*
+      The closing gallery is INTENTIONALLY not built yet. It was specified as
+      "remaining photos" with alt text written from what is visible in each —
+      neither the count nor the contents can be known from here, and inventing
+      warm descriptions of a stranger's family photographs would be making
+      things up about real people. Drop the files in and this becomes a lazy-
+      loaded grid in one pass.
+    */}
+    <section class="gallery-pending" aria-label="Family gallery, coming">
+      <h2>The family, through the years.</h2>
+      <p>
+        The remaining photographs go here, once they're in the repository.
+      </p>
+    </section>
+
+    <div class="story-cta">
+      <p>
+        If you still have someone to call, we'd be glad to help you call them.
+      </p>
+      <a class="btn" href="/enroll">Start their daily calls →</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Narrow measure and a lot of air. This is a letter, not a landing page. */
+  .story {
+    max-width: 660px;
+  }
+
+  .story-head {
+    margin-bottom: 2.6rem;
+  }
+  .story-head h1 {
+    font-family: var(--font-head);
+    font-weight: 400;
+    font-size: clamp(2.1rem, 5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0.4rem 0 0;
+  }
+  .kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rose-deep);
+    margin: 0;
+  }
+
+  .story p {
+    font-size: 1.075rem;
+    line-height: 1.78;
+    color: var(--ink);
+    margin: 0 0 1.6rem;
+  }
+
+  .opening {
+    font-family: var(--font-head);
+    font-size: clamp(1.25rem, 2.6vw, 1.5rem) !important;
+    line-height: 1.5 !important;
+    margin-bottom: 2.4rem !important;
+  }
+
+  /* ── the quiet section ─────────────────────────────────────────────── */
+  .quiet {
+    margin: 3.4rem 0;
+    padding: 2.4rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .quiet .line {
+    font-family: var(--font-head);
+    font-size: clamp(1.4rem, 3.4vw, 1.85rem) !important;
+    line-height: 1.35 !important;
+    margin-bottom: 1.8rem !important;
+  }
+  .line-em {
+    font-family: var(--font-head);
+    font-size: 1.2rem !important;
+    line-height: 1.55 !important;
+    color: var(--rose-deep);
+  }
+
+  /* ── photographs ───────────────────────────────────────────────────── */
+  .plate {
+    margin: 2.6rem 0 2.8rem;
+  }
+  .plate.portrait {
+    margin-top: 2rem;
+  }
+
+  .photo-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* Placeholder frame. Quiet and clearly unfinished — never decorated to look
+     like a photograph that isn't there. */
+  .photo-slot {
+    background: var(--paper);
+    border: 1px dashed #cfc0a2;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: var(--soft-ink);
+  }
+  .photo-slot.tall { aspect-ratio: 4 / 5; }
+  .photo-slot.wide { aspect-ratio: 4 / 3; }
+  .photo-slot span {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .photo-slot::after {
+    content: attr(data-slot);
+    position: absolute;
+    bottom: 12px;
+    left: 14px;
+    right: 14px;
+    text-align: center;
+    font-size: 0.76rem;
+    line-height: 1.4;
+    color: #a2937c;
+  }
+
+  figcaption {
+    margin-top: 0.85rem;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--soft-ink);
+    text-align: center;
+    font-style: italic;
+  }
+
+  .signoff {
+    margin-top: 2.6rem !important;
+    font-family: var(--font-head);
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+  }
+  .signoff span {
+    font-family: var(--font-body);
+    font-size: 0.86rem;
+    color: var(--soft-ink);
+  }
+
+  .gallery-pending {
+    margin: 3.4rem 0 0;
+    padding: 2rem;
+    border: 1px dashed #cfc0a2;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    background: var(--paper);
+  }
+  .gallery-pending h2 {
+    font-family: var(--font-head);
+    font-weight: 400;
+    font-size: 1.35rem;
+    margin: 0 0 0.5rem;
+  }
+  .gallery-pending p {
+    font-size: 0.9rem !important;
+    color: var(--soft-ink);
+    margin: 0 !important;
+  }
+
+  .story-cta {
+    margin-top: 3.4rem;
+    padding-top: 2.4rem;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .story-cta p {
+    font-family: var(--font-head);
+    font-size: 1.2rem !important;
+    margin-bottom: 1.4rem !important;
+  }
+
+  @media (max-width: 560px) {
+    .photo-pair { grid-template-columns: 1fr; }
+    .quiet { margin: 2.6rem 0; padding: 1.9rem 0; }
+  }
+</style>

@@ -432,3 +432,60 @@ main { flex: 1; }
   .auth-card { padding: 1.75rem 1.35rem; }
   .band-dark { padding: 42px 24px; }
 }
+
+/* ── story teaser (homepage → /story) ─────────────────────────────────── */
+.story-teaser { margin: 3.5rem 0 0; }
+
+.story-teaser-inner {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 24px 26px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.15s ease, transform 0.18s ease;
+}
+.story-teaser-inner:hover {
+  color: var(--ink);
+  border-color: #c9bda3;
+  transform: translateY(-2px);
+}
+.story-teaser-inner p {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--soft-ink);
+}
+
+/* Placeholder until her portrait is in the repo. Round, quiet, obviously
+   unfinished — not decorated to look like a photograph that isn't there. */
+.teaser-portrait {
+  flex: none;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 1px dashed #cfc0a2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a2937c;
+}
+.teaser-portrait span {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.teaser-link { font-size: 0.95rem; color: var(--rose); }
+.story-teaser-inner:hover .teaser-link { color: var(--rose-deep); }
+
+.footer-links a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.footer-links a:hover { color: var(--rose); }
+
+@media (max-width: 560px) {
+  .story-teaser-inner { flex-direction: column; text-align: center; gap: 16px; }
+}
