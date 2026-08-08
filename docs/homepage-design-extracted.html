@@ -1,0 +1,213 @@
+text-wrap:pretty}
+  a{color:#c25b50;text-decoration:none}
+  a:hover{color:#a3463d}
+  ::selection{background:#d9a441;color:#2d2417}
+</style>
+</helmet>
+
+<div style="background:#f6efe2;color:#2d2417;font-family:'Libre Franklin',system-ui,sans-serif;font-weight:300;min-height:100vh">
+
+  <sc-if value="{{ showFoundingBanner }}" hint-placeholder-val="{{ true }}">
+    <div style="background:#2d2417;color:#f6efe2;font-size:13.5px;letter-spacing:.02em;text-align:center;padding:10px 20px">
+      Founding families: <span style="color:#d9a441">3 days free</span> — not charged until your loved one welcomes the calls.
+    </div>
+  </sc-if>
+
+  <header style="position:sticky;top:0;z-index:30;background:rgba(246,239,226,.93);backdrop-filter:blur(10px);border-bottom:1px solid #e3d8c3">
+    <div style="max-width:1140px;margin:0 auto;padding:15px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <div style="display:flex;align-items:center;gap:11px">
+        <div style="width:34px;height:34px;border-radius:50%;background:#c25b50;display:flex;align-items:center;justify-content:center;color:#fbf7ee;font-family:Fraunces,serif;font-size:17px;font-weight:600;line-height:1">M</div>
+        <span style="font-family:Fraunces,serif;font-size:22px;font-weight:600;letter-spacing:-.01em">Aunt Mabel</span>
+      </div>
+      <nav style="display:flex;align-items:center;gap:28px;font-size:14.5px;color:#6b5d48">
+        <a href="#how" style="color:#6b5d48" style-hover="{color:'#2d2417'}">How it works</a>
+        <a href="#family-connect" style="color:#6b5d48" style-hover="{color:'#2d2417'}">Family Connect</a>
+        <a href="#start" style="display:inline-block;background:#c25b50;color:#fbf7ee;padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;letter-spacing:.01em" style-hover="{background:'#a3463d',color:'#fbf7ee'}">Start their daily calls</a>
+      </nav>
+    </div>
+  </header>
+
+  <section style="max-width:1140px;margin:0 auto;padding:clamp(48px,7vw,88px) 28px clamp(40px,6vw,72px);display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:clamp(36px,5vw,64px);align-items:center">
+    <div style="max-width:600px">
+      <sc-if value="{{ showPartnerBadge }}" hint-placeholder-val="{{ true }}">
+        <div style="display:inline-flex;align-items:center;gap:9px;border:1px solid #e3d8c3;background:#fbf7ee;border-radius:999px;padding:7px 14px 7px 10px;font-size:12.5px;letter-spacing:.03em;text-transform:uppercase;color:#6f7d5e;margin-bottom:26px">
+          <span style="width:7px;height:7px;border-radius:50%;background:#7ab648;display:block"></span>
+          In partnership with the Cajun Navy Ground Force
+        </div>
+      </sc-if>
+      <h1 style="font-family:Fraunces,serif;font-weight:600;font-size:clamp(38px,5.1vw,64px);line-height:1.04;letter-spacing:-.025em;margin:0 0 22px;color:#2d2417">A friendly call every day — and someone there when it matters most.</h1>
+      <p style="font-size:clamp(17px,1.5vw,19.5px);line-height:1.65;color:#6b5d48;margin:0 0 32px;max-width:520px">Aunt Mabel calls your elderly loved one every morning for a warm, friendly check-in. And if something's ever wrong, she reaches you right away — so they're never alone when it counts.</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px">
+        <a href="#start" style="display:inline-block;background:#c25b50;color:#fbf7ee;font-size:17px;font-weight:500;padding:17px 30px;border-radius:999px;box-shadow:0 10px 26px -14px rgba(194,91,80,.9)" style-hover="{background:'#a3463d',color:'#fbf7ee'}">Start their daily calls →</a>
+        <span style="font-size:14px;color:#6b5d48">3 days free · Cancel anytime</span>
+      </div>
+    </div>
+
+    <div style="position:relative">
+      <div style="border-radius:20px;overflow:hidden;border:1px solid #e3d8c3;background:#fbf7ee;box-shadow:0 30px 60px -40px rgba(45,36,23,.5)">
+        <div style="aspect-ratio:4/5;min-height:340px;display:flex;align-items:center;justify-content:center;padding:22px;background-image:repeating-linear-gradient(135deg,#f1e7d3 0 12px,#fbf7ee 12px 24px)">
+          <div style="background:rgba(251,247,238,.94);border:1px solid #e3d8c3;border-radius:10px;padding:9px 13px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.02em;color:#6b5d48;text-align:center">photo — Mom smiling on the phone, morning light in her kitchen</div>
+        </div>
+      </div>
+      <sc-if value="{{ showCallPreviewCard }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;left:-14px;bottom:-26px;background:#fbf7ee;border:1px solid #e3d8c3;border-radius:14px;padding:16px 18px;box-shadow:0 20px 40px -26px rgba(45,36,23,.55);max-width:270px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#6f7d5e;margin-bottom:8px">
+            <span style="width:7px;height:7px;border-radius:50%;background:#7ab648;display:block"></span>Today's call · 9:02 am
+          </div>
+          <p style="margin:0;font-family:Fraunces,serif;font-size:17px;line-height:1.35;color:#2d2417">"She had her oatmeal, took her pills, and the roses are blooming."</p>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <section style="border-top:1px solid #e3d8c3;background:#fbf7ee">
+    <div style="max-width:760px;margin:0 auto;padding:clamp(64px,8vw,104px) 28px;text-align:center">
+      <div style="width:42px;height:2px;background:#d9a441;margin:0 auto 28px"></div>
+      <h2 style="font-family:Fraunces,serif;font-weight:600;font-size:clamp(29px,3.6vw,44px);line-height:1.14;letter-spacing:-.02em;margin:0 0 24px">When did you last hear her voice?</h2>
+      <p style="font-size:clamp(16.5px,1.4vw,18.5px);line-height:1.75;color:#6b5d48;margin:0 0 18px">You meant to call Sunday. Then the week happened. You know she's alone in that house — that most days, the phone doesn't ring at all, and she'd never tell you how quiet it gets. She doesn't want to be a burden. So she says she's fine.</p>
+      <p style="font-size:clamp(16.5px,1.4vw,18.5px);line-height:1.75;color:#6b5d48;margin:0 0 18px">Meanwhile you're left wondering. Did she eat today? Did he take his pills? And underneath it, the worry you don't say out loud: <em style="font-family:Fraunces,serif;font-style:italic;color:#2d2417">if something happened, would I even know?</em></p>
+      <p style="font-size:clamp(16.5px,1.4vw,18.5px);line-height:1.75;color:#6b5d48;margin:0 0 26px">You can't call every morning. But someone can — someone who listens, remembers, and tells you how she's really doing.</p>
+      <p style="font-family:Fraunces,serif;font-size:clamp(19px,1.8vw,23px);line-height:1.55;color:#2d2417;margin:0">Aunt Mabel is there on the days you can't be. Loneliness ends tomorrow morning at nine.</p>
+    </div>
+  </section>
+
+  <section id="how" style="border-top:1px solid #e3d8c3">
+    <div style="max-width:1140px;margin:0 auto;padding:clamp(64px,8vw,104px) 28px">
+      <h2 style="font-family:Fraunces,serif;font-weight:600;font-size:clamp(28px,3.2vw,40px);letter-spacing:-.02em;margin:0 0 12px;text-align:center">How it works</h2>
+      <p style="text-align:center;color:#6b5d48;font-size:17px;margin:0 auto clamp(44px,5vw,64px);max-width:520px">Three small steps, and then it simply happens every morning.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(28px,4vw,52px)">
+        <div>
+          <div style="font-family:Fraunces,serif;font-size:54px;font-weight:500;line-height:1;color:#d9a441;margin-bottom:16px">1</div>
+          <h3 style="font-family:Fraunces,serif;font-size:24px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em">Sign up your loved one</h3>
+          <p style="font-size:16.5px;line-height:1.7;color:#6b5d48;margin:0">Their name, their phone number, and the time of day they'd most like to hear from someone. That's it — nothing for them to set up, download, or learn.</p>
+        </div>
+        <div>
+          <div style="font-family:Fraunces,serif;font-size:54px;font-weight:500;line-height:1;color:#d9a441;margin-bottom:16px">2</div>
+          <h3 style="font-family:Fraunces,serif;font-size:24px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em">Mabel calls them every day</h3>
+          <p style="font-size:16.5px;line-height:1.7;color:#6b5d48;margin:0">A real conversation, never a robotic script. She asks about their morning, remembers what they told her yesterday, and lets them talk as long as they'd like.</p>
+        </div>
+        <div>
+          <div style="font-family:Fraunces,serif;font-size:54px;font-weight:500;line-height:1;color:#d9a441;margin-bottom:16px">3</div>
+          <h3 style="font-family:Fraunces,serif;font-size:24px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em">You stay in the loop</h3>
+          <p style="font-size:16.5px;line-height:1.7;color:#6b5d48;margin:0">A warm summary of every call lands in your family dashboard. Good days are good days — and if something's wrong, you hear about it right away.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:1px solid #e3d8c3;background:#fbf7ee">
+    <div style="max-width:1140px;margin:0 auto;padding:clamp(64px,8vw,104px) 28px;display:flex;flex-direction:column;gap:clamp(20px,2.4vw,28px)">
+
+      <div style="border:1px solid #e3d8c3;border-radius:18px;background:#f6efe2;padding:clamp(28px,3.4vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(24px,3vw,44px);align-items:center">
+        <div>
+          <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#6f7d5e;margin-bottom:14px">Every morning</div>
+          <h3 style="font-family:Fraunces,serif;font-size:clamp(26px,2.6vw,34px);font-weight:600;letter-spacing:-.02em;margin:0 0 14px">A warm daily check-in</h3>
+          <p style="font-size:17px;line-height:1.7;color:#6b5d48;margin:0">It feels like a visit from a friend, not a questionnaire. Mabel gently makes sure they've eaten, taken their medicine, and slept alright — and then she stays for the part that matters just as much: the company.</p>
+        </div>
+        <div style="border:1px solid #e3d8c3;border-radius:14px;background:#fbf7ee;padding:20px 22px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-family:Fraunces,serif;font-size:18px;line-height:1.5;color:#2d2417">"Morning, Ruth. Did you get to your coffee before the crossword this time?"</div>
+          <div style="height:1px;background:#e3d8c3"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span style="border:1px solid #e3d8c3;border-radius:999px;padding:6px 12px;font-size:13px;color:#6b5d48">Meals</span>
+            <span style="border:1px solid #e3d8c3;border-radius:999px;padding:6px 12px;font-size:13px;color:#6b5d48">Medication</span>
+            <span style="border:1px solid #e3d8c3;border-radius:999px;padding:6px 12px;font-size:13px;color:#6b5d48">Mood</span>
+            <span style="border:1px solid #e3d8c3;border-radius:999px;padding:6px 12px;font-size:13px;color:#6b5d48">Company</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="family-connect" style="border-radius:22px;background:#c25b50;color:#fbf7ee;padding:clamp(32px,4.2vw,60px);box-shadow:0 34px 70px -46px rgba(194,91,80,.95);display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(28px,3.6vw,52px);align-items:center">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:9px;background:rgba(251,247,238,.16);border:1px solid rgba(251,247,238,.35);border-radius:999px;padding:6px 14px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:20px">
+            <span style="width:7px;height:7px;border-radius:50%;background:#d9a441;display:block"></span>Family Connect
+          </div>
+          <h3 style="font-family:Fraunces,serif;font-size:clamp(30px,4vw,50px);font-weight:600;line-height:1.06;letter-spacing:-.025em;margin:0 0 20px">She reaches you the moment it matters.</h3>
+          <p style="font-size:clamp(17px,1.5vw,19px);line-height:1.7;color:rgba(251,247,238,.94);margin:0 0 16px">If your loved one is ever in distress — a fall, chest pain, confusion, a scare — Mabel doesn't wait until tomorrow. She urges them to call 911, and in the same breath she reaches you, right then, bringing you onto the call live.</p>
+          <p style="font-family:Fraunces,serif;font-size:clamp(19px,1.8vw,24px);line-height:1.5;margin:0 0 22px">So a frightened parent is never alone — and you're there in seconds.</p>
+          <p style="font-size:13.5px;line-height:1.6;color:rgba(251,247,238,.72);margin:0">For real emergencies, 911 always comes first.</p>
+        </div>
+        <div style="background:#fbf7ee;border-radius:16px;padding:22px;color:#2d2417;box-shadow:0 24px 46px -30px rgba(45,36,23,.7)">
+          <div style="display:flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#c25b50;margin-bottom:16px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#c25b50;display:block"></span>Live now · 7:41 am
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="border:1px solid #e3d8c3;border-radius:12px;padding:13px 15px;font-size:15px;line-height:1.55;color:#6b5d48">Mabel: "Ruth, I want you to hang up and call 911 for me, alright? I'm getting your daughter on the line right now."</div>
+            <div style="border:1px solid #c25b50;background:rgba(194,91,80,.07);border-radius:12px;padding:13px 15px;font-size:15px;line-height:1.55">
+              <div style="font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#c25b50;margin-bottom:6px">Calling Sarah — daughter</div>
+              <span style="font-family:Fraunces,serif;font-size:17px">Joining the call…</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:clamp(20px,2.4vw,28px)">
+        <div style="border:1px solid #e3d8c3;border-radius:18px;background:#f6efe2;padding:clamp(26px,2.8vw,34px)">
+          <div style="width:34px;height:34px;border-radius:9px;border:1px solid #e3d8c3;background:#fbf7ee;margin-bottom:18px;display:flex;align-items:center;justify-content:center">
+            <span style="width:12px;height:12px;border-radius:3px;background:#6f7d5e;display:block"></span>
+          </div>
+          <h3 style="font-family:Fraunces,serif;font-size:23px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em">A dashboard that gives you peace of mind</h3>
+          <p style="font-size:16px;line-height:1.7;color:#6b5d48;margin:0">Every call, in plain language. A warm summary of how they're doing, a calendar of good days you can see at a glance, and anything that concerns her waiting right at the top.</p>
+        </div>
+        <div style="border:1px solid #e3d8c3;border-radius:18px;background:#f6efe2;padding:clamp(26px,2.8vw,34px)">
+          <div style="width:34px;height:34px;border-radius:9px;border:1px solid #e3d8c3;background:#fbf7ee;margin-bottom:18px;display:flex;align-items:center;justify-content:center">
+            <span style="width:12px;height:12px;border-radius:50%;background:#d9a441;display:block"></span>
+          </div>
+          <h3 style="font-family:Fraunces,serif;font-size:23px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em">Flags when something needs attention</h3>
+          <p style="font-size:16px;line-height:1.7;color:#6b5d48;margin:0">Meals skipped, a missed call, a sadness that lingers, a fall she mentions in passing. You and the emergency contact you choose are told — not next week, that day.</p>
+        </div>
+        <div style="border:1px solid #e3d8c3;border-radius:18px;background:#f6efe2;padding:clamp(26px,2.8vw,34px)">
+          <div style="width:34px;height:34px;border-radius:9px;border:1px solid #e3d8c3;background:#fbf7ee;margin-bottom:18px;display:flex;align-items:center;justify-content:center">
+            <span style="width:12px;height:12px;background:#c25b50;display:block;transform:rotate(45deg)"></span>
+          </div>
+          <h3 style="font-family:Fraunces,serif;font-size:23px;font-weight:600;margin:0 0 12px;letter-spacing:-.01em">A knock on the door when disaster strikes</h3>
+          <p style="font-size:16px;line-height:1.7;color:#6b5d48;margin:0">Built with the Cajun Navy Ground Force. When a storm or disaster hits their area, the daily call becomes an in-person check — a commitment to try, from people who have spent years showing up.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:1px solid #e3d8c3">
+    <div style="max-width:880px;margin:0 auto;padding:clamp(60px,7vw,92px) 28px">
+      <div style="border:1px solid #e3d8c3;border-radius:18px;background:rgba(111,125,94,.07);padding:clamp(28px,3.4vw,48px)">
+        <h2 style="font-family:Fraunces,serif;font-size:clamp(24px,2.6vw,32px);font-weight:600;letter-spacing:-.015em;margin:0 0 18px">What Aunt Mabel is — and what she isn't.</h2>
+        <p style="font-size:17px;line-height:1.75;color:#6b5d48;margin:0 0 14px">Aunt Mabel is a friendly daily check-in and a fast way to reach family. She is <strong style="font-weight:500;color:#2d2417">not</strong> an emergency service, a medical device, or a monitoring system, and she is not a substitute for care or for calling for help.</p>
+        <p style="font-size:17px;line-height:1.75;color:#6b5d48;margin:0 0 14px">For any real emergency, always call 911 first.</p>
+        <p style="font-family:Fraunces,serif;font-size:19px;line-height:1.6;color:#2d2417;margin:0">We'll always be honest with you about what we can and can't promise. That's the only way this works.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="start" style="background:#2d2417;color:#f6efe2">
+    <div style="max-width:1000px;margin:0 auto;padding:clamp(64px,8vw,110px) 28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(32px,4vw,64px);align-items:center">
+      <div>
+        <h2 style="font-family:Fraunces,serif;font-size:clamp(32px,4vw,50px);font-weight:600;line-height:1.08;letter-spacing:-.025em;margin:0 0 20px">Be one of our founding families.</h2>
+        <p style="font-size:clamp(17px,1.5vw,19px);line-height:1.7;color:rgba(246,239,226,.78);margin:0 0 30px">You already know us for showing up when disaster strikes. This is how we show up every single day.</p>
+        <a href="#start" style="display:inline-block;background:#c25b50;color:#fbf7ee;font-size:17px;font-weight:500;padding:17px 30px;border-radius:999px" style-hover="{background:'#a3463d',color:'#fbf7ee'}">Start their daily calls →</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid rgba(227,216,195,.18);padding-bottom:18px">
+          <span style="width:9px;height:9px;border-radius:50%;background:#7ab648;display:block;margin-top:7px;flex:none"></span>
+          <p style="margin:0;font-size:16.5px;line-height:1.65;color:rgba(246,239,226,.88)"><strong style="font-family:Fraunces,serif;font-weight:600;color:#f6efe2">3 days free.</strong> You're not charged until their loved one welcomes the calls.</p>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid rgba(227,216,195,.18);padding-bottom:18px">
+          <span style="width:9px;height:9px;border-radius:50%;background:#d9a441;display:block;margin-top:7px;flex:none"></span>
+          <p style="margin:0;font-size:16.5px;line-height:1.65;color:rgba(246,239,226,.88)"><strong style="font-family:Fraunces,serif;font-weight:600;color:#f6efe2">Founding family rate</strong> with code <span style="font-family:ui-monospace,Menlo,monospace;font-size:14.5px;border:1px solid rgba(217,164,65,.5);border-radius:6px;padding:3px 8px;color:#d9a441">FOUNDING</span> — yours for as long as you stay.</p>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start">
+          <span style="width:9px;height:9px;border-radius:50%;background:#c25b50;display:block;margin-top:7px;flex:none"></span>
+          <p style="margin:0;font-size:16.5px;line-height:1.65;color:rgba(246,239,226,.88)"><strong style="font-family:Fraunces,serif;font-weight:600;color:#f6efe2">Cancel anytime.</strong> No contracts, no phone calls to get out of it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background:#f6efe2;border-top:1px solid #e3d8c3">
+    <div style="max-width:1140px;margin:0 auto;padding:clamp(48px,6vw,72px) 28px clamp(36px,4vw,48px)">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(28px,4vw,56px);align-items:start">
+        <div style="max-width:440px">
+          <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+            <div style="width:30px;height:30px;border-radius:50%;background:#c25b50;display:flex;align-items:center;justify-content:center;color:#fbf7ee;font-family:Fraunces,serif;font-size:15px;font-weight:600;line-height:1">M</div>
+            <span style="font-family:Fraunces,serif;font-size:20px;font-weight:600">Aunt Mabel</span>
+          </div>
+          <p style="font-size:15px;line-height:1.7;color:#6b5d48;margin:0 0 16px">Aunt Mabel is operated by Trustlight LLC, in partnership with the Cajun Navy Ground Force — protecting and stabilizing the elderly and vulnerable.</p>
+          <p style="font-family:Fraunces,serif;font-size:18px;line-he
