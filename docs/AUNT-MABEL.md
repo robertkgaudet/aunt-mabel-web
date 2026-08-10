@@ -13,14 +13,36 @@ the engine, update that copy too.
 ## What Aunt Mabel is
 
 A paid daily wellness-call service for elderly people living alone, operated as
-a **for-profit enterprise by Trustlight LLC**, in partnership with Cajun Navy Ground
-Force. An AI voice agent (Aunt Mabel) calls each recipient daily, holds a warm
-conversation, flags health/safety concerns, and escalates to human contacts. The
-same daily call doubles as a disaster tripwire: when disaster hits a recipient's
-area, it triggers an in-person Cajun Navy Ground Force check — the partner's
-side of the arrangement.
+a **for-profit enterprise by Trustlight LLC**. An AI voice agent (Aunt Mabel)
+calls each recipient daily, holds a warm conversation, flags health/safety
+concerns, and escalates to human contacts by email.
 
-Promise: "A friendly call every day — and a knock on the door when disaster strikes."
+Promise: "A friendly call every day, from a family that shows up."
+
+### The in-person disaster check is REMOVED (2026-08-10) — do not reinstate
+
+Every version of this document before today described the daily call as a
+**disaster tripwire** that triggered an in-person Cajun Navy Ground Force check,
+and promised "a knock on the door when disaster strikes."
+
+**We cannot deliver that, so we do not promise it.** It was removed from every
+customer-facing surface on 2026-08-10: the homepage feature card, the FAQ and
+Service JSON-LD, the site-wide default meta description, the web manifest, the
+family guide, the enrollment ZIP explanation, llms.txt, and — most importantly —
+the Terms and the Privacy Policy, which had described home visits and told
+families their loved one's address would be passed to CNGF for a door knock.
+Terms and Privacy now state the opposite **explicitly**, as denials rather than
+deletions, because people who read the old wording deserve to see it withdrawn
+in as many words.
+
+A hedge is not a fix. The old family-guide wording carefully framed the check as
+a commitment to **try** rather than a guarantee, and that was still a promise
+about a capability that does not exist.
+
+This is not a decision to re-argue. If the capability ever becomes real, the
+promise can come back — deliberately, with the operational commitment behind it,
+and with the legal wording reviewed. Until then, **no surface may state or imply
+that anyone will arrive at a recipient's home.**
 
 Future "Legacy" expansion (not yet built): with layered consent, record and
 transcribe calls to preserve life stories and voice for families.
@@ -71,10 +93,20 @@ friction — never preemptively.
   in the ToS and Privacy Policy. Its registered parish sets the venue for
   disputes — **Orleans Parish**, Louisiana governing law.
 - **Cajun Navy Ground Force** — a DBA of Cajun Relief Foundation (a registered
-  nonprofit), and a **PARTNER, not the owner or operator**. Its role is the
-  in-person disaster-response wellness checks. Aunt Mabel uses the CNGF name **by
-  partnership and permission**; the service is not operated by, or under, the
-  nonprofit.
+  nonprofit), and a **PARTNER, not the owner or operator**. Aunt Mabel uses the
+  CNGF name **by partnership and permission**; the service is not operated by, or
+  under, the nonprofit.
+
+  Its role is **HERITAGE AND MISSION, never operations.** CNGF is where this
+  service came from and why it understands elderly isolation — years of disaster
+  response, and the same thing turning up after every storm: elderly people,
+  alone. It is not a description of anything the service does. The house style
+  is "born from years of disaster response with the Cajun Navy Ground Force",
+  never "in partnership with CNGF, who perform the checks."
+
+  The distinction is load-bearing in both directions. Naming CNGF as an operator
+  breaks the entity rule below; naming it as a service provider promises the
+  door knock that was removed on 2026-08-10.
 
 **The rule:**
 
@@ -82,7 +114,8 @@ friction — never preemptively.
 |---|---|
 | Brand-facing copy — marketing pages, UI, email, the voice agent | **Cajun Navy Ground Force** — the trusted name Mabel says |
 | Legal documents — ToS, Privacy Policy, contracting-party language | **Trustlight LLC** — never Cajun Relief Foundation |
-| Describing the disaster-response check | Cajun Navy Ground Force, **as the named partner** performing it |
+| Describing the CNGF relationship | **Heritage only** — where Aunt Mabel came from. Never as a service anyone performs for a recipient |
+| Describing an in-person visit or disaster check | **Don't.** It is not part of the product (removed 2026-08-10) |
 
 So the customer-facing name and the contracting entity are deliberately
 different: people hear the trusted local name, and they contract with the
@@ -90,11 +123,15 @@ for-profit that runs the service. **Never write copy implying the nonprofit
 operates Aunt Mabel or takes the payment** — that is the specific error this
 correction exists to prevent.
 
-Three items remain open for the attorney, none of them naming questions: the
-Trustlight LLC ↔ CNGF partnership agreement, the effort-not-guaranteed-arrival
-wording on the disaster check, and how prominently the for-profit operator must
-be identified behind a nonprofit-branded front. See
+Two items remain open for the attorney, neither of them a naming question: the
+Trustlight LLC ↔ CNGF partnership agreement, and how prominently the for-profit
+operator must be identified behind a nonprofit-branded front. See
 [legal-source.md](legal-source.md) § 4 item 8.
+
+The third — the effort-not-guaranteed-arrival wording on the disaster check —
+is **closed by deletion, not by wording**. There is no check to word carefully
+any more. The partnership agreement item is now narrower too: it covers use of
+the name, not the performance of any service for our customers.
 
 "Ground Force Humanitarian Aid" is another DBA of the same nonprofit but is
 **not** the brand we lead with — brand-facing copy was standardized away from it
@@ -173,8 +210,10 @@ that blocks launch**, not a future enhancement. All detailed in
    and immediately reaches the emergency contact on detected distress. **Later
    enhancement:** warm-transfer the live call to the family member. **Later
    premium (optional):** a paid real-person callback line — whose wording is a
-   legal question, of the same class as the disaster-check "effort, not
-   guaranteed arrival" item already with the attorney.
+   legal question of the same class as the disaster-check "effort, not
+   guaranteed arrival" problem: a promise about reaching a person, made before
+   the capability reliably exists. That one was settled by removing the promise
+   rather than by softening it, which is the precedent here too.
 
 ## Consent (applies wherever consent is read or written)
 
