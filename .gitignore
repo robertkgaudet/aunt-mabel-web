@@ -15,6 +15,10 @@ pnpm-debug.log*
 .env
 .env.local
 .env.test
+# ...except the staging build config, which holds only a public engine URL and
+# MUST travel with the repo. Without it a test build falls back to .env.local
+# and quietly points staging at the production engine — the live-money bug.
+!.env.test
 .env.production
 
 # wrangler

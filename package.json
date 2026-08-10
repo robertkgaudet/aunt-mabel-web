@@ -7,12 +7,14 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "build:test": "astro build --mode test",
+    "build:test": "npm run check:engine:test && astro build --mode test",
     "preview": "astro preview",
     "check": "astro check",
     "deploy:test": "npm run build:test && wrangler pages deploy dist --project-name aunt-mabel-web-test",
     "deploy:prod": "node scripts/deploy-prod.mjs",
-    "astro": "astro"
+    "astro": "astro",
+    "check:engine:test": "node scripts/check-engine-target.mjs test",
+    "check:engine:prod": "node scripts/check-engine-target.mjs prod"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",

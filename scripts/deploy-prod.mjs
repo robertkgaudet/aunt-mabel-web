@@ -85,6 +85,18 @@ if (!whoamiOut.includes('You are logged in')) {
 }
 console.log('  Authenticated.');
 
+// ── 6b. Engine target ──────────────────────────────────────────────────────
+// A prod build pointed at the staging engine would send real customers to
+// test-mode Stripe and take no money at all, with a site that looks perfectly
+// healthy. Cheaper to catch here than in a support email.
+console.log('\n> Checking engine target...');
+const engineCheck = spawnSync('node', ['scripts/check-engine-target.mjs', 'prod'], {
+  shell: true,
+  encoding: 'utf8',
+  stdio: 'inherit',
+});
+if (engineCheck.status !== 0) abort('Engine target check failed — see above.');
+
 // ── 7. Fresh build ─────────────────────────────────────────────────────────
 console.log('\n> Running astro build...');
 const build = spawnSync('npm', ['run', 'build'], { shell: true, encoding: 'utf8', stdio: 'inherit' });
