@@ -849,3 +849,13 @@ table.admin tr.flagged td { background: rgba(194, 91, 80, 0.06); }
 @media (max-width: 720px) {
   .dash-share { grid-template-columns: 1fr; }
 }
+
+/* Cancellation plain-speaking, under the billing buttons. Quiet by design —
+   this is reassurance, not a warning. */
+.dash-cancel-note {
+  margin: 16px 0 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--soft-ink);
+  max-width: 62ch;
+}

@@ -26,9 +26,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Aunt Mabel — Daily Check-In Calls for Elderly Loved Ones Living Alone"
-  description="A warm daily phone call for your elderly parent or grandparent living alone — and family reached instantly the moment something's wrong. 3 days free. In partnership with the Cajun Navy Ground Force."
+  description="A warm daily phone call for your elderly parent or grandparent living alone — and family reached instantly the moment something's wrong. 14 days free. Born from years of disaster response with the Cajun Navy Ground Force."
   ogTitle="A friendly call every day — and someone there when it matters most."
-  ogDescription="Aunt Mabel calls your elderly loved one every morning for a warm check-in — and reaches you live, in seconds, if something's ever wrong. 3 days free."
+  ogDescription="Aunt Mabel calls your elderly loved one every morning for a warm check-in — and reaches you live, in seconds, if something's ever wrong. 14 days free."
   gfTag={false}
 >
   <Fragment slot="head">
@@ -55,7 +55,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         logo: 'https://auntmabel.app/og-image.jpg',
         email: 'Mabel@AuntMabel.app',
         description:
-          'Aunt Mabel is a daily wellness check-in call service for elderly people living alone, operated by Trustlight LLC in partnership with the Cajun Navy Ground Force.',
+          'Aunt Mabel is a daily wellness check-in call service for elderly people living alone, operated by Trustlight LLC. It was born out of years of disaster response with the Cajun Navy Ground Force, where the same thing turned up after every storm: elderly people, alone.',
         address: { '@type': 'PostalAddress', addressRegion: 'LA', addressCountry: 'US' },
         sameAs: [],
       })}
@@ -71,12 +71,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         provider: { '@type': 'Organization', name: 'Trustlight LLC' },
         areaServed: 'US',
         description:
-          'A warm daily phone call that checks on an elderly loved one’s meals, medications, and wellbeing — with live family escalation (Family Connect) the moment something is wrong, and in-person disaster checks in partnership with the Cajun Navy Ground Force.',
+          'A warm daily phone call that checks on an elderly loved one’s meals, medications, and wellbeing — with live family escalation (Family Connect) the moment something is wrong.',
         offers: {
           '@type': 'Offer',
           price: '39.00',
           priceCurrency: 'USD',
-          description: 'Monthly subscription with a 3-day free trial.',
+          description: 'Monthly subscription with a 14-day free trial. Cancel anytime.',
         },
       })}
     />
@@ -89,7 +89,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         mainEntity: [
           [
             'What is Aunt Mabel?',
-            'Aunt Mabel is a service that places a warm, friendly phone call to an elderly person living alone every day, checks on their meals, medications, and wellbeing, and reaches their family immediately if something is wrong. It is operated by Trustlight LLC in partnership with the Cajun Navy Ground Force.',
+            'Aunt Mabel is a service that places a warm, friendly phone call to an elderly person living alone every day, checks on their meals, medications, and wellbeing, and reaches their family immediately if something is wrong. It is operated by Trustlight LLC, and grew out of years of disaster-response work with the Cajun Navy Ground Force.',
           ],
           [
             'How does the daily check-in call work?',
@@ -105,11 +105,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           ],
           [
             'How much does Aunt Mabel cost?',
-            'Aunt Mabel is $39 per month with a 3-day free trial — you’re not charged until your loved one has welcomed the calls. Cancel anytime, no contracts.',
+            'Aunt Mabel is $39 per month with a 14-day free trial — you’re not charged until your loved one has truly welcomed Mabel into their mornings. Cancel anytime — the calls carry on to the end of the period you have paid for, then stop, and cancelling during the free trial means you are never charged at all.',
           ],
           [
-            'What happens during a disaster?',
-            'Aunt Mabel is built in partnership with the Cajun Navy Ground Force. When a disaster strikes a recipient’s area, the daily call becomes an in-person wellness check — a commitment to try, from people who have spent years showing up after storms.',
+            'Why does a daily call matter?',
+            'Millions of older adults live alone, and many go days at a time without a real conversation. That isolation is not just sad — sustained loneliness is associated with serious declines in physical and mental health, and it is the ordinary Tuesday, not the emergency, when nobody notices something has changed. A daily call is a small, steady thread of connection: someone who asks how they slept, remembers yesterday, and would notice if today sounded different.',
           ],
         ].map(([q, a]) => ({
           '@type': 'Question',
@@ -120,7 +120,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     />
     <meta
       name="keywords"
-      content="elderly wellness check, senior check-in call, daily call for seniors, elderly parent care, automated senior check-in, disaster wellness check, check on elderly parents, senior safety service, aging parent monitoring, elderly disaster relief, AI check-in call, daily wellness call, senior isolation, care for aging parents, in-person wellness check, Cajun Navy Ground Force, elderly disaster preparedness, remote elderly care, peace of mind for families, scheduled check-in calls"
+      content="elderly wellness check, senior check-in call, daily call for seniors, elderly parent care, automated senior check-in, check on elderly parents, senior safety service, aging parent monitoring, AI check-in call, daily wellness call, senior isolation, elderly loneliness, companionship for seniors, care for aging parents, remote elderly care, peace of mind for families, scheduled check-in calls, senior social isolation, living alone elderly, daily reassurance call"
     />
     {/*
       REMOVED, deliberately — do not restore:
@@ -155,7 +155,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </p>
         <div class="hp-cta-row">
           <a class="hp-btn hp-btn-lg" href="/enroll">Start their daily calls →</a>
-          <span class="hp-fine">3 days free · Cancel anytime</span>
+          <span class="hp-fine">14 days free · Cancel anytime</span>
         </div>
       </div>
 
@@ -204,6 +204,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           morning at nine.
         </p>
       </div>
+    </section>
+
+    {/*
+      MOVED UP 2026-08-10, from between the feature cards and the closing CTA.
+      Down there she was the last thing before the ask and most visitors never
+      reached her. The service is named after a real woman and carries her face
+      as its logo — that is the answer to "who is this?", so it belongs right
+      after the reader recognises the worry and before the mechanics of how it
+      works.
+
+      Deliberately NOT next to the hero: the hero already carries a photograph
+      of a son and his mother, and two portraits competing in the first screen
+      made neither of them land.
+    */}
+    <section class="hp-story hp-story-lead">
+      <a class="hp-story-inner" href="/story">
+        <img
+          src="/images/family/aunt-mabel-face.jpg"
+          width="560"
+          height="560"
+          decoding="async"
+          alt="Aunt Mabel — a sepia studio portrait of a smiling woman with dark waved hair and a sparkling brooch."
+        />
+        <div>
+          <p>
+            Aunt Mabel was a real person — the founder's great-aunt, who remembered
+            every family member's name at every reunion. Her photo is our logo. Her
+            spirit is the whole service.
+          </p>
+          <span class="hp-story-link">Read our story →</span>
+        </div>
+      </a>
     </section>
 
     <section id="how" class="hp-how">
@@ -364,38 +396,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               is one tap and not a search.
             </p>
           </div>
-          <div class="hp-panel">
-            <div class="hp-icon"><span class="dia rose" aria-hidden="true"></span></div>
-            <h3 class="hp-card-h">A knock on the door when disaster strikes</h3>
-            <p>
-              Built with the Cajun Navy Ground Force. When a storm or disaster hits
-              their area, the daily call becomes an in-person check — a commitment to
-              try, from people who have spent years showing up.
-            </p>
-          </div>
+          {/*
+            REMOVED 2026-08-10 — do not restore without the capability behind it.
+            A third card here promised "A knock on the door when disaster
+            strikes": an in-person check by the Cajun Navy Ground Force when a
+            storm hit a recipient's area. We cannot deliver that today, and a
+            family choosing this service partly for that reason would be
+            choosing something that does not exist.
+
+            The partnership itself stays everywhere it appears — as heritage and
+            motivation, which is true. It is the OPERATIONAL promise that went.
+          */}
         </div>
       </div>
-    </section>
-
-    <section class="hp-story">
-      <a class="hp-story-inner" href="/story">
-        <img
-          src="/images/family/aunt-mabel-face.jpg"
-          width="560"
-          height="560"
-          loading="lazy"
-          decoding="async"
-          alt="Aunt Mabel — a sepia studio portrait of a smiling woman with dark waved hair and a sparkling brooch."
-        />
-        <div>
-          <p>
-            Aunt Mabel was a real person — the founder's great-aunt, a woman who
-            remembered every family member's name. Her photo is our logo. Her spirit is
-            the whole idea.
-          </p>
-          <span class="hp-story-link">Read our story →</span>
-        </div>
-      </a>
     </section>
 
     <section class="hp-honest">
@@ -420,15 +433,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div>
           <h2>Be one of our founding families.</h2>
           <p>
-            You already know us for showing up when disaster strikes. This is how we
-            show up every single day.
+            Born from years of disaster response, where we saw the same thing after
+            every storm: elderly people, alone. Aunt Mabel is our answer to the
+            loneliness that's there every ordinary day.
           </p>
           <a class="hp-btn hp-btn-lg" href="/enroll">Start their daily calls →</a>
         </div>
         <div class="hp-start-list">
           <div>
             <span class="dot green" aria-hidden="true"></span>
-            <p><strong>3 days free.</strong> You're not charged until their loved one welcomes the calls.</p>
+            <p><strong>14 days free.</strong> You're not charged until they've truly welcomed Mabel into their mornings.</p>
           </div>
           <div>
             <span class="dot gold" aria-hidden="true"></span>
@@ -436,7 +450,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="last">
             <span class="dot rose" aria-hidden="true"></span>
-            <p><strong>Cancel anytime.</strong> No contracts, no phone calls to get out of it.</p>
+            <p><strong>Cancel anytime.</strong> Calls carry on to the end of the period you've paid for, then stop.</p>
           </div>
         </div>
       </div>
@@ -707,6 +721,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .hp-story-link { font-size: 15px; color: #c25b50; }
   .hp-story-inner:hover .hp-story-link { color: #a3463d; }
 
+  /* Lead placement — she now sits high on the page, right after the worry, so
+     she is given real size and a warm ground instead of the thin strip that
+     suited a footer-adjacent teaser. */
+  .hp-story-lead { background: #f6efe2; border-bottom: 1px solid #e3d8c3; }
+  .hp-story-lead .hp-story-inner {
+    padding: clamp(48px, 5.5vw, 76px) 28px;
+    gap: clamp(28px, 4vw, 52px);
+  }
+  .hp-story-lead .hp-story-inner img {
+    width: clamp(132px, 15vw, 190px);
+    height: clamp(132px, 15vw, 190px);
+    box-shadow: 0 26px 50px -30px rgba(45, 36, 23, 0.65);
+  }
+  .hp-story-lead .hp-story-inner p {
+    font-family: Fraunces, Georgia, serif;
+    font-size: clamp(19px, 1.9vw, 24px);
+    line-height: 1.55;
+    color: #2d2417;
+    margin-bottom: 14px;
+    max-width: 46ch;
+  }
+  .hp-story-lead .hp-story-link { font-size: 16px; }
+  @media (max-width: 620px) {
+    .hp-story-lead .hp-story-inner { flex-direction: column; text-align: center; }
+    .hp-story-lead .hp-story-inner p { max-width: none; }
+  }
+
   /* ── honest ───────────────────────────────────────────────────────── */
   .hp-honest { border-top: 1px solid #e3d8c3; }
   .hp-honest-inner { max-width: 880px; margin: 0 auto; padding: clamp(60px, 7vw, 92px) 28px; }
@@ -766,14 +807,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   // button that silently does nothing reads as a broken site — worse than
   // showing nothing at all. A HEAD request is enough: on Cloudflare Pages a
   // missing asset answers 404, so this is a real check and not a guess.
-  const wrap = document.getElementById('sample-call');
-  const audio = /** @type {HTMLAudioElement | null} */ (document.getElementById('sample-audio'));
-  const btn = document.getElementById('sample-play');
-  const bar = document.getElementById('sample-bar')?.querySelector('span');
-  const time = document.getElementById('sample-time');
+  // querySelector with a type argument, not getElementById: the latter returns
+  // a bare HTMLElement, so every audio-specific property below (play, duration,
+  // currentTime) was an editor error even though it ran fine.
+  const wrap = document.querySelector<HTMLElement>('#sample-call');
+  const audio = document.querySelector<HTMLAudioElement>('#sample-audio');
+  const btn = document.querySelector<HTMLButtonElement>('#sample-play');
+  const bar = document.querySelector<HTMLElement>('#sample-bar span');
+  const time = document.querySelector<HTMLElement>('#sample-time');
 
   if (wrap && audio && btn && bar && time) {
-    const fmt = (s) => {
+    const fmt = (s: number) => {
       if (!Number.isFinite(s)) return '0:00';
       const m = Math.floor(s / 60);
       return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -794,7 +838,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       else audio.pause();
     });
 
-    const setPlaying = (on) => {
+    const setPlaying = (on: boolean) => {
       btn.setAttribute('data-playing', String(on));
       btn.setAttribute('aria-label', on ? 'Pause the sample call' : 'Play the sample call');
     };

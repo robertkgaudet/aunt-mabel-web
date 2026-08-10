@@ -39,7 +39,11 @@ interface Props {
 
 const {
   title,
-  description = 'A friendly call every day — and a knock on the door when disaster strikes.',
+  // The old default promised "a knock on the door when disaster strikes". That
+  // in-person check is not something we can deliver, so it is gone from every
+  // surface — and this default was the one that leaked it onto pages that set
+  // no description of their own.
+  description = 'A friendly call every day for an elderly loved one living alone — and family reached the moment something is wrong.',
   noindex = false,
   bare = false,
   ogTitle,

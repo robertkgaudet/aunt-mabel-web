@@ -47,6 +47,20 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
         </button>
       </div>
       <p class="dash-note" id="portal-note" hidden></p>
+
+      {/*
+        Says what actually happens, in its own terms. The Stripe portal is
+        configured to cancel at PERIOD END (cancel_mode: at_period_end,
+        confirmed against the live account), so "the calls stop tomorrow" would
+        be untrue — the month already paid for is honoured and the calls run to
+        the end of it. No guilt, no retention plea; just the mechanics.
+      */}
+      <p class="dash-cancel-note">
+        Cancel anytime, from Manage billing. The daily calls carry on to the end of
+        the period you've already paid for and then stop — nothing is cut off the
+        moment you click. If you cancel during the free trial, you're never charged
+        at all.
+      </p>
     </section>
 
     <section class="panel">

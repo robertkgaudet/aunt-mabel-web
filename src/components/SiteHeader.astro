@@ -41,7 +41,7 @@ const NAV = [
 
 {banner && (
   <div class="sh-banner">
-    Founding families: <span>3 days free</span> — not charged until your loved one welcomes the calls.
+    Founding families: <span>14 days free</span> — not charged until your loved one welcomes the calls.
   </div>
 )}
 
@@ -279,8 +279,7 @@ const NAV = [
   const menu = document.getElementById('sh-menu');
   const burger = document.getElementById('sh-burger');
 
-  /** @type {(s: 'in' | 'out') => void} */
-  const resolve = (s) => {
+  const resolve = (s: 'in' | 'out') => {
     nav?.setAttribute('data-auth', s);
     menu?.setAttribute('data-auth', s);
   };
@@ -302,7 +301,7 @@ const NAV = [
   }
 
   if (burger && menu) {
-    const setOpen = (open) => {
+    const setOpen = (open: boolean) => {
       menu.hidden = !open;
       burger.setAttribute('aria-expanded', String(open));
       burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');

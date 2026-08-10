@@ -46,8 +46,8 @@ const TOTAL = STEPS.length;
     <section class="step" data-step="0" id="step-who-for">
       <h1>Who are we calling each day?</h1>
       <p class="step-lede">
-        Mabel's call is the same either way — we just want to know whose door
-        we'd be knocking on.
+        Mabel's call is the same either way — we just want to know whose
+        morning we're brightening.
       </p>
 
       <fieldset class="choices">
@@ -163,7 +163,7 @@ const TOTAL = STEPS.length;
           <input id="r-zip" name="zip" type="text" required inputmode="numeric"
                  maxlength="5" placeholder="70508" autocomplete="postal-code" />
           <p class="field-hint">
-            This is how we know to send someone round when a disaster hits their area.
+            It sets their time zone, so Mabel calls at the right hour for them.
           </p>
           <p class="field-error" id="r-zip-error" hidden></p>
         </div>
@@ -407,9 +407,9 @@ const TOTAL = STEPS.length;
           moment: the first thing someone reads should be that they are not
           being charged for something their parent hasn't agreed to yet. */}
       <div class="trial-lead">
-        <p class="trial-headline" id="p-trial">Your first 3 days are free.</p>
+        <p class="trial-headline" id="p-trial">Your first 14 days are free.</p>
         <p class="trial-sub" id="p-trial-sub">
-          We won't charge you until they've welcomed the calls.
+          We won't charge you until they've truly welcomed Mabel into their mornings.
         </p>
       </div>
 
@@ -420,8 +420,9 @@ const TOTAL = STEPS.length;
 
       <p class="step-lede" id="p-explain">
         Mabel calls every day at the time you chose. If something sounds wrong,
-        we reach out to the people you named. Cancel whenever you like — from
-        your account, no phone call needed.
+        we reach out to the people you named. Cancel anytime from your account —
+        the calls carry on to the end of the period you've paid for, then stop.
+        Cancel during the free trial and you're never charged at all.
       </p>
 
       {/* No code field here on purpose — Stripe's hosted page has one, and it
@@ -452,7 +453,7 @@ const TOTAL = STEPS.length;
         Mabel will call every day at the time you chose.
       </p>
       <p class="step-lede" id="d-done-lede">
-        Your first three days are free — nothing is charged until then.
+        Your first 14 days are free — nothing is charged until then.
       </p>
 
       <div class="done-next">
@@ -1358,10 +1359,12 @@ const TOTAL = STEPS.length;
   function preparePaymentStep() {
     const who = state.recipient_name;
     if (who) {
-      el('p-trial-sub').textContent = `We won't charge you until ${who} has welcomed the calls.`;
+      el('p-trial-sub').textContent =
+        `We won't charge you until ${who} has truly welcomed Mabel into their mornings.`;
       btn('continue-7').textContent = `Start ${possessive(who)} daily calls →`;
       if (state.is_self) {
-        el('p-trial-sub').textContent = "We won't charge you until you've had your first call.";
+        el('p-trial-sub').textContent =
+          "We won't charge you until you've truly welcomed Mabel into your mornings.";
         btn('continue-7').textContent = 'Start my daily calls →';
       }
     }

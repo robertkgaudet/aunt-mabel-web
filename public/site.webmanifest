@@ -1,7 +1,7 @@
 {
   "name": "Aunt Mabel",
   "short_name": "Aunt Mabel",
-  "description": "A friendly call every day, and a knock on the door when disaster strikes.",
+  "description": "A friendly call every day for an elderly loved one living alone — and family reached the moment something is wrong.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f4ede0",
