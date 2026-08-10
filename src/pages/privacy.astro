@@ -1,5 +1,13 @@
 ---
 // Privacy Policy — PLACEHOLDER. See terms.astro for why this page exists.
+//
+// 2026-08-10: the in-person disaster check was removed from the product, so the
+// clause promising that a recipient's details would be passed to the Cajun Navy
+// Ground Force for a door knock is gone. It is replaced by an explicit denial
+// rather than silence — this page previously told people their parent's address
+// would be handed to a third party, and anyone who read it deserves to see that
+// withdrawn in as many words. The ZIP code's stated purpose is now the true one:
+// it sets the recipient's time zone so the call lands at the right hour.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LegalDraft from '../components/LegalDraft.astro';
 ---
@@ -11,17 +19,16 @@ import LegalDraft from '../components/LegalDraft.astro';
       that operates the Aunt Mabel daily wellness-call service, handles the
       information collected through it.
     </p>
-    <p>
-      When a disaster reaches a recipient's area, the details needed for an
-      in-person wellness check are shared with
-      <strong>Cajun Navy Ground Force</strong>, our disaster-response partner,
-      so their teams can go and knock on the door. The final policy will set out
-      exactly what is shared with them and when.
+    <p class="emphasis">
+      We do not share a recipient's details with the Cajun Navy Ground Force.
+      An earlier version of this page said we passed their address on for an
+      in-person wellness check after a disaster; that check is not part of the
+      service, and no such sharing takes place.
     </p>
     <p>
-      It's being finalized with counsel now. When it's ready, this page will
-      set out what we collect, why we collect it, how long we keep it, who it
-      is shared with, and how to ask for it to be deleted.
+      This policy is being finalized with counsel now. When it's ready, this page
+      will set out what we collect, why we collect it, how long we keep it, who
+      it is shared with, and how to ask for it to be deleted.
     </p>
     <p>
       Two things are worth stating up front, because they're the ones families
@@ -35,9 +42,10 @@ import LegalDraft from '../components/LegalDraft.astro';
     </p>
     <p>
       The details a recipient shares on a call are used to check on their
-      wellbeing and, if something sounds wrong, to alert the emergency contacts
-      named during enrollment. A recipient's ZIP code is also used to know when
-      a disaster has reached their area.
+      wellbeing and, if something sounds wrong, to alert the account holder and
+      the emergency contacts named during enrollment. Those alerts are sent by
+      email. A recipient's ZIP code is used to work out their time zone, so the
+      daily call arrives at the right hour where they actually are.
     </p>
   </LegalDraft>
 </BaseLayout>
