@@ -564,6 +564,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-family: Fraunces, Georgia, serif; font-weight: 600;
     font-size: clamp(29px, 3.6vw, 44px); line-height: 1.14; letter-spacing: -0.02em;
     margin: 0 0 24px;
+    /* Centred via .hp-problem-inner's text-align. Without this it was 59px
+       left of the body copy beneath it — see the note on .hp-centred. */
+    max-width: none;
   }
   .hp-problem p { font-size: clamp(16.5px, 1.4vw, 18.5px); line-height: 1.75; color: #6b5d48; margin: 0 0 18px; }
   .hp-problem em { font-family: Fraunces, Georgia, serif; font-style: italic; color: #2d2417; }
@@ -578,10 +581,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   /* ── how it works ─────────────────────────────────────────────────── */
   .hp-how { border-top: 1px solid #e3d8c3; }
   .hp-inner { max-width: 1140px; margin: 0 auto; padding: clamp(64px, 8vw, 104px) 28px; }
+  /* ⚠️ max-width: none is LOAD-BEARING on every section heading here.
+     site.css carries a global `h2 { max-width: 20ch }` — a sensible measure cap
+     for body-width pages, and wrong for these. A block element capped at 20ch
+     sits at the LEFT of its container, so `text-align: center` only centres the
+     text inside that narrow box: "How it works" rendered 275px left of centre
+     while its subhead, which has margin auto, was centred properly. The two
+     never lined up with each other or with the three columns below.
+
+     The mockup set no max-width on any h2 — it used inline styles and never
+     inherited this rule — so the widths there came from the container alone.
+     These overrides restore that. */
   .hp-centred {
     font-family: Fraunces, Georgia, serif; font-weight: 600;
     font-size: clamp(28px, 3.2vw, 40px); letter-spacing: -0.02em;
     margin: 0 0 12px; text-align: center;
+    max-width: none;
   }
   .hp-sub { text-align: center; color: #6b5d48; font-size: 17px; margin: 0 auto clamp(44px, 5vw, 64px); max-width: 520px; }
   .hp-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(28px, 4vw, 52px); }
@@ -755,6 +770,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .hp-honest h2 {
     font-family: Fraunces, Georgia, serif; font-size: clamp(24px, 2.6vw, 32px); font-weight: 600;
     letter-spacing: -0.015em; margin: 0 0 18px;
+    max-width: none;   /* left-aligned: this only restores the design's wrap */
   }
   .hp-honest p { font-size: 17px; line-height: 1.75; color: #6b5d48; margin: 0 0 14px; }
   .hp-honest strong { font-weight: 500; color: #2d2417; }
