@@ -329,22 +329,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               and in the same breath she reaches you, right then, bringing you onto the
               call live.
             </p>
-            <!--
-              ⚠️ COPY ACCURACY — READ BEFORE EDITING.
-              The brief for this paragraph asked it to say Mabel "calls you, and
-              emails you and your emergency contact, right away." None of those
-              three things happen yet: on a flagged call sendAlert() emails only
-              ALERT_EMAILS (the Aunt Mabel team), contacts are rendered as TEXT
-              inside that email rather than addressed on it, and no code path
-              places an alert call to family at all. This wording is what is
-              true today. The intended wording is in the handover notes and can
-              go in the moment those channels actually fire.
-            -->
+            {/*
+              ⚠️ COPY ACCURACY. This says EMAILS, not calls. Both channels named
+              here really fire: sendFamilyAlert() addresses the account holder
+              and every emergency contact with an email on file, on a flagged
+              call and on a second no-answer.
+
+              There is NO alert phone call — that is Family Connect Part 3 on
+              the roadmap. Do not add "she calls you" until it exists.
+
+              An Astro comment, not an HTML one: this note is for us, and a
+              <!-- --> comment is served to every visitor.
+            */}
             <p class="hp-connect-alert">
               And if she simply hears something concerning — a fall she mentions in
-              passing, confusion, a bad day — she doesn't just note it. It's raised the
-              same day and waiting at the top of your dashboard, not buried in a report
-              you'd have to go looking for.
+              passing, confusion, a bad day — she doesn't just note it. She emails you
+              and your emergency contact right away, and it's waiting at the top of
+              your dashboard. You're never the last to know.
             </p>
             <p class="hp-connect-turn">
               So a frightened parent is never alone — and you're there in seconds.
@@ -391,9 +392,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             -->
             <p>
               Meals skipped, a missed call, a sadness that lingers, a fall she mentions
-              in passing. It's flagged the day it happens — at the top of your dashboard,
-              with the emergency contact you chose right there beside it, so reaching them
-              is one tap and not a search.
+              in passing. The day it happens, an email goes to you and to the emergency
+              contact you chose — and it's waiting at the top of your dashboard too.
             </p>
           </div>
           {/*
