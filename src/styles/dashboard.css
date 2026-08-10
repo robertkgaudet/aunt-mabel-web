@@ -793,3 +793,59 @@ table.admin tr.flagged td { background: rgba(194, 91, 80, 0.06); }
 }
 .refused h1 { font-family: var(--font-head); font-weight: 400; font-size: 26px; margin: 0 0 10px; }
 .refused p { margin: 0 0 10px; font-size: 15px; line-height: 1.6; color: var(--soft-ink); }
+
+/* ---------------------------------------------------------------- share card
+
+   Sits below the recipient cards, above the footnote. Deliberately quieter than
+   a recipient card — cream on cream with a dashed edge, the same visual weight
+   as "add another loved one" — because it is an invitation, not something the
+   person came here to do. Referral asks that shout at someone checking on their
+   mother read badly. */
+
+.dash-share {
+  margin-top: 34px;
+  border: 1px dashed #cfc0a2;
+  border-radius: 18px;
+  padding: clamp(22px, 2.4vw, 30px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  align-items: center;
+}
+
+.dash-share-h {
+  font-family: var(--font-head);
+  font-size: clamp(19px, 1.9vw, 23px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 10px;
+  max-width: 26ch;
+}
+.dash-share-p {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--soft-ink);
+  margin: 0;
+  max-width: 52ch;
+}
+
+.dash-share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.dash-share-actions .dash-btn { text-decoration: none; }
+
+/* Reserves its line so the row does not jump when the message appears. */
+.dash-share-said {
+  font-size: 12.5px;
+  color: var(--gf-green, #6f7d5e);
+  min-height: 1em;
+  flex-basis: 100%;
+}
+
+@media (max-width: 720px) {
+  .dash-share { grid-template-columns: 1fr; }
+}

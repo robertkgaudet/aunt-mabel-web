@@ -259,6 +259,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <div class="hp-tags">
               <span>Meals</span><span>Medication</span><span>Mood</span><span>Company</span>
             </div>
+
+            <!--
+              Sample call player. Starts HIDDEN and is revealed only once the
+              audio file is confirmed to exist — the recording is added later,
+              and a play button that does nothing is worse than no player at
+              all. See the script at the foot of this file.
+            -->
+            <div class="hp-audio" id="sample-call" hidden>
+              <div class="hp-hair" aria-hidden="true"></div>
+              <div class="hp-audio-row">
+                <button class="hp-play" id="sample-play" type="button" aria-label="Play the sample call">
+                  <span class="hp-play-tri" aria-hidden="true"></span>
+                  <span class="hp-play-bars" aria-hidden="true"><i></i><i></i></span>
+                </button>
+                <div class="hp-audio-body">
+                  <div class="hp-audio-label">Listen in — a morning call with Mabel</div>
+                  <div class="hp-audio-bar" id="sample-bar" aria-hidden="true"><span></span></div>
+                </div>
+                <div class="hp-audio-time" id="sample-time">0:00</div>
+              </div>
+              <!-- preload="none": most visitors never press play. -->
+              <audio id="sample-audio" preload="none" src="/audio/sample-call.mp3"></audio>
+            </div>
           </div>
         </div>
 
@@ -273,6 +296,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               scare — Mabel doesn't wait until tomorrow. She urges them to call 911,
               and in the same breath she reaches you, right then, bringing you onto the
               call live.
+            </p>
+            <!--
+              ⚠️ COPY ACCURACY — READ BEFORE EDITING.
+              The brief for this paragraph asked it to say Mabel "calls you, and
+              emails you and your emergency contact, right away." None of those
+              three things happen yet: on a flagged call sendAlert() emails only
+              ALERT_EMAILS (the Aunt Mabel team), contacts are rendered as TEXT
+              inside that email rather than addressed on it, and no code path
+              places an alert call to family at all. This wording is what is
+              true today. The intended wording is in the handover notes and can
+              go in the moment those channels actually fire.
+            -->
+            <p class="hp-connect-alert">
+              And if she simply hears something concerning — a fall she mentions in
+              passing, confusion, a bad day — she doesn't just note it. It's raised the
+              same day and waiting at the top of your dashboard, not buried in a report
+              you'd have to go looking for.
             </p>
             <p class="hp-connect-turn">
               So a frightened parent is never alone — and you're there in seconds.
@@ -310,10 +350,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <div class="hp-panel">
             <div class="hp-icon"><span class="circ gold" aria-hidden="true"></span></div>
             <h3 class="hp-card-h">Flags when something needs attention</h3>
+            <!--
+              ⚠️ Same accuracy note as the Family Connect block above. The line
+              this replaced said "You and the emergency contact you choose are
+              told", which no code path does today — flag alerts reach the Aunt
+              Mabel team's inbox only. Restore the stronger wording once the
+              customer and their contacts are genuinely on the alert email.
+            -->
             <p>
               Meals skipped, a missed call, a sadness that lingers, a fall she mentions
-              in passing. You and the emergency contact you choose are told — not next
-              week, that day.
+              in passing. It's flagged the day it happens — at the top of your dashboard,
+              with the emergency contact you chose right there beside it, so reaching them
+              is one tap and not a search.
             </p>
           </div>
           <div class="hp-panel">
@@ -551,6 +599,45 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .hp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .hp-tags span { border: 1px solid #e3d8c3; border-radius: 999px; padding: 6px 12px; font-size: 13px; color: #6b5d48; }
 
+  /* ── sample call player ───────────────────────────────────────────── */
+  .hp-audio { display: flex; flex-direction: column; gap: 14px; }
+  .hp-audio[hidden] { display: none; }
+  .hp-audio-row { display: flex; align-items: center; gap: 14px; }
+
+  .hp-play {
+    width: 44px; height: 44px; flex: none;   /* 44px — comfortable touch target */
+    border: 0; border-radius: 50%;
+    background: #c25b50; color: #fbf7ee;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .hp-play:hover { background: #a3463d; }
+  .hp-play:active { transform: scale(0.95); }
+  .hp-play:focus-visible { outline: 2px solid #2d2417; outline-offset: 3px; }
+  /* Triangle and pause bars drawn in CSS — no icon font, no external asset. */
+  .hp-play-tri {
+    width: 0; height: 0;
+    border-left: 13px solid currentColor;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    margin-left: 4px;                        /* optical centring of a triangle */
+  }
+  .hp-play-bars { display: none; gap: 4px; }
+  .hp-play-bars i { display: block; width: 4px; height: 15px; background: currentColor; border-radius: 1px; }
+  .hp-play[data-playing='true'] .hp-play-tri { display: none; }
+  .hp-play[data-playing='true'] .hp-play-bars { display: flex; }
+
+  .hp-audio-body { flex: 1; min-width: 0; }
+  .hp-audio-label { font-family: Fraunces, Georgia, serif; font-size: 16px; color: #2d2417; margin-bottom: 9px; }
+  .hp-audio-bar { height: 4px; border-radius: 999px; background: #e3d8c3; overflow: hidden; }
+  .hp-audio-bar span { display: block; height: 100%; width: 0%; background: #c25b50; border-radius: 999px; }
+  .hp-audio-time {
+    font-size: 13px; color: #6b5d48; flex: none;
+    /* Tabular figures stop the row twitching as the digits change. */
+    font-variant-numeric: tabular-nums;
+  }
+
   .hp-connect {
     border-radius: 22px; background: #c25b50; color: #fbf7ee;
     padding: clamp(32px, 4.2vw, 60px);
@@ -575,6 +662,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: #fbf7ee;
   }
   .hp-connect p { font-size: clamp(17px, 1.5vw, 19px); line-height: 1.7; color: rgba(251, 247, 238, 0.94); margin: 0 0 16px; }
+  /* !important throughout, like its siblings: `.hp-connect p` is (0,1,1) and
+     would otherwise win the colour and margins back from a single class. */
+  .hp-connect-alert {
+    border-left: 2px solid rgba(251, 247, 238, 0.45);
+    padding-left: 18px !important;
+    color: rgba(251, 247, 238, 0.94) !important;
+    margin: 0 0 18px !important;
+  }
   .hp-connect-turn { font-family: Fraunces, Georgia, serif; font-size: clamp(19px, 1.8vw, 24px) !important; line-height: 1.5 !important; color: #fbf7ee !important; margin: 0 0 22px !important; }
   .hp-connect-fine { font-size: 13.5px !important; line-height: 1.6 !important; color: rgba(251, 247, 238, 0.72) !important; margin: 0 !important; }
 
@@ -662,3 +757,63 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .hp-nav a:not(.hp-btn) { display: none; }
   }
 </style>
+
+<script>
+  // Sample call player.
+  //
+  // The block ships HIDDEN and only appears once /audio/sample-call.mp3 is
+  // confirmed to exist. The recording is being made separately, and a play
+  // button that silently does nothing reads as a broken site — worse than
+  // showing nothing at all. A HEAD request is enough: on Cloudflare Pages a
+  // missing asset answers 404, so this is a real check and not a guess.
+  const wrap = document.getElementById('sample-call');
+  const audio = /** @type {HTMLAudioElement | null} */ (document.getElementById('sample-audio'));
+  const btn = document.getElementById('sample-play');
+  const bar = document.getElementById('sample-bar')?.querySelector('span');
+  const time = document.getElementById('sample-time');
+
+  if (wrap && audio && btn && bar && time) {
+    const fmt = (s) => {
+      if (!Number.isFinite(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    };
+
+    fetch(audio.src, { method: 'HEAD' })
+      .then((r) => {
+        // Content-Type guards against a 200 that is actually the SPA/404 page.
+        const ok = r.ok && !(r.headers.get('content-type') || '').includes('text/html');
+        if (ok) wrap.hidden = false;
+      })
+      .catch(() => {
+        /* Offline or blocked — stay hidden. Nothing here is load-bearing. */
+      });
+
+    btn.addEventListener('click', () => {
+      if (audio.paused) audio.play().catch(() => setPlaying(false));
+      else audio.pause();
+    });
+
+    const setPlaying = (on) => {
+      btn.setAttribute('data-playing', String(on));
+      btn.setAttribute('aria-label', on ? 'Pause the sample call' : 'Play the sample call');
+    };
+    audio.addEventListener('play', () => setPlaying(true));
+    audio.addEventListener('pause', () => setPlaying(false));
+
+    audio.addEventListener('loadedmetadata', () => { time.textContent = fmt(audio.duration); });
+    audio.addEventListener('timeupdate', () => {
+      if (audio.duration) bar.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+      // Counts DOWN while playing — how much is left is the useful number.
+      time.textContent = fmt(audio.duration ? audio.duration - audio.currentTime : 0);
+    });
+    audio.addEventListener('ended', () => {
+      setPlaying(false);
+      bar.style.width = '0%';
+      audio.currentTime = 0;
+      time.textContent = fmt(audio.duration);
+    });
+    // If the file disappears or is corrupt, retreat rather than sit there dead.
+    audio.addEventListener('error', () => { wrap.hidden = true; });
+  }
+</script>

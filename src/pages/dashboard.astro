@@ -12,6 +12,53 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 
     <div class="dash-cards" id="cards"></div>
 
+    {/*
+      Share card. Static markup rather than built in JS with the recipient
+      cards: it says the same thing to everyone, so there is nothing to wait on
+      — it can render with the page instead of after the Supabase round-trip.
+
+      The mailto body is built here as a real string with encodeURIComponent at
+      build time, so no apostrophe in the copy can break the URL.
+    */}
+    <section class="dash-share" aria-labelledby="share-h">
+      <div>
+        <div class="dash-eyebrow">Share Aunt Mabel</div>
+        <h2 class="dash-share-h" id="share-h">
+          Know someone who worries about a parent living alone?
+        </h2>
+        <p class="dash-share-p">
+          Most people find us because someone they trust mentioned it — usually another
+          family who was carrying the same quiet worry. If Mabel has helped you, passing
+          her name along is the kindest thing you can do for the next family.
+        </p>
+      </div>
+
+      <div class="dash-share-actions">
+        <a class="dash-btn" id="share-mail" href={
+          'mailto:?subject=' +
+          encodeURIComponent('Thought of you — daily check-in calls for parents') +
+          '&body=' +
+          encodeURIComponent(
+            "Hi,\n\n" +
+            "I've been using something called Aunt Mabel for a loved one of mine, and I " +
+            "thought of you.\n\n" +
+            "It's a friendly phone call every single day — someone warm to check that " +
+            "they've eaten, taken their medicine, and slept alright, and to stay on and " +
+            "talk for a bit. If anything sounds wrong, the family gets reached right " +
+            "away. It's been a real weight off my mind.\n\n" +
+            "Here's the link if you want to look:\n" +
+            "https://auntmabel.app\n\n" +
+            "No pressure at all — just thought it might help.\n"
+          )
+        }>Write an email</a>
+
+        <button class="dash-btn ghost" id="share-copy" type="button"
+          data-link="https://auntmabel.app">Copy link</button>
+
+        <span class="dash-share-said" id="share-said" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
     <p class="dash-footnote">
       Mabel calls once a day and simply says hello. If something sounds off — or nobody
       picks up — we email you right away.
@@ -239,4 +286,48 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       cards.appendChild(add);
     }
   })();
+</script>
+
+<script>
+  // Copy-link button for the share card.
+  //
+  // navigator.clipboard needs a secure context and can still be refused by
+  // permissions policy, so there is a selection-based fallback. Either way the
+  // button SAYS what happened — a copy button that gives no feedback leaves you
+  // pasting to find out whether it worked.
+  const copyBtn = document.getElementById('share-copy');
+  const said = document.getElementById('share-said');
+
+  if (copyBtn && said) {
+    let clearTimer;
+    const announce = (msg) => {
+      said.textContent = msg;
+      clearTimeout(clearTimer);
+      clearTimer = setTimeout(() => { said.textContent = ''; }, 2600);
+    };
+
+    copyBtn.addEventListener('click', async () => {
+      const link = copyBtn.dataset.link || 'https://auntmabel.app';
+      try {
+        await navigator.clipboard.writeText(link);
+        announce('Link copied.');
+      } catch {
+        // Fallback: a hidden input we can select and copy the old way.
+        try {
+          const tmp = document.createElement('input');
+          tmp.value = link;
+          tmp.setAttribute('readonly', '');
+          tmp.style.position = 'fixed';
+          tmp.style.opacity = '0';
+          document.body.appendChild(tmp);
+          tmp.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(tmp);
+          announce(ok ? 'Link copied.' : 'Press Ctrl+C to copy: ' + link);
+        } catch {
+          announce('Copy it from here: ' + link);
+        }
+      }
+    });
+  }
 </script>
