@@ -116,4 +116,14 @@ const deploy = spawnSync(
 );
 if (deploy.status !== 0) abort(`wrangler pages deploy failed (exit ${deploy.status}).`);
 
-console.log('\n✅  Prod deploy complete. Now verify by effect — load the site and sign in.\n');
+console.log('\n✅  Prod deploy complete. Now verify by effect — load the site and sign in.');
+
+// Staging does not follow production anywhere, so a prod-only deploy silently
+// leaves the test site on an older build. That is not cosmetic: staging is
+// where changes get checked, and checking them against stale code is worse
+// than not checking at all. This bit us once already — a homepage fix went to
+// prod and staging kept showing the bug it was meant to fix.
+console.log(
+  '\n\u{1F4CC}  Staging is NOT updated by this script.\n' +
+    '   If this change should be on the test site too:  npm run deploy:test\n'
+);
