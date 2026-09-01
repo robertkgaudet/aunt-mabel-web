@@ -8,6 +8,16 @@
 // would be handed to a third party, and anyone who read it deserves to see that
 // withdrawn in as many words. The ZIP code's stated purpose is now the true one:
 // it sets the recipient's time zone so the call lands at the right hour.
+//
+// 2026-08-31: the "what we do with call details" clause understated the
+// product. It described alerting on concerns, while the dashboard has been
+// showing the account holder a written summary of EVERY call — good ones
+// included. Silence about routine disclosure is the worse error of the two, so
+// it now says plainly what the account holder sees. The audience sentence is
+// deliberately narrower than it may read: the "own calls" RLS policy scopes
+// SELECT to accounts.auth_user_id = auth.uid(), so emergency contacts, who are
+// contacts rows and not auth users, cannot sign in at all. They see a summary
+// only inside a concern email.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LegalDraft from '../components/LegalDraft.astro';
 ---
@@ -21,9 +31,6 @@ import LegalDraft from '../components/LegalDraft.astro';
     </p>
     <p class="emphasis">
       We do not share a recipient's details with the Cajun Navy Ground Force.
-      An earlier version of this page said we passed their address on for an
-      in-person wellness check after a disaster; that check is not part of the
-      service, and no such sharing takes place.
     </p>
     <p>
       This policy is being finalized with counsel now. When it's ready, this page
@@ -35,17 +42,18 @@ import LegalDraft from '../components/LegalDraft.astro';
       ask about first:
     </p>
     <p class="emphasis">
-      Daily calls are not recorded today. Preserving call recordings for
-      families is a possible future feature, and it would require its own
-      separate, explicit consent — it would never be switched on quietly for
-      anyone already enrolled.
+      After every call, the account holder sees a short summary of how it went —
+      how your loved one sounded, what they talked about, and anything that gave
+      us concern. This is written by Mabel after the call, not a recording or a
+      transcript of what was said. It appears in the account holder's dashboard;
+      the emergency contacts named during enrollment cannot sign in and read it
+      there. If something sounds wrong we email the account holder and those
+      emergency contacts rather than waiting for anyone to check the dashboard,
+      and that email includes the summary.
     </p>
     <p>
-      The details a recipient shares on a call are used to check on their
-      wellbeing and, if something sounds wrong, to alert the account holder and
-      the emergency contacts named during enrollment. Those alerts are sent by
-      email. A recipient's ZIP code is used to work out their time zone, so the
-      daily call arrives at the right hour where they actually are.
+      A recipient's ZIP code is used to work out their time zone, so the daily
+      call arrives at the right hour where they actually are.
     </p>
   </LegalDraft>
 </BaseLayout>
