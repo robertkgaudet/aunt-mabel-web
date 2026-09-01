@@ -169,6 +169,27 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     return `${Math.round(seconds / 60)} min`;
   }
 
+  /**
+   * Topic labels for one call, from analysis -> custom_analysis_data ->
+   * topics_discussed. Returns [] for every shape that isn't usable, because
+   * absent is the normal case: the field was only added to the Retell agent
+   * recently, so nearly every historical row lacks it entirely.
+   *
+   * Supabase hands back JSONB already parsed, so analysis is an object here.
+   * The field itself is a comma-separated string; an array is accepted too,
+   * so a change to how the Retell field is configured cannot empty this out.
+   */
+  function callTopics(analysis) {
+    try {
+      const raw = analysis?.custom_analysis_data?.topics_discussed;
+      if (raw == null) return [];
+      const list = Array.isArray(raw) ? raw : String(raw).split(',');
+      return list.map((t) => String(t).trim()).filter(Boolean);
+    } catch {
+      return [];
+    }
+  }
+
   /** Clock time of the call, shown in the recipient's timezone. */
   function callClock(iso, timezone) {
     if (!iso) return '';
@@ -253,7 +274,7 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
     const { data: calls, error: callsErr } = await supabase
       .from('calls')
       .select(
-        'id, call_date, attempt, status, duration_seconds, summary, sentiment, escalate, escalate_reason, consent_confirmed, created_at, ended_at'
+        'id, call_date, attempt, status, duration_seconds, summary, sentiment, escalate, escalate_reason, consent_confirmed, created_at, ended_at, analysis'
       )
       .eq('recipient_id', r.id)
       .order('call_date', { ascending: false })
@@ -496,6 +517,26 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
             why.className = 'call-reason';
             why.textContent = c.escalate_reason;
             row.querySelector('.call-body').appendChild(why);
+          }
+
+          // Topics are the index, not the story — so they sit last, after any
+          // concern, and render nothing at all when absent. Retell only began
+          // returning topics_discussed recently, so the overwhelming majority
+          // of rows have no analysis, no custom_analysis_data, or no field.
+          // An empty tag strip on every historical call would be worse than
+          // silence, so there is deliberately no label and no placeholder.
+          const topics = callTopics(c.analysis);
+          if (topics.length) {
+            const strip = document.createElement('div');
+            strip.className = 'call-topics';
+            for (const t of topics) {
+              const tag = document.createElement('span');
+              // textContent, never innerHTML: these labels come back from the
+              // model, and this row is rendered straight into the page.
+              tag.textContent = t;
+              strip.appendChild(tag);
+            }
+            row.querySelector('.call-body').appendChild(strip);
           }
 
           timeline.appendChild(row);

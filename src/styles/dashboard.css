@@ -636,6 +636,26 @@
 .call-summary { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink); }
 .call-summary.muted { color: var(--soft-ink); font-style: italic; }
 
+/* Topic tags. Same pill as .hp-tags on the homepage — its #e3d8c3/#6b5d48 are
+   literally --line/--soft-ink — but stepped down from 13px/6px 12px so the
+   strip reads as an index under the summary rather than competing with it.
+   The summary is 15px ink; these are 12.5px soft-ink, matching .call-sentiment
+   above so the row is bracketed by two quiet lines around the story. */
+.call-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 11px;
+}
+.call-topics span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--soft-ink);
+}
+
 .call-reason {
   margin-top: 10px;
   font-size: 13.5px;
