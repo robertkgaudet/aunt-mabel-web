@@ -273,6 +273,88 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
 
+    {/*
+      An example of the real dashboard, not an illustration of one. The markup
+      below is the call row from src/pages/dashboard/recipient.astro, class
+      names included, and the CSS at the foot of this file is the same rules
+      from dashboard.css — which the homepage does not load, so they are
+      restated rather than imported. They reference the same site.css tokens
+      the dashboard does, so a brand change moves both together.
+
+      If the real timeline row ever changes shape, this has to change with it,
+      or the homepage starts promising a product that no longer looks like
+      this. That is the cost of showing the actual thing; the alternative is a
+      drawing of it, which nobody believes.
+    */}
+    <section id="hp-example" class="hp-example">
+      <div class="hp-inner">
+        <h2 class="hp-centred">What you'll see each morning.</h2>
+        <p class="hp-sub">A short note from Mabel after every check-in.</p>
+
+        <div class="hp-example-panel">
+          <div class="call-row">
+            <div class="call-when">
+              <div class="call-date">Thu, Oct 9</div>
+              <div class="call-time">9:04 AM</div>
+              <div class="call-dur">6 min</div>
+            </div>
+            <div class="call-body">
+              <div class="call-sentiment">
+                <span class="call-dot" aria-hidden="true"></span><span>Positive</span>
+              </div>
+              <p class="call-summary">
+                Dorothy told Mabel about meeting her husband Earl at a dance in 1961 —
+                she said she noticed his shoes before she noticed him. She'd slept well
+                and had eggs and grits for breakfast.
+              </p>
+              <div class="call-topics"><span>Love</span><span>Younger days</span></div>
+            </div>
+          </div>
+
+          <div class="call-row">
+            <div class="call-when">
+              <div class="call-date">Wed, Oct 8</div>
+              <div class="call-time">9:02 AM</div>
+              <div class="call-dur">5 min</div>
+            </div>
+            <div class="call-body">
+              <div class="call-sentiment">
+                <span class="call-dot" aria-hidden="true"></span><span>Positive</span>
+              </div>
+              <p class="call-summary">
+                Mabel and Dorothy talked about the tomatoes coming in and the heat
+                holding on longer than it should. Dorothy mentioned her neighbor
+                brought her a pie.
+              </p>
+              <div class="call-topics">
+                <span>Home</span><span>Food and the kitchen</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="call-row flagged">
+            <div class="call-when">
+              <div class="call-date">Tue, Oct 7</div>
+              <div class="call-time">9:01 AM</div>
+              <div class="call-dur">7 min</div>
+            </div>
+            <div class="call-body">
+              <div class="call-sentiment">
+                <span class="call-dot flag" aria-hidden="true"></span><span>Worth a look</span>
+              </div>
+              <p class="call-summary">
+                Dorothy said her air conditioner has been struggling and the house is
+                warmer than she'd like. She didn't want to bother anyone about it.
+              </p>
+              <div class="call-topics"><span>Home</span></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="hp-example-note">Names and details here are an example, not a real family.</p>
+      </div>
+    </section>
+
     <section class="hp-features">
       <div class="hp-inner hp-stack">
         <div class="hp-panel hp-split">
@@ -603,6 +685,87 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .hp-num { font-family: Fraunces, Georgia, serif; font-size: 54px; font-weight: 500; line-height: 1; color: #d9a441; margin-bottom: 16px; }
   .hp-steps h3 { font-family: Fraunces, Georgia, serif; font-size: 24px; font-weight: 600; margin: 0 0 12px; letter-spacing: -0.01em; }
   .hp-steps p { font-size: 16.5px; line-height: 1.7; color: #6b5d48; margin: 0; }
+
+  /* ── example dashboard rows ───────────────────────────────────────── */
+  /* dashboard.css's .call-row rules, restated because the homepage does not
+     load that stylesheet. They are written against the site.css tokens the
+     dashboard itself uses — the hexes hardcoded elsewhere in this file are
+     the same values (#e3d8c3 is --line, #6b5d48 is --soft-ink) — so a brand
+     change moves the real timeline and this example together.
+
+     Left on the page background rather than paper, so the panel reads as a
+     surface sitting on the page, the way it does in the actual dashboard. */
+  .hp-example { border-top: 1px solid var(--line); }
+  .hp-example-panel {
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 8px 28px 22px;
+  }
+
+  .hp-example .call-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    border-left: 3px solid transparent;
+  }
+  /* The real panel carries a heading above the first row, so its top border
+     is a separator. Here the rows are alone in the card and that border would
+     double up with the card's own edge. */
+  .hp-example .call-row:first-child { border-top: 0; }
+  .hp-example .call-row.flagged {
+    padding: 18px;
+    background: rgba(194, 91, 80, 0.05);
+    border-left: 3px solid var(--rose);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .hp-example .call-when { min-width: 112px; }
+  .hp-example .call-date { font-family: var(--font-head); font-size: 16px; }
+  .hp-example .call-time,
+  .hp-example .call-dur { font-size: 12px; color: var(--soft-ink); margin-top: 2px; }
+
+  .hp-example .call-body { flex: 1; min-width: 240px; }
+  .hp-example .call-sentiment {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 5px;
+    font-size: 12.5px;
+    color: var(--soft-ink);
+    letter-spacing: 0.02em;
+  }
+  .hp-example .call-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    display: block;
+    background: var(--gf-green);
+  }
+  .hp-example .call-dot.flag { background: var(--rose); }
+
+  .hp-example .call-summary { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink); }
+
+  .hp-example .call-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+  .hp-example .call-topics span {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12.5px;
+    line-height: 1.35;
+    color: var(--soft-ink);
+  }
+
+  .hp-example-note {
+    max-width: 520px;
+    margin: 18px auto 0;
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--soft-ink);
+  }
 
   /* ── features ─────────────────────────────────────────────────────── */
   .hp-features { border-top: 1px solid #e3d8c3; background: #fbf7ee; }
