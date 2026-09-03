@@ -481,12 +481,6 @@ const TOTAL = STEPS.length;
         Worth bookmarking — that guide is where the answers live.
       </p>
     </section>
-
-    {/* TEMPORARY — remove before launch. Tracked in the design doc. */}
-    <aside class="debug" id="debug">
-      <strong>debug (temporary)</strong>
-      <code id="debug-state">{'{}'}</code>
-    </aside>
   </div>
 </BaseLayout>
 
@@ -539,16 +533,9 @@ const TOTAL = STEPS.length;
   const total = Number(root.dataset.total);
   const fill = el('progress-fill');
   const text = el('progress-text');
-  const debugEl = el('debug-state');
   const statusEl = el('auth-status');
 
   let current = 0;
-
-  /** @type {() => void} */
-  function renderDebug() {
-    debugEl.textContent = JSON.stringify(state);
-    console.log('[enroll] state', { ...state });
-  }
 
   /** @type {(msg: string, tone?: string) => void} */
   function setStatus(msg, tone) {
@@ -576,7 +563,6 @@ const TOTAL = STEPS.length;
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (push) history.pushState({ step: index }, '', location.pathname);
-    renderDebug();
   }
 
   // ── supabase client ───────────────────────────────────────────────────
@@ -656,7 +642,6 @@ const TOTAL = STEPS.length;
       // rather than asking someone for their own name twice.
       const meta = session.user.user_metadata || {};
       state.display_name = meta.full_name || meta.name || null;
-      renderDebug();
       setStatus('');
       prepareRecipientStep();
       show(2);
@@ -675,7 +660,6 @@ const TOTAL = STEPS.length;
     input.addEventListener('change', () => {
       state.is_self = input.value === 'myself';
       continueBtn.disabled = false;
-      renderDebug();
     });
   });
 
@@ -898,7 +882,6 @@ const TOTAL = STEPS.length;
       if (error) throw error;
 
       state.contact_ids = (data || []).map((r) => r.id);
-      renderDebug();
       cStatus.textContent = '';
       submitBtn.disabled = false;
       prepareDoctorStep();
@@ -1122,7 +1105,6 @@ const TOTAL = STEPS.length;
       }
 
       state.recipient_name = name;
-      renderDebug();
       rStatus.textContent = '';
       submitBtn.disabled = false;
       prepareContactsStep();
@@ -1195,7 +1177,6 @@ const TOTAL = STEPS.length;
       state.doctor_name = data.doctor_name;
       state.doctor_phone = data.doctor_phone;
       state.doctor_saved = true;
-      renderDebug();
       dStatus.textContent = '';
       continueBtn5.disabled = false;
       skipBtn.disabled = false;
@@ -1326,7 +1307,6 @@ const TOTAL = STEPS.length;
       state.consent = recorded.consent;
       state.tos_accepted_at = recorded.tos_accepted_at;
       state.not_medical_ack_at = recorded.not_medical_ack_at;
-      renderDebug();
       consentStatus.textContent = '';
       submitBtn.disabled = false;
       preparePaymentStep();
@@ -1521,7 +1501,6 @@ const TOTAL = STEPS.length;
       el('done-first-call').textContent = when
         ? `Mabel's first call comes at ${when}.`
         : `Mabel makes her first call at the time you picked.`;
-      renderDebug();
       show(7, { push: false });
       return;
     }
@@ -1532,7 +1511,6 @@ const TOTAL = STEPS.length;
       preparePaymentStep();
       show(6, { push: false });
       pStatus.textContent = "No worries — nothing was charged. Come back whenever you're ready.";
-      renderDebug();
       return;
     }
     // Session or account gone: say so plainly rather than restarting silently.
@@ -1949,14 +1927,6 @@ const TOTAL = STEPS.length;
     background: none; border: 0; cursor: pointer; font-family: var(--font-body);
   }
   .btn-quiet:hover { color: var(--rose-deep); text-decoration: underline; }
-
-  /* ── temporary debug strip — remove before launch ─────────────────── */
-  .debug {
-    margin-top: 3.5rem; padding: 10px 14px; border: 1px dashed var(--line);
-    border-radius: 10px; background: var(--paper); font-size: 0.75rem;
-    color: var(--soft-ink); display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-  }
-  .debug code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink); }
 
   .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
